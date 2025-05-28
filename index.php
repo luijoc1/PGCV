@@ -32,17 +32,22 @@
 		                  <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
 		                  <li data-target="#carousel-example-generic" data-slide-to="1" class=""></li>
 		                  <li data-target="#carousel-example-generic" data-slide-to="2" class=""></li>
+						  <li data-target="#carousel-example-generic" data-slide-to="3" class=""></li>
 		                </ol>
 		                <div class="carousel-inner">
 		                  <div class="item active">
-		                    <img src="images/REPUESTOS_ORIGINALES.png?v=<?= filemtime('images/REPUESTOS_ORIGINALES.png') ?>" alt="First slide">
+		                    <img src="images/filtross.jpg?=<?= filemtime('images/REPUESTOS_ORIGINALES.png') ?>" alt="First slide">
 		                  </div>
 		                  <div class="item">
-		                    <img src="images/repu2.png?<?= filemtime('images/repu2.png') ?>" alt="Second slide">
+		                    <img src="images/motores.jpg?<?= filemtime('images/repu2.png') ?>" alt="Second slide">
 
 		                  </div>
 		                  <div class="item">
-		                    <img src="images/repuestos.jpg?<?= filemtime('images/repuestos.jpg') ?>" alt="Third slide">
+		                    <img src="images/v.jpg?<?= filemtime('images/repuestos.jpg') ?>" alt="Third slide">
+
+					</div>
+						  <div class="item">
+		                    <img src="images/d.jpg?<?= filemtime('images/repuestos.jpg') ?>" alt="Third slide">
 
 		                  </div>
 						</div>
@@ -54,7 +59,7 @@
 		                  <span class="fa fa-angle-right"></span>
 		                </a>
 		            </div>
-		            <h3>Productos Más vendidos Mensualmente</h3>
+		            <h3>PRODUCTOS MAS RECOMENDADOS</h3>
 		       		<?php
 		       			$month = date('m');
 		       			$conn = $pdo->open();
