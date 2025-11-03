@@ -44,7 +44,7 @@
 
           </li>
         </ul>
-        <form method="POST" class="navbar-form navbar-left" action="search.php">
+        <form method="POST" class="navbar-form navbar-left" action="buscar.php">
           <div class="input-group">
               <input type="text" class="form-control" id="navbar-search-input" name="keyword" placeholder="Buscar producto" required>
               <span class="input-group-btn" id="searchBtn" style="display:none;">

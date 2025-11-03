@@ -58,7 +58,7 @@
 <script>
 var total = 0;
 $(function(){
-	$(document).on('click', '.cart_eliminar', function(e){
+	$(document).on('click', '.cart_delete', function(e){
 		e.preventDefault();
 		var id = $(this).data('id');
 		$.ajax({

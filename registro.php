@@ -78,8 +78,8 @@
 				        $mail->isSMTP();                                     
 				        $mail->Host = 'smtp.gmail.com';                      
 				        $mail->SMTPAuth = true;                               
-				        $mail->Username = 'jose.intriago.notify@gmail.com';     
-				        $mail->Password = 'xtmoxishyjxuvlzh';                    
+				        $mail->Username = 'arodrigueza.ingeniero@gmail.com';     
+				        $mail->Password = 'zqeemysndhnigtvu';                    
 				        $mail->SMTPOptions = array(
 				            'ssl' => array(
 				            'verify_peer' => false,
@@ -90,15 +90,15 @@
 				        $mail->SMTPSecure = 'ssl';                           
 				        $mail->Port = 465;                                   
 
-				        $mail->setFrom('jose.intriago.notify@gmail.com');
+				        $mail->setFrom('arodrigueza.ingeniero@gmail.com');
 				        
 				        //Recipients
 				        $mail->addAddress($email);              
-				        $mail->addReplyTo('jose.intriago.notify@gmail.com');
+				        $mail->addReplyTo('arodrigueza.ingeniero@gmail.com');
 				       
 				        //Content
 				        $mail->isHTML(true);                                  
-				        $mail->Subject = 'Registro en Ecommerce';
+				        $mail->Subject = 'Registro en Almacen';
 				        $mail->Body    = $message;
 
 				        $mail->send();
