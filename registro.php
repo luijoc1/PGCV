@@ -11,6 +11,16 @@
 		$password = $_POST['password'];
 		$repassword = $_POST['repassword'];
 
+		// Validar que se haya aceptado el manejo de datos
+		if(!isset($_POST['aceptar_datos']) || $_POST['aceptar_datos'] != 'on'){
+			$_SESSION['error'] = 'Debes aceptar el uso del manejo de datos 1581 para registrarte';
+			$_SESSION['firstname'] = $firstname;
+			$_SESSION['lastname'] = $lastname;
+			$_SESSION['email'] = $email;
+			header('location: registrarse.php');
+			exit();
+		}
+
 		$_SESSION['firstname'] = $firstname;
 		$_SESSION['lastname'] = $lastname;
 		$_SESSION['email'] = $email;

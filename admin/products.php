@@ -90,6 +90,7 @@
                   <th>Foto</th>
                   <th>Descripción</th>
                   <th>Precio</th>
+                  <th>Stock</th>
                   <th>Vistas hoy</th>
                   <th>Herramientas</th>
                 </thead>
@@ -104,6 +105,7 @@
                       foreach($stmt as $row){
                         $image = (!empty($row['photo'])) ? '../images/'.$row['photo'] : '../images/noimage.jpg';
                         $counter = ($row['date_view'] == $now) ? $row['counter'] : 0;
+                        $stock_label = ($row['stock'] > 0) ? '<span class="label label-success">'.$row['stock'].'</span>' : '<span class="label label-danger">0</span>';
                         echo "
                           <tr>
                             <td>".$row['name']."</td>
@@ -113,6 +115,7 @@
                             </td>
                             <td><a href='#description' data-toggle='modal' class='btn btn-info btn-sm btn-flat desc' data-id='".$row['id']."'><i class='fa fa-search'></i> Ver</a></td>
                             <td>&#36; ".number_format($row['price'], 2)."</td>
+                            <td>".$stock_label."</td>
                             <td>".$counter."</td>
                             <td>
                               <button class='btn btn-success btn-sm edit btn-flat' data-id='".$row['id']."'><i class='fa fa-edit'></i> Editar</button>
@@ -211,6 +214,7 @@ function getRow(id){
       $('#edit_name').val(response.prodname);
       $('#catselected').val(response.category_id).html(response.catname);
       $('#edit_price').val(response.price);
+      $('#edit_stock').val(response.stock);
       CKEDITOR.instances["editor2"].setData(response.description);
       getCategory();
     }

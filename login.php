@@ -48,7 +48,7 @@
     	</form>
       <br>
       <a href="password_olvidada.php">Olvidé mi contraseña</a><br>
-      <a href="registrarse.php" class="text-center">Registrar una nueva membresía</a><br>
+      <a href="registrarse.php" class="text-center">Registrar una nueva cuenta</a><br>
       <a href="index.php"><i class="fa fa-home"></i> Casa</a>
   	</div>
 </div>

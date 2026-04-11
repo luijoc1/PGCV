@@ -35,7 +35,7 @@
       }
     ?>
   	<div class="register-box-body">
-    	<p class="login-box-msg">Registrar una nueva membresía</p>
+    	<p class="login-box-msg">Registrar una nueva cuenta</p>
 
     	<form action="registro.php" method="POST">
           <div class="form-group has-feedback">
@@ -69,19 +69,39 @@
             } 
             */
           ?>
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="aceptar_datos" id="aceptar_datos" required>
+                Aceptar terminos y condiciones
+              </label>
+            </div>
+          </div>
           <hr>
       		<div class="row">
     			<div class="col-xs-5">
-          			<button type="submit" class="btn btn-primary btn-block btn-flat" name="signup"><i class="fa fa-pencil"></i> Regístrate</button>
+          			<button type="submit" class="btn btn-primary btn-block btn-flat" name="signup" id="btn-registrar"><i class="fa fa-pencil"></i> Regístrate</button>
         		</div>
       		</div>
     	</form>
       <br>
-      <a href="login.php">Ya tengo membresia</a><br>
+      <a href="login.php">Ya tengo cuenta</a><br>
       <a href="index.php"><i class="fa fa-home"></i> Casa</a>
   	</div>
 </div>
 	
 <?php include 'includes/scripts.php' ?>
+<script>
+$(function(){
+	// Validar que el checkbox esté marcado antes de enviar
+	$('form').submit(function(e){
+		if(!$('#aceptar_datos').is(':checked')){
+			e.preventDefault();
+			alert('Debes aceptar los terminos y condiciones para registrarte');
+			return false;
+		}
+	});
+});
+</script>
 </body>
 </html>

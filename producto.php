@@ -6,9 +6,15 @@
 
 	try{
 		 		
-	    $stmt = $conn->prepare("SELECT *, products.name AS prodname, category.name AS catname, products.id AS prodid FROM products LEFT JOIN category ON category.id=products.category_id WHERE slug = :slug");
+	    $stmt = $conn->prepare("SELECT *, products.name AS prodname, category.name AS catname, products.id AS prodid FROM products LEFT JOIN category ON category.id=products.category_id WHERE slug = :slug AND stock > 0");
 	    $stmt->execute(['slug' => $slug]);
 	    $product = $stmt->fetch();
+		
+		if(!$product){
+			$_SESSION['error'] = 'Producto no disponible o sin stock';
+			header('location: index.php');
+			exit();
+		}
 		
 	}
 	catch(PDOException $e){
@@ -64,7 +70,7 @@
 			            				<span class="input-group-btn">
 			            					<button type="button" id="minus" class="btn btn-default btn-flat btn-lg"><i class="fa fa-minus"></i></button>
 			            				</span>
-							          	<input type="text" name="quantity" id="quantity" class="form-control input-lg" value="1">
+							          	<input type="text" name="quantity" id="quantity" class="form-control input-lg" value="1" max="<?php echo $product['stock']; ?>" min="1">
 							            <span class="input-group-btn">
 							                <button type="button" id="add" class="btn btn-default btn-flat btn-lg"><i class="fa fa-plus"></i>
 							                </button>
@@ -79,6 +85,7 @@
 		            		<h1 class="page-header"><?php echo $product['prodname']; ?></h1>
 		            		<h3><b>&#36; <?php echo number_format($product['price'], 2); ?></b></h3>
 		            		<p><b>Categoría:</b> <a href="category.php?category=<?php echo $product['cat_slug']; ?>"><?php echo $product['catname']; ?></a></p>
+		            		<p><b>Stock disponible:</b> <span class="label label-<?php echo ($product['stock'] > 0) ? 'success' : 'danger'; ?>"><?php echo $product['stock']; ?> unidades</span></p>
 		            		<p><b>Descripción:</b></p>
 		            		<p><?php echo $product['description']; ?></p>
 		            	</div>
@@ -101,19 +108,42 @@
 <?php include 'includes/scripts.php'; ?>
 <script>
 $(function(){
+	var maxStock = <?php echo $product['stock']; ?>;
+	
 	$('#add').click(function(e){
 		e.preventDefault();
-		var quantity = $('#quantity').val();
-		quantity++;
-		$('#quantity').val(quantity);
+		var quantity = parseInt($('#quantity').val());
+		if(quantity < maxStock){
+			quantity++;
+			$('#quantity').val(quantity);
+		}
+		else{
+			alert('No hay más stock disponible. Stock máximo: ' + maxStock);
+		}
 	});
 	$('#minus').click(function(e){
 		e.preventDefault();
-		var quantity = $('#quantity').val();
+		var quantity = parseInt($('#quantity').val());
 		if(quantity > 1){
 			quantity--;
 		}
 		$('#quantity').val(quantity);
+	});
+
+	$('#productForm').submit(function(e){
+		var quantity = parseInt($('#quantity').val());
+		if(quantity > maxStock){
+			e.preventDefault();
+			alert('La cantidad solicitada excede el stock disponible. Stock disponible: ' + maxStock);
+			$('#quantity').val(maxStock);
+			return false;
+		}
+		if(quantity < 1){
+			e.preventDefault();
+			alert('La cantidad debe ser al menos 1');
+			$('#quantity').val(1);
+			return false;
+		}
 	});
 
 });

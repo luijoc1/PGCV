@@ -32,7 +32,20 @@
 	        		<?php
 	        			if(isset($_SESSION['user'])){
 	        				echo "
-	        					<div id='paypal-button'></div>
+	        					<div class='box box-solid' style='margin-top: 20px;'>
+	        						<div class='box-body'>
+	        							<div class='row'>
+	        								<div class='col-sm-6'>
+	        									<h3>Total: <span id='total-display'>$0.00</span></h3>
+	        								</div>
+	        								<div class='col-sm-6 text-right'>
+	        									<button type='button' class='btn btn-success btn-lg' id='btn-pagar' style='padding: 15px 50px; font-size: 18px;'>
+	        										<i class='fa fa-credit-card'></i> Pagar
+	        									</button>
+	        								</div>
+	        							</div>
+	        						</div>
+	        					</div>
 	        				";
 	        			}
 	        			else{
@@ -72,6 +85,12 @@ $(function(){
 					getCart();
 					getTotal();
 				}
+				else{
+					alert(response.message);
+					getDetails();
+					getCart();
+					getTotal();
+				}
 			}
 		});
 	});
@@ -79,51 +98,69 @@ $(function(){
 	$(document).on('click', '.minus', function(e){
 		e.preventDefault();
 		var id = $(this).data('id');
-		var qty = $('#qty_'+id).val();
-		if(qty>1){
+		var qty = parseInt($('#qty_'+id).val());
+		if(qty > 1){
 			qty--;
-		}
-		$('#qty_'+id).val(qty);
-		$.ajax({
-			type: 'POST',
-			url: 'cart_actualizar.php',
-			data: {
-				id: id,
-				qty: qty,
-			},
-			dataType: 'json',
-			success: function(response){
-				if(!response.error){
-					getDetails();
-					getCart();
-					getTotal();
+			$('#qty_'+id).val(qty);
+			$.ajax({
+				type: 'POST',
+				url: 'cart_actualizar.php',
+				data: {
+					id: id,
+					qty: qty,
+				},
+				dataType: 'json',
+				success: function(response){
+					if(!response.error){
+						getDetails();
+						getCart();
+						getTotal();
+					}
+					else{
+						alert(response.message);
+						getDetails();
+						getCart();
+						getTotal();
+					}
 				}
-			}
-		});
+			});
+		}
 	});
 
 	$(document).on('click', '.add', function(e){
 		e.preventDefault();
 		var id = $(this).data('id');
-		var qty = $('#qty_'+id).val();
-		qty++;
-		$('#qty_'+id).val(qty);
-		$.ajax({
-			type: 'POST',
-			url: 'cart_actualizar.php',
-			data: {
-				id: id,
-				qty: qty,
-			},
-			dataType: 'json',
-			success: function(response){
-				if(!response.error){
-					getDetails();
-					getCart();
-					getTotal();
+		var qty = parseInt($('#qty_'+id).val());
+		var maxStock = parseInt($('#qty_'+id).data('stock')) || 999;
+		if(qty < maxStock){
+			qty++;
+			$('#qty_'+id).val(qty);
+			$.ajax({
+				type: 'POST',
+				url: 'cart_actualizar.php',
+				data: {
+					id: id,
+					qty: qty,
+				},
+				dataType: 'json',
+				success: function(response){
+					if(!response.error){
+						getDetails();
+						getCart();
+						getTotal();
+					}
+					else{
+						alert(response.message);
+						getDetails();
+						getCart();
+						getTotal();
+					}
 				}
-			}
-		});
+			});
+		}
+		else{
+			alert('No hay más stock disponible. Stock máximo: ' + maxStock);
+		}
 	});
 
 	getDetails();
@@ -149,51 +186,32 @@ function getTotal(){
 		url: 'cart_total.php',
 		dataType: 'json',
 		success:function(response){
-			total = response;
+			total = parseFloat(response);
+			// Actualizar el total mostrado
+			$('#total-display').text('$' + total.toFixed(2));
 		}
 	});
 }
-</script>
-<!-- Paypal Express -->
-<script>
-paypal.Button.render({
-    env: 'sandbox', // change for production if app is live,
 
-	client: {
-        sandbox:    'ASb1ZbVxG5ZFzCWLdYLi_d1-k5rmSjvBZhxP2etCxBKXaJHxPba13JJD_D3dTNriRbAv3Kp_72cgDvaZ',
-       // production: 'AaBHKJFEej4V6yaArjzSx9cuf-UYesQYKqynQVCdBlKuZKawDDzFyuQdidPOBSGEhWaNQnnvfzuFB9SM'
-    },
-
-    commit: true, // Show a 'Pay Now' button
-
-    style: {
-    	color: 'gold',
-    	size: 'small'
-    },
-
-    payment: function(data, actions) {
-        return actions.payment.create({
-            payment: {
-                transactions: [
-                    {
-                    	//total purchase
-                        amount: { 
-                        	total: total, 
-                        	currency: 'USD' 
-                        }
-                    }
-                ]
-            }
-        });
-    },
-
-    onAuthorize: function(data, actions) {
-        return actions.payment.execute().then(function(payment) {
-			window.location = 'ventas.php?pay='+payment.id;
-        });
-    },
-
-}, '#paypal-button');
+// Botón de pago
+$(document).on('click', '#btn-pagar', function(e){
+	e.preventDefault();
+	
+	// Verificar que hay productos en el carrito
+	if(total <= 0){
+		alert('El carrito está vacío');
+		return;
+	}
+	
+	// Confirmar pago
+	if(confirm('¿Confirmar el pago de $' + total.toFixed(2) + '?')){
+		// Deshabilitar botón mientras se procesa
+		$('#btn-pagar').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Procesando...');
+		
+		// Redirigir a ventas.php para procesar el pago
+		window.location = 'ventas.php';
+	}
+});
 </script>
 </body>
 </html>

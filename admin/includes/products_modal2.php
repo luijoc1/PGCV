@@ -57,6 +57,12 @@
                   <div class="col-sm-5">
                     <input type="text" class="form-control" id="edit_price" name="price">
                   </div>
+
+                  <label for="edit_stock" class="col-sm-1 control-label">Stock</label>
+
+                  <div class="col-sm-5">
+                    <input type="number" class="form-control" id="edit_stock" name="stock" min="0" value="0" required>
+                  </div>
                 </div>
                 <p><b>Descripción</b></p>
                 <div class="form-group">

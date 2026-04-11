@@ -50,6 +50,13 @@
                     <input type="text" class="form-control" id="price" name="price" required>
                   </div>
 
+                  <label for="stock" class="col-sm-1 control-label">Stock</label>
+
+                  <div class="col-sm-5">
+                    <input type="number" class="form-control" id="stock" name="stock" min="0" value="0" required>
+                  </div>
+                </div>
+                <div class="form-group">
                   <label for="photo" class="col-sm-1 control-label">Foto</label>
 
                   <div class="col-sm-5">

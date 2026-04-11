@@ -4,7 +4,7 @@
     <!-- mini logo for sidebar mini 50x50 pixels -->
     <span class="logo-mini"><b>TC</b></span>
     <!-- logo for regular state and mobile devices -->
-    <span class="logo-lg"><b>los almendros</b></span>
+    <span class="logo-lg"><b>Los Almendros</b></span>
   </a>
   <!-- Barra de navegación de encabezado: el estilo se puede encontrar en header.less -->
   <nav class="navbar navbar-static-top bg-green">

@@ -61,7 +61,7 @@
 	    $pdf->AddPage();  
 	    $content = '';  
 	    $content .= '
-	      	<h2 align="center">TechSoft IT Solutions</h2>
+	      	<h2 align="center">Los Almendros</h2>
 	      	<h4 align="center">REPORTE DE VENTAS</h4>
 	      	<h4 align="center">'.$from_title." - ".$to_title.'</h4>
 	      	<table border="1" cellspacing="0" cellpadding="3">  
@@ -69,7 +69,7 @@
 	           		<th width="15%" align="center"><b>Fecha</b></th>
 	                <th width="30%" align="center"><b>Nombre del comprador</b></th>
 					<th width="40%" align="center"><b>Transacción#</b></th>
-					<th width="15%" align="center"><b>Cantidad</b></th>  
+					<th width="15%" align="center"><b>Subtotal</b></th>  
 	           </tr>  
 	      ';  
 	    $content .= generateRow($from, $to, $conn);  

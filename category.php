@@ -38,7 +38,7 @@
 
 		       			try{
 		       			 	$inc = 3;	
-						    $stmt = $conn->prepare("SELECT * FROM products WHERE category_id = :catid");
+						    $stmt = $conn->prepare("SELECT * FROM products WHERE category_id = :catid AND stock > 0");
 						    $stmt->execute(['catid' => $catid]);
 						    foreach ($stmt as $row) {
 						    	$image = (!empty($row['photo'])) ? 'images/'.$row['photo'] : 'images/noimage.jpg';
