@@ -70,14 +70,87 @@
 					$stmt->execute(['email'=>$email, 'password'=>$password, 'firstname'=>$firstname, 'lastname'=>$lastname, 'code'=>$code, 'now'=>$now]);
 					$userid = $conn->lastInsertId();
 
-					$message = "
-						<h2>Gracias por registrarte.</h2>
-						<p>Su cuenta:</p>
-						<p>Correo electrónico: ".$email."</p>
-						<p>Contraseña: ".$_POST['password']."</p>
-						<p>Haga clic en el enlace a continuación para activar su cuenta.</p>
-						<a href='http://localhost/onlineventas/activate.php?code=".$code."&user=".$userid."'>Activar la cuenta</a>
-					";
+					
+
+$nombre_completo = $firstname . ' ' . $lastname;
+$message = '<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0; padding:0; background-color:#f0f2f5; font-family: Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding: 40px 16px;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:12px; overflow:hidden; border:1px solid #e0e0e0;">
+        <tr>
+          <td style="background:#1a2e4a; padding:32px 36px 28px; text-align:center;">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr><td align="center" style="padding-bottom:20px;">
+                <span style="display:inline-block; background:#3a8eff; border-radius:8px; padding:8px 12px;">
+                  <span style="font-size:22px;">🛍</span>
+                </span>
+                <span style="font-size:18px; font-weight:bold; color:#ffffff; vertical-align:middle; margin-left:10px;">Almacén Online</span>
+              </td></tr>
+              <tr><td align="center" style="padding-bottom:14px;">
+                <div style="width:56px; height:56px; background:rgba(58,142,255,0.2); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:28px;">✅</div>
+              </td></tr>
+              <tr><td align="center">
+                <h1 style="color:#ffffff; font-size:22px; font-weight:bold; margin:0 0 6px;">¡Registro exitoso!</h1>
+                <p style="color:rgba(255,255,255,0.65); font-size:14px; margin:0;">Tu cuenta está lista para activarse</p>
+              </td></tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:28px 36px 24px;">
+            <p style="color:#444; font-size:15px; line-height:1.6; margin:0 0 20px;">
+              Hola <strong style="color:#1a2e4a;">' . $nombre_completo . '</strong>, gracias por unirte.
+              Para empezar a comprar activa tu cuenta haciendo clic en el botón.
+            </p>
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f7fa; border-radius:8px; border:1px solid #e0e0e0; margin-bottom:24px;">
+              <tr>
+                <td style="padding:14px 16px;">
+                  <p style="font-size:12px; color:#999; margin:0 0 2px;">Correo registrado</p>
+                  <p style="font-size:14px; color:#1a2e4a; font-weight:bold; margin:0;">' . $email . '</p>
+                </td>
+              </tr>
+            </table>
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+              <tr><td align="center">
+                <a href="http://localhost/PGCV/activate.php?code=' . $code . '&user=' . $userid . '"
+                   style="display:inline-block; background:#1a2e4a; color:#ffffff; text-decoration:none;
+                          padding:13px 32px; border-radius:8px; font-size:15px; font-weight:bold;">
+                  🔓 Activar mi cuenta
+                </a>
+              </td></tr>
+            </table>
+            <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e0e0e0; border-radius:8px;">
+              <tr>
+                <td style="padding:12px 16px;">
+                  <p style="font-size:13px; color:#888; margin:0; line-height:1.5;">
+                    ℹ️ Si no solicitaste este registro, ignora este mensaje. El enlace expira en 24 horas.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="border-top:1px solid #e0e0e0; padding:16px 36px;">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="font-size:12px; color:#bbb;">© 2026 Almacén Online</td>
+                <td align="right" style="font-size:12px; color:#bbb;">Correo automático — no responder</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>';
 
 					//Load phpmailer
 		    		require 'vendor/autoload.php';
@@ -107,9 +180,10 @@
 				        $mail->addReplyTo('arodrigueza.ingeniero@gmail.com');
 				       
 				        //Content
-				        $mail->isHTML(true);                                  
-				        $mail->Subject = 'Registro en Almacen';
-				        $mail->Body    = $message;
+				        $mail->isHTML(true);
+                        $mail->CharSet = 'UTF-8';
+                        $mail->Subject = 'Activa tu cuenta - Almacén Online';
+                        $mail->Body    = $message;
 
 				        $mail->send();
 
