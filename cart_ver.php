@@ -195,22 +195,16 @@ function getTotal(){
 
 // Botón de pago
 $(document).on('click', '#btn-pagar', function(e){
-	e.preventDefault();
-	
-	// Verificar que hay productos en el carrito
-	if(total <= 0){
-		alert('El carrito está vacío');
-		return;
-	}
-	
-	// Confirmar pago
-	if(confirm('¿Confirmar el pago de $' + total.toFixed(2) + '?')){
-		// Deshabilitar botón mientras se procesa
-		$('#btn-pagar').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Procesando...');
-		
-		// Redirigir a ventas.php para procesar el pago
-		window.location = 'ventas.php';
-	}
+    e.preventDefault();
+
+    // Verificar que hay productos en el carrito
+    if(total <= 0){
+        alert('El carrito está vacío');
+        return;
+    }
+
+    // Redirigir a la página de facturación
+    window.location = 'facturacion.php';
 });
 </script>
 </body>

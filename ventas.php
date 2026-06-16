@@ -35,13 +35,46 @@
 		// Si no hay transacciones o ninguna es numérica, empezar desde 1
 		$payid = 1;
 	}
-	
-	$date = date('Y-m-d');
+	// Validar que vengan los datos de facturacion.php
+if(!isset($_POST['nombre_facturacion']) || empty($_POST['nombre_facturacion'])){
+    $_SESSION['error'] = 'Completa los datos de facturación';
+    header('location: facturacion.php');
+    exit();
+}
+
+$nombre_facturacion = $_POST['nombre_facturacion'];
+$documento          = $_POST['documento'];
+$direccion          = $_POST['direccion'];
+$telefono           = $_POST['telefono'];
+$ciudad             = $_POST['ciudad'];
+$metodo_pago        = $_POST['metodo_pago'];
+
+// Calcular total del carrito
+$stmt = $conn->prepare("SELECT SUM(products.price * cart.quantity) AS total 
+                        FROM cart LEFT JOIN products ON products.id = cart.product_id 
+                        WHERE cart.user_id = :user_id");
+$stmt->execute(['user_id' => $user['id']]);
+$total_row = $stmt->fetch();
+$total = $total_row['total'] ?? 0;
+
+$date = date('Y-m-d');
 
 	try{
 		// Crear registro de venta
-		$stmt = $conn->prepare("INSERT INTO sales (user_id, pay_id, sales_date) VALUES (:user_id, :pay_id, :sales_date)");
-		$stmt->execute(['user_id'=>$user['id'], 'pay_id'=>$payid, 'sales_date'=>$date]);
+		$stmt = $conn->prepare("INSERT INTO sales (user_id, pay_id, sales_date, nombre_facturacion, documento, direccion, telefono, ciudad, metodo_pago, total) 
+                        VALUES (:user_id, :pay_id, :sales_date, :nombre_facturacion, :documento, :direccion, :telefono, :ciudad, :metodo_pago, :total)");
+$stmt->execute([
+    'user_id'            => $user['id'],
+    'pay_id'             => $payid,
+    'sales_date'         => $date,
+    'nombre_facturacion' => $nombre_facturacion,
+    'documento'          => $documento,
+    'direccion'          => $direccion,
+    'telefono'           => $telefono,
+    'ciudad'             => $ciudad,
+    'metodo_pago'        => $metodo_pago,
+    'total'              => $total
+]);
 		$salesid = $conn->lastInsertId();
 		
 		try{
