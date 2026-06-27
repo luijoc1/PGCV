@@ -27,38 +27,84 @@
 	        				unset($_SESSION['error']);
 	        			}
 	        		?>
-	        		<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-		                <ol class="carousel-indicators">
-		                  <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-		                  <li data-target="#carousel-example-generic" data-slide-to="1" class=""></li>
-		                  <li data-target="#carousel-example-generic" data-slide-to="2" class=""></li>
-						  <li data-target="#carousel-example-generic" data-slide-to="3" class=""></li>
-		                </ol>
-		                <div class="carousel-inner">
-		                  <div class="item active">
-		                    <img src="images/filtross.jpg?=<?= filemtime('images/REPUESTOS_ORIGINALES.png') ?>" alt="First slide">
-		                  </div>
-		                  <div class="item">
-		                    <img src="images/motores.jpg?<?= filemtime('images/repu2.png') ?>" alt="Second slide">
+	        		<div id="carousel-example-generic" class="carousel slide" data-ride="carousel"
+     style="border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
 
-		                  </div>
-		                  <div class="item">
-		                    <img src="images/v.jpg?<?= filemtime('images/repuestos.jpg') ?>" alt="Third slide">
+    <!-- Indicadores -->
+    <ol class="carousel-indicators" style="margin-bottom: 12px;">
+        <li data-target="#carousel-example-generic" data-slide-to="0" class="active"
+            style="width: 24px; height: 4px; border-radius: 2px; background: #3a8eff; border: none;"></li>
+        <li data-target="#carousel-example-generic" data-slide-to="1"
+            style="width: 8px; height: 4px; border-radius: 2px; border: none;"></li>
+        <li data-target="#carousel-example-generic" data-slide-to="2"
+            style="width: 8px; height: 4px; border-radius: 2px; border: none;"></li>
+        <li data-target="#carousel-example-generic" data-slide-to="3"
+            style="width: 8px; height: 4px; border-radius: 2px; border: none;"></li>
+    </ol>
 
-					</div>
-						  <div class="item">
-		                    <img src="images/d.jpg?<?= filemtime('images/repuestos.jpg') ?>" alt="Third slide">
+    <div class="carousel-inner">
 
-		                  </div>
-						</div>
-			
-		                <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
-		                  <span class="fa fa-angle-left"></span>
-		                </a>
-		                <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
-		                  <span class="fa fa-angle-right"></span>
-		                </a>
-		            </div>
+        <div class="item active">
+            <img src="images/filtross.jpg" alt="Slide 1" style="width:100%; height:320px; object-fit:cover;">
+            <div style="position:absolute; inset:0; background:linear-gradient(to right, rgba(26,46,74,0.90) 35%, rgba(26,46,74,0.15) 100%);"></div>
+            <div style="position:absolute; left:36px; top:50%; transform:translateY(-50%);">
+                <span style="background:#3a8eff; color:#fff; font-size:11px; font-weight:bold; padding:3px 10px; border-radius:20px; letter-spacing:1px;">DESTACADO</span>
+                <h2 style="color:#fff; font-size:24px; font-weight:bold; margin:10px 0 6px; line-height:1.3; max-width:320px;">Repuestos de calidad<br>al mejor precio</h2>
+                <p style="color:rgba(255,255,255,0.70); font-size:13px; margin:0 0 18px; max-width:280px;">Encuentra los mejores repuestos para tu vehículo en Almacén los Almendros.</p>
+                
+            </div>
+        </div>
+
+        <div class="item">
+            <img src="images/motores.jpg" alt="Slide 2" style="width:100%; height:320px; object-fit:cover;">
+            <div style="position:absolute; inset:0; background:linear-gradient(to right, rgba(26,46,74,0.90) 35%, rgba(26,46,74,0.15) 100%);"></div>
+            <div style="position:absolute; left:36px; top:50%; transform:translateY(-50%);">
+                <span style="background:#3a8eff; color:#fff; font-size:11px; font-weight:bold; padding:3px 10px; border-radius:20px; letter-spacing:1px;">DESTACADO</span>
+                <h2 style="color:#fff; font-size:24px; font-weight:bold; margin:10px 0 6px; line-height:1.3; max-width:320px;">Repuestos de calidad<br>al mejor precio</h2>
+                <p style="color:rgba(255,255,255,0.70); font-size:13px; margin:0 0 18px; max-width:280px;">Encuentra los mejores repuestos para tu vehículo en Almacén los Almendros.</p>
+                
+            </div>
+        </div>
+
+        <div class="item">
+            <img src="images/v.jpg" alt="Slide 3" style="width:100%; height:320px; object-fit:cover;">
+            <div style="position:absolute; inset:0; background:linear-gradient(to right, rgba(26,46,74,0.90) 35%, rgba(26,46,74,0.15) 100%);"></div>
+            <div style="position:absolute; left:36px; top:50%; transform:translateY(-50%);">
+                <span style="background:#3a8eff; color:#fff; font-size:11px; font-weight:bold; padding:3px 10px; border-radius:20px; letter-spacing:1px;">DESTACADO</span>
+                <h2 style="color:#fff; font-size:24px; font-weight:bold; margin:10px 0 6px; line-height:1.3; max-width:320px;">Repuestos de calidad<br>al mejor precio</h2>
+                <p style="color:rgba(255,255,255,0.70); font-size:13px; margin:0 0 18px; max-width:280px;">Encuentra los mejores repuestos para tu vehículo en Almacén los Almendros.</p>
+                
+            </div>
+        </div>
+
+        <div class="item">
+            <img src="images/d.jpg" alt="Slide 4" style="width:100%; height:320px; object-fit:cover;">
+            <div style="position:absolute; inset:0; background:linear-gradient(to right, rgba(26,46,74,0.90) 35%, rgba(26,46,74,0.15) 100%);"></div>
+            <div style="position:absolute; left:36px; top:50%; transform:translateY(-50%);">
+                <span style="background:#3a8eff; color:#fff; font-size:11px; font-weight:bold; padding:3px 10px; border-radius:20px; letter-spacing:1px;">DESTACADO</span>
+                <h2 style="color:#fff; font-size:24px; font-weight:bold; margin:10px 0 6px; line-height:1.3; max-width:320px;">Repuestos de calidad<br>al mejor precio</h2>
+                <p style="color:rgba(255,255,255,0.70); font-size:13px; margin:0 0 18px; max-width:280px;">Encuentra los mejores repuestos para tu vehículo en Almacén los Almendros.</p>
+                
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Flechas -->
+    <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev"
+       style="background:none; width:40px;">
+        <div style="width:36px; height:36px; background:rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; margin-top:-18px; position:absolute; top:50%; left:8px;">
+            <span class="fa fa-angle-left" style="font-size:20px; color:#fff;"></span>
+        </div>
+    </a>
+    <a class="right carousel-control" href="#carousel-example-generic" data-slide="next"
+       style="background:none; width:40px;">
+        <div style="width:36px; height:36px; background:rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; margin-top:-18px; position:absolute; top:50%; right:8px;">
+            <span class="fa fa-angle-right" style="font-size:20px; color:#fff;"></span>
+        </div>
+    </a>
+
+</div>
 		            <!-- TÍTULO -->
 <div style="margin: 24px 0 16px; display: flex; align-items: center; gap: 12px;">
     <div style="width: 4px; height: 28px; background: #1a2e4a; border-radius: 2px;"></div>
