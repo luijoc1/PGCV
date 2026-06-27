@@ -2,7 +2,7 @@
 <head>
   	<meta charset="utf-8">
   	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-  	<title>Tienda online</title>
+  	<title>Almacén los Almendros</title>
   	<!-- Dile al navegador que responda al ancho de la pantalla -->
   	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   	<!-- Bootstrap 3.3.7 -->

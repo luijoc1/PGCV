@@ -48,7 +48,10 @@
                                         <th>Nombre del comprador</th>
                                         <th>Transacción#</th>
                                         <th>Subtotal</th>
+                                        <th>Facturación</th>
+                                        <th>Método de pago</th>
                                         <th>Detalles completos</th>
+                                        <th>Factura PDF</th>
                                     </thead>
                                     <tbody>
                                         <?php
@@ -72,8 +75,22 @@
                             <td>".$row['firstname'].' '.$row['lastname']."</td>
                             <td>".$row['pay_id']."</td>
                             <td>&#36; ".number_format($total, 2)."</td>
-                            <td><button type='button' class='btn btn-info btn-sm btn-flat transact' data-id='".$row['salesid']."'><i class='fa fa-search'></i> Ver</button></td>
-                          </tr>
+                            <td>
+    <small><strong>Nombre:</strong> ".$row['nombre_facturacion']."</small><br>
+    <small><strong>Doc:</strong> ".$row['documento']."</small><br>
+    <small><strong>Dir:</strong> ".$row['direccion'].", ".$row['ciudad']."</small><br>
+    <small><strong>Tel:</strong> ".$row['telefono']."</small>
+</td>
+<td>
+    ".ucfirst($row['metodo_pago'])."
+</td>
+<td>
+    <button type='button' class='btn btn-info btn-sm btn-flat transact' data-id='".$row['salesid']."'><i class='fa fa-search'></i> Ver</button>
+</td>
+<td>
+    <a href='../factura_pdf.php?id=".$row['salesid']."' class='btn btn-danger btn-sm btn-flat'><i class='fa fa-file-pdf-o'></i> PDF</a>
+</td>
+									</tr>
                         ";
                       }
                     }
