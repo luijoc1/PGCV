@@ -3,7 +3,7 @@
 	use PHPMailer\PHPMailer\Exception;
 
 	include 'includes/session.php';
-
+    include 'config.php';
 	if(isset($_POST['signup'])){
 		$firstname = $_POST['firstname'];
 		$lastname = $_POST['lastname'];
@@ -161,8 +161,8 @@ $message = '<!DOCTYPE html>
 				        $mail->isSMTP();                                     
 				        $mail->Host = 'smtp.gmail.com';                      
 				        $mail->SMTPAuth = true;                               
-				        $mail->Username = 'arodrigueza.ingeniero@gmail.com';     
-				        $mail->Password = 'zqeemysndhnigtvu';                    
+				        $mail->Username = MAIL_USER;
+                        $mail->Password = MAIL_PASS;                   
 				        $mail->SMTPOptions = array(
 				            'ssl' => array(
 				            'verify_peer' => false,
@@ -173,11 +173,11 @@ $message = '<!DOCTYPE html>
 				        $mail->SMTPSecure = 'ssl';                           
 				        $mail->Port = 465;                                   
 
-				        $mail->setFrom('arodrigueza.ingeniero@gmail.com');
+				        $mail->setFrom(MAIL_USER);
 				        
 				        //Recipients
 				        $mail->addAddress($email);              
-				        $mail->addReplyTo('arodrigueza.ingeniero@gmail.com');
+				        $mail->addReplyTo(MAIL_USER);
 				       
 				        //Content
 				        $mail->isHTML(true);

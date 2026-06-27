@@ -3,7 +3,7 @@
 	use PHPMailer\PHPMailer\Exception;
 
 	include 'includes/session.php';
-
+    include 'config.php';
 	// Verificar que el usuario esté logueado
 	if(!isset($_SESSION['user'])){
 		$_SESSION['error'] = 'Debes iniciar sesión para realizar una compra';
@@ -209,8 +209,8 @@
 				$mail->isSMTP();
 				$mail->Host       = 'smtp.gmail.com';
 				$mail->SMTPAuth   = true;
-				$mail->Username   = 'arodrigueza.ingeniero@gmail.com';
-				$mail->Password   = 'zqeemysndhnigtvu';
+				$mail->Username = MAIL_USER;
+                $mail->Password = MAIL_PASS;
 				$mail->SMTPOptions = array(
 					'ssl' => array(
 						'verify_peer'       => false,
@@ -220,9 +220,9 @@
 				);
 				$mail->SMTPSecure = 'ssl';
 				$mail->Port       = 465;
-				$mail->setFrom('arodrigueza.ingeniero@gmail.com');
+				$mail->setFrom(MAIL_USER);
 				$mail->addAddress($user['email']);
-				$mail->addReplyTo('arodrigueza.ingeniero@gmail.com');
+				$mail->addReplyTo(MAIL_USER);
 				$mail->isHTML(true);
 				$mail->CharSet = 'UTF-8';
 				$mail->Subject = '¡Compra confirmada! Transacción N° '.$payid;
