@@ -92,7 +92,16 @@
       width: 100px;
       height: 100px;
     }
+    
+    .main-footer {
+    background: #1a2e4a !important;
+    color: rgba(255,255,255,0.85) !important;
+    border-top: none !important;
+}
 
+.wrapper {
+    background: #f0f2f5 !important;
+}
     </style>
 
 </head>
