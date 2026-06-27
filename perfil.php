@@ -77,6 +77,7 @@
 	        						<th>Transacción#</th>
 	        						<th>Cantidad </th>
 	        						<th>Detalles completos</th>
+									<th>Factura</th>
 	        					</thead>
 	        					<tbody>
 	        					<?php
@@ -100,7 +101,8 @@
 	        										<td>".$row['pay_id']."</td>
 	        										<td>&#36; ".number_format($total, 2)."</td>
 	        										<td><button class='btn btn-sm btn-flat btn-info transact' data-id='".$row['id']."'><i class='fa fa-search'></i> Ver</button></td>
-	        									</tr>
+										<td><a href='factura_pdf.php?id=".$row['id']."' class='btn btn-sm btn-flat btn-danger'><i class='fa fa-file-pdf-o'></i> PDF</a></td>
+									</tr>
 	        								";
 	        							}
 
