@@ -89,7 +89,7 @@
     <button type='button' class='btn btn-info btn-sm btn-flat transact' data-id='" . $row['salesid'] . "'><i class='fa fa-search'></i> Ver</button>
 </td>
 <td>
-    <a href='../factura_pdf.php?id=" . $row['salesid'] . "' class='btn btn-danger btn-sm btn-flat'><i class='fa fa-file-pdf-o'></i> PDF</a>
+    <a href='factura_pdf.php?id=" . $row['salesid'] . "' class='btn btn-danger btn-sm btn-flat'><i class='fa fa-file-pdf-o'></i> PDF</a>
 </td>
 									</tr>
                         ";
