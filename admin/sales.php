@@ -34,7 +34,7 @@
                                             <input type="text" class="form-control pull-right col-sm-8" id="reservation"
                                                 name="date_range">
                                         </div>
-                                        <button  type="submit" class="btn btn-success btn-sm btn-flat"
+                                        <button type="submit" class="btn btn-success btn-sm btn-flat"
                                             name="print"><span class="glyphicon glyphicon-print"></span>
                                             Impresión</button>
                                     </form>
@@ -55,51 +55,51 @@
                                     </thead>
                                     <tbody>
                                         <?php
-                    $conn = $pdo->open();
+                                        $conn = $pdo->open();
 
-                    try{
-                      $stmt = $conn->prepare("SELECT *, sales.id AS salesid FROM sales LEFT JOIN users ON users.id=sales.user_id ORDER BY sales_date DESC");
-                      $stmt->execute();
-                      foreach($stmt as $row){
-                        $stmt = $conn->prepare("SELECT * FROM details LEFT JOIN products ON products.id=details.product_id WHERE details.sales_id=:id");
-                        $stmt->execute(['id'=>$row['salesid']]);
-                        $total = 0;
-                        foreach($stmt as $details){
-                          $subtotal = $details['price']*$details['quantity'];
-                          $total += $subtotal;
-                        }
-                        echo "
+                                        try {
+                                            $stmt = $conn->prepare("SELECT *, sales.id AS salesid FROM sales LEFT JOIN users ON users.id=sales.user_id ORDER BY sales_date DESC");
+                                            $stmt->execute();
+                                            foreach ($stmt as $row) {
+                                                $stmt = $conn->prepare("SELECT * FROM details LEFT JOIN products ON products.id=details.product_id WHERE details.sales_id=:id");
+                                                $stmt->execute(['id' => $row['salesid']]);
+                                                $total = 0;
+                                                foreach ($stmt as $details) {
+                                                    $precio_final = precioConDescuento($details['price'], $details['descuento'] ?? 0);
+                                                    $subtotal = $precio_final * $details['quantity'];
+                                                    $total += $subtotal;
+                                                }
+                                                echo "
                           <tr>
                             <td class='hidden'></td>
-                            <td>".date('M d, Y', strtotime($row['sales_date']))."</td>
-                            <td>".$row['firstname'].' '.$row['lastname']."</td>
-                            <td>".$row['pay_id']."</td>
-                            <td>&#36; ".number_format($total, 2)."</td>
+                            <td>" . date('M d, Y', strtotime($row['sales_date'])) . "</td>
+                            <td>" . $row['firstname'] . ' ' . $row['lastname'] . "</td>
+                            <td>" . $row['pay_id'] . "</td>
+                            <td>&#36; " . number_format($total, 2) . "</td>
                             <td>
-    <small><strong>Nombre:</strong> ".$row['nombre_facturacion']."</small><br>
-    <small><strong>Doc:</strong> ".$row['documento']."</small><br>
-    <small><strong>Dir:</strong> ".$row['direccion'].", ".$row['ciudad']."</small><br>
-    <small><strong>Tel:</strong> ".$row['telefono']."</small>
+    <small><strong>Nombre:</strong> " . $row['nombre_facturacion'] . "</small><br>
+    <small><strong>Doc:</strong> " . $row['documento'] . "</small><br>
+    <small><strong>Dir:</strong> " . $row['direccion'] . ", " . $row['ciudad'] . "</small><br>
+    <small><strong>Tel:</strong> " . $row['telefono'] . "</small>
 </td>
 <td>
-    ".ucfirst($row['metodo_pago'])."
+    " . ucfirst($row['metodo_pago']) . "
 </td>
 <td>
-    <button type='button' class='btn btn-info btn-sm btn-flat transact' data-id='".$row['salesid']."'><i class='fa fa-search'></i> Ver</button>
+    <button type='button' class='btn btn-info btn-sm btn-flat transact' data-id='" . $row['salesid'] . "'><i class='fa fa-search'></i> Ver</button>
 </td>
 <td>
-    <a href='../factura_pdf.php?id=".$row['salesid']."' class='btn btn-danger btn-sm btn-flat'><i class='fa fa-file-pdf-o'></i> PDF</a>
+    <a href='../factura_pdf.php?id=" . $row['salesid'] . "' class='btn btn-danger btn-sm btn-flat'><i class='fa fa-file-pdf-o'></i> PDF</a>
 </td>
 									</tr>
                         ";
-                      }
-                    }
-                    catch(PDOException $e){
-                      echo $e->getMessage();
-                    }
+                                            }
+                                        } catch (PDOException $e) {
+                                            echo $e->getMessage();
+                                        }
 
-                    $pdo->close();
-                  ?>
+                                        $pdo->close();
+                                        ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -118,78 +118,78 @@
     <?php include 'includes/scripts.php'; ?>
     <!-- Selector de fechas -->
     <script>
-    $(function() {
-        //Selector de fechas
-        $('#datepicker_add').datepicker({
-            autoclose: true,
-            format: 'yyyy-mm-dd'
-        })
-        $('#datepicker_edit').datepicker({
-            autoclose: true,
-            format: 'yyyy-mm-dd'
-        })
+        $(function() {
+            //Selector de fechas
+            $('#datepicker_add').datepicker({
+                autoclose: true,
+                format: 'yyyy-mm-dd'
+            })
+            $('#datepicker_edit').datepicker({
+                autoclose: true,
+                format: 'yyyy-mm-dd'
+            })
 
-        //Timepicker
-        $('.timepicker').timepicker({
-            showInputs: false
-        })
+            //Timepicker
+            $('.timepicker').timepicker({
+                showInputs: false
+            })
 
-        //Date range picker
-        $('#reservation').daterangepicker()
-        //Date range picker with time picker
-        $('#reservationtime').daterangepicker({
-            timePicker: true,
-            timePickerIncrement: 30,
-            format: 'MM/DD/YYYY h:mm A'
-        })
-        //Date range as a button
-        $('#daterange-btn').daterangepicker({
-                ranges: {
-                    'Today': [moment(), moment()],
-                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
-                        'month').endOf('month')]
+            //Date range picker
+            $('#reservation').daterangepicker()
+            //Date range picker with time picker
+            $('#reservationtime').daterangepicker({
+                timePicker: true,
+                timePickerIncrement: 30,
+                format: 'MM/DD/YYYY h:mm A'
+            })
+            //Date range as a button
+            $('#daterange-btn').daterangepicker({
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                            'month').endOf('month')]
+                    },
+                    startDate: moment().subtract(29, 'days'),
+                    endDate: moment()
                 },
-                startDate: moment().subtract(29, 'days'),
-                endDate: moment()
-            },
-            function(start, end) {
-                $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format(
-                    'MMMM D, YYYY'))
-            }
-        )
+                function(start, end) {
+                    $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format(
+                        'MMMM D, YYYY'))
+                }
+            )
 
-    });
+        });
     </script>
     <script>
-    $(function() {
-        $(document).on('click', '.transact', function(e) {
-            e.preventDefault();
-            $('#transaction').modal('show');
-            var id = $(this).data('id');
-            $.ajax({
-                type: 'POST',
-                url: 'transact.php',
-                data: {
-                    id: id
-                },
-                dataType: 'json',
-                success: function(response) {
-                    $('#date').html(response.date);
-                    $('#transid').html(response.transaction);
-                    $('#detail').prepend(response.list);
-                    $('#total').html(response.total);
-                }
+        $(function() {
+            $(document).on('click', '.transact', function(e) {
+                e.preventDefault();
+                $('#transaction').modal('show');
+                var id = $(this).data('id');
+                $.ajax({
+                    type: 'POST',
+                    url: 'transact.php',
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        $('#date').html(response.date);
+                        $('#transid').html(response.transaction);
+                        $('#detail').prepend(response.list);
+                        $('#total').html(response.total);
+                    }
+                });
+            });
+
+            $("#transaction").on("hidden.bs.modal", function() {
+                $('.prepend_items').remove();
             });
         });
-
-        $("#transaction").on("hidden.bs.modal", function() {
-            $('.prepend_items').remove();
-        });
-    });
     </script>
 </body>
 
