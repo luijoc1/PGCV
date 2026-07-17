@@ -52,10 +52,19 @@
 
                   <label for="stock" class="col-sm-1 control-label">Stock</label>
 
-                  <div class="col-sm-5">
-                    <input type="number" class="form-control" id="stock" name="stock" min="0" value="0" required>
-                  </div>
-                </div>
+<div class="col-sm-5">
+  <input type="number" class="form-control" id="stock" name="stock" min="0" value="0" required>
+</div>
+</div>
+<div class="form-group">
+  <label for="descuento" class="col-sm-1 control-label">Descuento</label>
+  <div class="col-sm-5">
+    <div class="input-group">
+      <input type="number" class="form-control" id="descuento" name="descuento" min="0" max="100" value="0">
+      <span class="input-group-addon">%</span>
+    </div>
+  </div>
+</div>
                 <div class="form-group">
                   <label for="photo" class="col-sm-1 control-label">Foto</label>
 
