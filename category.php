@@ -1,6 +1,10 @@
 <link rel="stylesheet" href="wasathpp.css">
 <?php include 'includes/session.php'; ?>
 <?php
+if (!isset($_GET['category'])) {
+	header('location: category.php?category=MOTOR');
+	exit();
+}
 $slug = $_GET['category'];
 
 $conn = $pdo->open();
