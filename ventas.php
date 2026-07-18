@@ -4,7 +4,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 include 'includes/session.php';
-include 'config.php';
+include 'includes/config.php';
 // Verificar que el usuario esté logueado
 if (!isset($_SESSION['user'])) {
 	$_SESSION['error'] = 'Debes iniciar sesión para realizar una compra';

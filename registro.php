@@ -1,31 +1,32 @@
 <?php
-	use PHPMailer\PHPMailer\PHPMailer;
-	use PHPMailer\PHPMailer\Exception;
 
-	include 'includes/session.php';
-    include 'config.php';
-	if(isset($_POST['signup'])){
-		$firstname = $_POST['firstname'];
-		$lastname = $_POST['lastname'];
-		$email = $_POST['email'];
-		$password = $_POST['password'];
-		$repassword = $_POST['repassword'];
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-		// Validar que se haya aceptado el manejo de datos
-		if(!isset($_POST['aceptar_datos']) || $_POST['aceptar_datos'] != 'on'){
-			$_SESSION['error'] = 'Debes aceptar el uso del manejo de datos 1581 para registrarte';
-			$_SESSION['firstname'] = $firstname;
-			$_SESSION['lastname'] = $lastname;
-			$_SESSION['email'] = $email;
-			header('location: registrarse.php');
-			exit();
-		}
+include 'includes/session.php';
+include 'includes/config.php';
+if (isset($_POST['signup'])) {
+	$firstname = $_POST['firstname'];
+	$lastname = $_POST['lastname'];
+	$email = $_POST['email'];
+	$password = $_POST['password'];
+	$repassword = $_POST['repassword'];
 
+	// Validar que se haya aceptado el manejo de datos
+	if (!isset($_POST['aceptar_datos']) || $_POST['aceptar_datos'] != 'on') {
+		$_SESSION['error'] = 'Debes aceptar el uso del manejo de datos 1581 para registrarte';
 		$_SESSION['firstname'] = $firstname;
 		$_SESSION['lastname'] = $lastname;
 		$_SESSION['email'] = $email;
+		header('location: registrarse.php');
+		exit();
+	}
 
-		/*
+	$_SESSION['firstname'] = $firstname;
+	$_SESSION['lastname'] = $lastname;
+	$_SESSION['email'] = $email;
+
+	/*
 
 		if(!isset($_SESSION['captcha'])){
 			require('recaptcha/src/autoload.php');		
@@ -43,37 +44,35 @@
 
 		} */
 
-		if($password != $repassword){
-			$_SESSION['error'] = 'Las contraseñas no coinciden';
+	if ($password != $repassword) {
+		$_SESSION['error'] = 'Las contraseñas no coinciden';
+		header('location: registrarse.php');
+	} else {
+		$conn = $pdo->open();
+
+		$stmt = $conn->prepare("SELECT COUNT(*) AS numrows FROM users WHERE email=:email");
+		$stmt->execute(['email' => $email]);
+		$row = $stmt->fetch();
+		if ($row['numrows'] > 0) {
+			$_SESSION['error'] = 'Correo electrónico ya tomado';
 			header('location: registrarse.php');
-		}
-		else{
-			$conn = $pdo->open();
+		} else {
+			$now = date('Y-m-d');
+			$password = password_hash($password, PASSWORD_DEFAULT);
 
-			$stmt = $conn->prepare("SELECT COUNT(*) AS numrows FROM users WHERE email=:email");
-			$stmt->execute(['email'=>$email]);
-			$row = $stmt->fetch();
-			if($row['numrows'] > 0){
-				$_SESSION['error'] = 'Correo electrónico ya tomado';
-				header('location: registrarse.php');
-			}
-			else{
-				$now = date('Y-m-d');
-				$password = password_hash($password, PASSWORD_DEFAULT);
+			//generate code
+			$set = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+			$code = substr(str_shuffle($set), 0, 12);
 
-				//generate code
-				$set='123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-				$code=substr(str_shuffle($set), 0, 12);
+			try {
+				$stmt = $conn->prepare("INSERT INTO users (email, password, firstname, lastname, activate_code, created_on) VALUES (:email, :password, :firstname, :lastname, :code, :now)");
+				$stmt->execute(['email' => $email, 'password' => $password, 'firstname' => $firstname, 'lastname' => $lastname, 'code' => $code, 'now' => $now]);
+				$userid = $conn->lastInsertId();
 
-				try{
-					$stmt = $conn->prepare("INSERT INTO users (email, password, firstname, lastname, activate_code, created_on) VALUES (:email, :password, :firstname, :lastname, :code, :now)");
-					$stmt->execute(['email'=>$email, 'password'=>$password, 'firstname'=>$firstname, 'lastname'=>$lastname, 'code'=>$code, 'now'=>$now]);
-					$userid = $conn->lastInsertId();
 
-					
 
-$nombre_completo = $firstname . ' ' . $lastname;
-$message = '<!DOCTYPE html>
+				$nombre_completo = $firstname . ' ' . $lastname;
+				$message = '<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -152,71 +151,60 @@ $message = '<!DOCTYPE html>
 </body>
 </html>';
 
-					//Load phpmailer
-		    		require 'vendor/autoload.php';
+				//Load phpmailer
+				require 'vendor/autoload.php';
 
-		    		$mail = new PHPMailer(true);                             
-				    try {
-				        //Server settings
-				        $mail->isSMTP();                                     
-				        $mail->Host = 'smtp.gmail.com';                      
-				        $mail->SMTPAuth = true;                               
-				        $mail->Username = MAIL_USER;
-                        $mail->Password = MAIL_PASS;                   
-				        $mail->SMTPOptions = array(
-				            'ssl' => array(
-				            'verify_peer' => false,
-				            'verify_peer_name' => false,
-				            'allow_self_signed' => true
-				            )
-				        );                         
-				        $mail->SMTPSecure = 'ssl';                           
-				        $mail->Port = 465;                                   
+				$mail = new PHPMailer(true);
+				try {
+					//Server settings
+					$mail->isSMTP();
+					$mail->Host = 'smtp.gmail.com';
+					$mail->SMTPAuth = true;
+					$mail->Username = MAIL_USER;
+					$mail->Password = MAIL_PASS;
+					$mail->SMTPOptions = array(
+						'ssl' => array(
+							'verify_peer' => false,
+							'verify_peer_name' => false,
+							'allow_self_signed' => true
+						)
+					);
+					$mail->SMTPSecure = 'ssl';
+					$mail->Port = 465;
 
-				        $mail->setFrom(MAIL_USER);
-				        
-				        //Recipients
-				        $mail->addAddress($email);              
-				        $mail->addReplyTo(MAIL_USER);
-				       
-				        //Content
-				        $mail->isHTML(true);
-                        $mail->CharSet = 'UTF-8';
-                        $mail->Subject = 'Activa tu cuenta - Almacén Online';
-                        $mail->Body    = $message;
+					$mail->setFrom(MAIL_USER);
 
-				        $mail->send();
+					//Recipients
+					$mail->addAddress($email);
+					$mail->addReplyTo(MAIL_USER);
 
-				        unset($_SESSION['firstname']);
-				        unset($_SESSION['lastname']);
-				        unset($_SESSION['email']);
+					//Content
+					$mail->isHTML(true);
+					$mail->CharSet = 'UTF-8';
+					$mail->Subject = 'Activa tu cuenta - Almacén Online';
+					$mail->Body    = $message;
 
-				        $_SESSION['success'] = 'Cuenta creada. Revise su correo electrónico para activar.';
-				        header('location: registrarse.php');
+					$mail->send();
 
-				    } 
-				    catch (Exception $e) {
-				        $_SESSION['error'] = 'El mensaje no pudo ser enviado. Error de correo: '.$mail->ErrorInfo;
-				        header('location: registrarse.php');
-				    }
+					unset($_SESSION['firstname']);
+					unset($_SESSION['lastname']);
+					unset($_SESSION['email']);
 
-
+					$_SESSION['success'] = 'Cuenta creada. Revise su correo electrónico para activar.';
+					header('location: registrarse.php');
+				} catch (Exception $e) {
+					$_SESSION['error'] = 'El mensaje no pudo ser enviado. Error de correo: ' . $mail->ErrorInfo;
+					header('location: registrarse.php');
 				}
-				catch(PDOException $e){
-					$_SESSION['error'] = $e->getMessage();
-					header('location: registro.php');
-				}
-
-				$pdo->close();
-
+			} catch (PDOException $e) {
+				$_SESSION['error'] = $e->getMessage();
+				header('location: registro.php');
 			}
 
+			$pdo->close();
 		}
-
 	}
-	else{
-		$_SESSION['error'] = 'Rellene el formulario de registro primero';
-		header('location: registrarse.php');
-	}
-
-?>
+} else {
+	$_SESSION['error'] = 'Rellene el formulario de registro primero';
+	header('location: registrarse.php');
+}
