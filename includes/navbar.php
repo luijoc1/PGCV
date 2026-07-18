@@ -19,32 +19,34 @@
             </a>
             <ul class="dropdown-menu" role="menu" style="background: #1a2e4a; border: 1px solid #3a8eff;">
               <?php
-                $conn = $pdo->open();
-                try{
-                  $stmt = $conn->prepare("SELECT * FROM category");
-                  $stmt->execute();
-                  foreach($stmt as $row){
-                    echo "
-                      <li><a href='category.php?category=".$row['cat_slug']."'
-                             style='color: rgba(255,255,255,0.85); font-size: 13px;'>".$row['name']."</a></li>
+              $conn = $pdo->open();
+              try {
+                $stmt = $conn->prepare("SELECT * FROM category");
+                $stmt->execute();
+                foreach ($stmt as $row) {
+                  echo "
+                      <li><a href='category.php?category=" . $row['cat_slug'] . "'
+                             style='color: rgba(255,255,255,0.85); font-size: 13px;'>" . $row['name'] . "</a></li>
                     ";
-                  }
                 }
-                catch(PDOException $e){
-                  echo "Hay algún problema en la conexión.: " . $e->getMessage();
-                }
-                $pdo->close();
+              } catch (PDOException $e) {
+                echo "Hay algún problema en la conexión.: " . $e->getMessage();
+              }
+              $pdo->close();
               ?>
             </ul>
           </li>
           <li><a href="sobrenosotros.php" style="color: rgba(255,255,255,0.85); font-size: 13px;">NOSOTROS</a></li>
           <li><a href="contacto.php" style="color: rgba(255,255,255,0.85); font-size: 13px;">CONTÁCTANOS</a></li>
+          <li><a href="ofertas.php" style="color: #fff; background: #e74c3c; border-radius: 6px; margin: 8px 4px; padding: 6px 14px; font-size: 13px; display: inline-block;">
+              <i class="fa fa-tag"></i> OFERTAS
+            </a></li>
         </ul>
         <form method="POST" class="navbar-form navbar-left" action="buscar.php">
           <div class="input-group">
             <input type="text" class="form-control" id="navbar-search-input" name="keyword"
-                   placeholder="Buscar producto" required
-                   style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: #fff;">
+              placeholder="Buscar producto" required
+              style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: #fff;">
             <span class="input-group-btn" id="searchBtn" style="display:none;">
               <button type="submit" class="btn btn-flat" style="background: #3a8eff; color: #fff;">
                 <i class="fa fa-search"></i>
@@ -70,20 +72,20 @@
             </ul>
           </li>
           <?php
-            if(isset($_SESSION['user'])){
-              $image = (!empty($user['photo'])) ? 'images/'.$user['photo'] : 'images/profile.jpg';
-              echo '
+          if (isset($_SESSION['user'])) {
+            $image = (!empty($user['photo'])) ? 'images/' . $user['photo'] : 'images/profile.jpg';
+            echo '
                 <li class="dropdown user user-menu">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <img src="'.$image.'" class="user-image" alt="User Image">
-                    <span class="hidden-xs" style="color:#fff;">'.$user['firstname'].' '.$user['lastname'].'</span>
+                    <img src="' . $image . '" class="user-image" alt="User Image">
+                    <span class="hidden-xs" style="color:#fff;">' . $user['firstname'] . ' ' . $user['lastname'] . '</span>
                   </a>
                   <ul class="dropdown-menu">
                     <li class="user-header" style="background: #1a2e4a;">
-                      <img src="'.$image.'" class="img-circle" alt="User Image">
+                      <img src="' . $image . '" class="img-circle" alt="User Image">
                       <p style="color:#fff;">
-                        '.$user['firstname'].' '.$user['lastname'].'
-                        <small>Miembro desde '.date('M. Y', strtotime($user['created_on'])).'</small>
+                        ' . $user['firstname'] . ' ' . $user['lastname'] . '
+                        <small>Miembro desde ' . date('M. Y', strtotime($user['created_on'])) . '</small>
                       </p>
                     </li>
                     <li class="user-footer">
@@ -97,9 +99,8 @@
                   </ul>
                 </li>
               ';
-            }
-            else{
-              echo "
+          } else {
+            echo "
                 <li><a href='login.php' style='color: rgba(255,255,255,0.85); font-size: 13px;'>INICIAR SESIÓN</a></li>
                 <li>
                   <a href='registrarse.php'
@@ -108,7 +109,7 @@
                   </a>
                 </li>
               ";
-            }
+          }
           ?>
         </ul>
       </div>
