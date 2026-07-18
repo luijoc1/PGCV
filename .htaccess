@@ -1,0 +1,12 @@
+# Ocultar errores de PHP
+php_flag display_errors off
+php_flag log_errors on
+
+# Proteger archivos sensibles
+<FilesMatch "\.(sql|log|env|git)$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+# Evitar listar directorios
+Options -Indexes
