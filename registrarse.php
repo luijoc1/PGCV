@@ -101,7 +101,7 @@ if (isset($_SESSION['captcha'])) {
             <div style="display: flex; align-items: center; gap: 8px;">
               <input type="checkbox" name="aceptar_datos" id="aceptar_datos" style="width: auto;" required>
               <label for="aceptar_datos" style="font-size: 13px; color: #666; margin: 0;">
-                Acepto los términos y condiciones
+                Acepto los <a href="terminos.php" target="_blank" style="color:#3a8eff;">términos y condiciones</a>
               </label>
             </div>
           </div>
