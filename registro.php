@@ -6,11 +6,31 @@ use PHPMailer\PHPMailer\Exception;
 include 'includes/session.php';
 include 'includes/config.php';
 if (isset($_POST['signup'])) {
-	$firstname = $_POST['firstname'];
-	$lastname = $_POST['lastname'];
-	$email = $_POST['email'];
-	$password = $_POST['password'];
-	$repassword = $_POST['repassword'];
+	// Sanitizar inputs
+	$firstname = htmlspecialchars(trim($_POST['firstname']), ENT_QUOTES, 'UTF-8');
+	$lastname  = htmlspecialchars(trim($_POST['lastname']), ENT_QUOTES, 'UTF-8');
+	$email     = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+	$password  = trim($_POST['password']);
+	$repassword = trim($_POST['repassword']);
+
+	// Validaciones
+	if (empty($firstname) || empty($lastname)) {
+		$_SESSION['error'] = 'El nombre y apellido son obligatorios';
+		header('location: registrarse.php');
+		exit();
+	}
+
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		$_SESSION['error'] = 'Formato de correo electrónico inválido';
+		header('location: registrarse.php');
+		exit();
+	}
+
+	if (strlen($password) < 6) {
+		$_SESSION['error'] = 'La contraseña debe tener al menos 6 caracteres';
+		header('location: registrarse.php');
+		exit();
+	}
 
 	// Validar que se haya aceptado el manejo de datos
 	if (!isset($_POST['aceptar_datos']) || $_POST['aceptar_datos'] != 'on') {
