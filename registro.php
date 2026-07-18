@@ -6,6 +6,12 @@ use PHPMailer\PHPMailer\Exception;
 include 'includes/session.php';
 include 'includes/config.php';
 if (isset($_POST['signup'])) {
+	// Validar token CSRF
+	if (!validateCSRFToken($_POST['csrf_token'] ?? '')) {
+		$_SESSION['error'] = 'Solicitud inválida. Intenta de nuevo.';
+		header('location: registrarse.php');
+		exit();
+	}
 	// Sanitizar inputs
 	$firstname = htmlspecialchars(trim($_POST['firstname']), ENT_QUOTES, 'UTF-8');
 	$lastname  = htmlspecialchars(trim($_POST['lastname']), ENT_QUOTES, 'UTF-8');

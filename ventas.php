@@ -36,7 +36,12 @@ if ($last_transaction && is_numeric($last_transaction['pay_id'])) {
 } else {
 	$payid = 1;
 }
-
+// Validar token CSRF
+if (!validateCSRFToken($_POST['csrf_token'] ?? '')) {
+	$_SESSION['error'] = 'Solicitud inválida. Intenta de nuevo.';
+	header('location: facturacion.php');
+	exit();
+}
 // Validar datos de facturación
 if (!isset($_POST['nombre_facturacion']) || empty($_POST['nombre_facturacion'])) {
 	$_SESSION['error'] = 'Completa los datos de facturación';

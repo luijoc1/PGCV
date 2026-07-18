@@ -2,7 +2,12 @@
 include 'includes/session.php';
 
 if (isset($_POST['login'])) {
-
+	// Validar token CSRF
+	if (!validateCSRFToken($_POST['csrf_token'] ?? '')) {
+		$_SESSION['error'] = 'Solicitud inválida. Intenta de nuevo.';
+		header('location: login.php');
+		exit();
+	}
 	// Sanitizar inputs
 	$email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
 	$password = trim($_POST['password']);
