@@ -88,6 +88,7 @@ if (!isset($_SESSION['user'])) {
 											<th>Fecha</th>
 											<th>Transacción#</th>
 											<th>Cantidad </th>
+											<th>Estado</th>
 											<th>Detalles completos</th>
 											<th>Factura</th>
 										</thead>
@@ -107,16 +108,30 @@ if (!isset($_SESSION['user'])) {
 														$subtotal = $precio_final * $row2['quantity'];
 														$total += $subtotal;
 													}
+													$estados = [
+														'pendiente'  => ['label' => 'Pendiente',  'color' => '#f39c12'],
+														'en_proceso' => ['label' => 'En proceso', 'color' => '#3a8eff'],
+														'enviado'    => ['label' => 'Enviado',    'color' => '#8e44ad'],
+														'entregado'  => ['label' => 'Entregado',  'color' => '#27ae60'],
+													];
+													$estado_actual = $row['estado'] ?? 'pendiente';
+													$estado_info = $estados[$estado_actual] ?? $estados['pendiente'];
+
 													echo "
-	        									<tr>
-	        										<td class='hidden'></td>
-	        										<td>" . date('M d, Y', strtotime($row['sales_date'])) . "</td>
-	        										<td>" . $row['pay_id'] . "</td>
-	        										<td>&#36; " . number_format($total, 2) . "</td>
-	        										<td><button class='btn btn-sm btn-flat btn-info transact' data-id='" . $row['id'] . "'><i class='fa fa-search'></i> Ver</button></td>
-										<td><a href='factura_pdf.php?id=" . $row['id'] . "' class='btn btn-sm btn-flat btn-danger'><i class='fa fa-file-pdf-o'></i> PDF</a></td>
-									</tr>
-	        								";
+    <tr>
+        <td class='hidden'></td>
+        <td>" . date('M d, Y', strtotime($row['sales_date'])) . "</td>
+        <td>" . $row['pay_id'] . "</td>
+        <td>&#36; " . number_format($total, 2) . "</td>
+        <td>
+            <span style='background:" . $estado_info['color'] . "; color:#fff; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:bold;'>
+                " . $estado_info['label'] . "
+            </span>
+        </td>
+        <td><button class='btn btn-sm btn-flat btn-info transact' data-id='" . $row['id'] . "'><i class='fa fa-search'></i> Ver</button></td>
+        <td><a href='factura_pdf.php?id=" . $row['id'] . "' class='btn btn-sm btn-flat btn-danger'><i class='fa fa-file-pdf-o'></i> PDF</a></td>
+    </tr>
+";
 												}
 											} catch (PDOException $e) {
 												echo "Hay algún problema en la conexión.: " . $e->getMessage();
