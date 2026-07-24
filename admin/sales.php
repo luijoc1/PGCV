@@ -51,6 +51,7 @@
                                         <th>Facturación</th>
                                         <th>Método de pago</th>
                                         <th>Detalles completos</th>
+                                        <th>Estado</th>
                                         <th>Factura PDF</th>
                                     </thead>
                                     <tbody>
@@ -87,6 +88,15 @@
 </td>
 <td>
     <button type='button' class='btn btn-info btn-sm btn-flat transact' data-id='" . $row['salesid'] . "'><i class='fa fa-search'></i> Ver</button>
+</td>
+<td>
+    <select class='form-control input-sm cambiar-estado' data-id='" . $row['salesid'] . "'
+            style='min-width:130px; border-radius:6px;'>
+        <option value='pendiente'   " . ($row['estado'] == 'pendiente'   ? 'selected' : '') . ">Pendiente</option>
+        <option value='en_proceso'  " . ($row['estado'] == 'en_proceso'  ? 'selected' : '') . ">En proceso</option>
+        <option value='enviado'     " . ($row['estado'] == 'enviado'     ? 'selected' : '') . ">Enviado</option>
+        <option value='entregado'   " . ($row['estado'] == 'entregado'   ? 'selected' : '') . ">Entregado</option>
+    </select>
 </td>
 <td>
     <a href='factura_pdf.php?id=" . $row['salesid'] . "' class='btn btn-danger btn-sm btn-flat'><i class='fa fa-file-pdf-o'></i> PDF</a>
@@ -188,6 +198,30 @@
 
             $("#transaction").on("hidden.bs.modal", function() {
                 $('.prepend_items').remove();
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            $(document).on('change', '.cambiar-estado', function() {
+                var id = $(this).data('id');
+                var estado = $(this).val();
+                $.ajax({
+                    type: 'POST',
+                    url: 'actualizar_estado.php',
+                    data: {
+                        id: id,
+                        estado: estado
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success('Estado actualizado correctamente');
+                        } else {
+                            toastr.error('Error al actualizar el estado');
+                        }
+                    }
+                });
             });
         });
     </script>

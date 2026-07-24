@@ -235,6 +235,17 @@ if (isset($_GET['category'])) {
       });
     }
   </script>
+  <script>
+    $(function() {
+      // Abrir modal de edición si viene ?edit= en la URL
+      var urlParams = new URLSearchParams(window.location.search);
+      var editId = urlParams.get('edit');
+      if (editId) {
+        $('#edit').modal('show');
+        getRow(editId);
+      }
+    });
+  </script>
 </body>
 
 </html>

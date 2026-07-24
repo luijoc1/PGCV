@@ -106,9 +106,9 @@
                                                 <td>" . $row['stock_minimo'] . "</td>
                                                 <td>" . $estado . "</td>
                                                 <td>
-                                                    <a href='products.php' class='btn btn-sm btn-flat btn-primary'>
-                                                        <i class='fa fa-edit'></i> Editar
-                                                    </a>
+                                                    <a href='products.php?edit=" . $row['id'] . "' class='btn btn-sm btn-flat btn-primary'>
+                                                    <i class='fa fa-edit'></i> Editar
+                                                </a>
                                                 </td>
                                             </tr>
                                         ";
