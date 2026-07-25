@@ -214,12 +214,47 @@
                         estado: estado
                     },
                     dataType: 'json',
+
+                    beforeSend: function() {
+                        Swal.fire({
+                            title: 'Actualizando estado...',
+                            text: 'Por favor espera un momento.',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                    },
+
                     success: function(response) {
+                        Swal.close(); // Cierra el cuadro de carga
+
                         if (response.success) {
-                            toastr.success('Estado actualizado correctamente');
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Estado actualizado!',
+                                text: 'El estado del pedido se actualizó correctamente.',
+                                confirmButtonText: 'Aceptar',
+                                confirmButtonColor: '#3c8dbc'
+                            });
                         } else {
-                            toastr.error('Error al actualizar el estado');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'No se pudo actualizar el estado.'
+                            });
                         }
+                    },
+
+                    error: function() {
+                        Swal.close();
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error de conexión',
+                            text: 'No fue posible comunicarse con el servidor.'
+                        });
                     }
                 });
             });

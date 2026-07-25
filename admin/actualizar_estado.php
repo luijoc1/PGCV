@@ -8,47 +8,47 @@ use PHPMailer\PHPMailer\Exception;
 $output = ['success' => false];
 
 if (isset($_POST['id']) && isset($_POST['estado'])) {
-    $id = $_POST['id'];
-    $estado = $_POST['estado'];
+  $id = $_POST['id'];
+  $estado = $_POST['estado'];
 
-    $estados_validos = ['pendiente', 'en_proceso', 'enviado', 'entregado'];
-    if (!in_array($estado, $estados_validos)) {
-        echo json_encode($output);
-        exit();
-    }
+  $estados_validos = ['pendiente', 'en_proceso', 'enviado', 'entregado'];
+  if (!in_array($estado, $estados_validos)) {
+    echo json_encode($output);
+    exit();
+  }
 
-    $conn = $pdo->open();
+  $conn = $pdo->open();
 
-    try {
-        // Actualizar estado
-        $stmt = $conn->prepare("UPDATE sales SET estado=:estado WHERE id=:id");
-        $stmt->execute(['estado' => $estado, 'id' => $id]);
+  try {
+    // Actualizar estado
+    $stmt = $conn->prepare("UPDATE sales SET estado=:estado WHERE id=:id");
+    $stmt->execute(['estado' => $estado, 'id' => $id]);
 
-        // Obtener datos de la venta para el correo
-        $stmt = $conn->prepare("SELECT sales.*, users.email, users.firstname, users.lastname 
+    // Obtener datos de la venta para el correo
+    $stmt = $conn->prepare("SELECT sales.*, users.email, users.firstname, users.lastname 
                                 FROM sales LEFT JOIN users ON users.id=sales.user_id 
                                 WHERE sales.id=:id");
-        $stmt->execute(['id' => $id]);
-        $sale = $stmt->fetch();
+    $stmt->execute(['id' => $id]);
+    $sale = $stmt->fetch();
 
-        $estados_texto = [
-            'pendiente'  => ' Pendiente',
-            'en_proceso' => ' En proceso',
-            'enviado'    => ' Enviado',
-            'entregado'  => '✅ Entregado',
-        ];
-        $estado_texto = $estados_texto[$estado] ?? $estado;
+    $estados_texto = [
+      'pendiente'  => ' Pendiente',
+      'en_proceso' => ' En proceso',
+      'enviado'    => ' Enviado',
+      'entregado'  => '✅ Entregado',
+    ];
+    $estado_texto = $estados_texto[$estado] ?? $estado;
 
-        $colores = [
-            'pendiente'  => '#f39c12',
-            'en_proceso' => '#3a8eff',
-            'enviado'    => '#8e44ad',
-            'entregado'  => '#27ae60',
-        ];
-        $color = $colores[$estado] ?? '#1a2e4a';
+    $colores = [
+      'pendiente'  => '#f39c12',
+      'en_proceso' => '#3a8eff',
+      'enviado'    => '#8e44ad',
+      'entregado'  => '#27ae60',
+    ];
+    $color = $colores[$estado] ?? '#1a2e4a';
 
-        // Enviar correo al cliente
-        $correo_body = '<!DOCTYPE html>
+    // Enviar correo al cliente
+    $correo_body = '<!DOCTYPE html>
 <html lang="es">
 <head><meta charset="UTF-8"></head>
 <body style="margin:0; padding:0; background-color:#f0f2f5; font-family:Arial, sans-serif;">
@@ -86,34 +86,35 @@ if (isset($_POST['id']) && isset($_POST['estado'])) {
 </body>
 </html>';
 
-        require_once '../vendor/autoload.php';
-        $mail = new PHPMailer(true);
-        try {
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = MAIL_USER;
-            $mail->Password = MAIL_PASS;
-            $mail->SMTPOptions = array('ssl' => array('verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true));
-            $mail->SMTPSecure = 'ssl';
-            $mail->Port = 465;
-            $mail->setFrom(MAIL_USER);
-            $mail->addAddress($sale['email']);
-            $mail->isHTML(true);
-            $mail->CharSet = 'UTF-8';
-            $mail->Subject = 'Actualización de tu pedido N° ' . $sale['pay_id'];
-            $mail->Body = $correo_body;
-            $mail->send();
-        } catch (Exception $e) {
-            // Si falla el correo no interrumpimos
-        }
-
-        $output['success'] = true;
-    } catch (PDOException $e) {
-        $output['error'] = $e->getMessage();
+    require_once '../vendor/autoload.php';
+    $mail = new PHPMailer(true);
+    try {
+      $mail->isSMTP();
+      $mail->Host = 'smtp.gmail.com';
+      $mail->SMTPAuth = true;
+      $mail->Username = MAIL_USER;
+      $mail->Password = MAIL_PASS;
+      $mail->SMTPOptions = array('ssl' => array('verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true));
+      $mail->SMTPSecure = 'ssl';
+      $mail->Port = 465;
+      $mail->setFrom(MAIL_USER);
+      $mail->addAddress($sale['email']);
+      $mail->isHTML(true);
+      $mail->CharSet = 'UTF-8';
+      $mail->Subject = 'Actualización de tu pedido N° ' . $sale['pay_id'];
+      $mail->Body = $correo_body;
+      $mail->send();
+    } catch (Exception $e) {
+      // Si falla el correo no interrumpimos
     }
 
-    $pdo->close();
+    $output['success'] = true;
+  } catch (PDOException $e) {
+    $output['success'] = false;
+    $output['error'] = $e->getMessage();
+  }
+
+  $pdo->close();
 }
 
 echo json_encode($output);
