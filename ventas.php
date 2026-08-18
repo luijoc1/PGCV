@@ -91,7 +91,17 @@ try {
 		'total'              => $total
 	]);
 	$salesid = $conn->lastInsertId();
-
+	// Log venta creada
+	registrarLog($conn, 'logs_ventas', $salesid, null, [
+		'pay_id'             => $payid,
+		'user_id'            => $user['id'],
+		'nombre_facturacion' => $nombre_facturacion,
+		'documento'          => $documento,
+		'direccion'          => $direccion,
+		'ciudad'             => $ciudad,
+		'metodo_pago'        => $metodo_pago,
+		'total'              => $total
+	], 'INSERT', $user['email']);
 	try {
 		foreach ($productos_comprados as $row) {
 			// Verificar stock

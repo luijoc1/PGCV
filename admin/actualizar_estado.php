@@ -20,16 +20,30 @@ if (isset($_POST['id']) && isset($_POST['estado'])) {
   $conn = $pdo->open();
 
   try {
+    // Obtener estado anterior para el log
+    $stmt = $conn->prepare("SELECT sales.*, users.email, users.firstname, users.lastname 
+                        FROM sales LEFT JOIN users ON users.id=sales.user_id 
+                        WHERE sales.id=:id");
+    $stmt->execute(['id' => $id]);
+    $sale = $stmt->fetch();
+    $estado_anterior = $sale['estado'];
+
     // Actualizar estado
     $stmt = $conn->prepare("UPDATE sales SET estado=:estado WHERE id=:id");
     $stmt->execute(['estado' => $estado, 'id' => $id]);
 
-    // Obtener datos de la venta para el correo
-    $stmt = $conn->prepare("SELECT sales.*, users.email, users.firstname, users.lastname 
-                                FROM sales LEFT JOIN users ON users.id=sales.user_id 
-                                WHERE sales.id=:id");
-    $stmt->execute(['id' => $id]);
-    $sale = $stmt->fetch();
+    // Log cambio de estado
+    registrarLog($conn, 'logs_ventas', $id, [
+      'pay_id'  => $sale['pay_id'],
+      'estado'  => $estado_anterior,
+      'cliente' => $sale['firstname'] . ' ' . $sale['lastname'],
+      'email'   => $sale['email']
+    ], [
+      'pay_id'  => $sale['pay_id'],
+      'estado'  => $estado,
+      'cliente' => $sale['firstname'] . ' ' . $sale['lastname'],
+      'email'   => $sale['email']
+    ], 'UPDATE', $admin['email'] ?? 'admin');
 
     $estados_texto = [
       'pendiente'  => ' Pendiente',

@@ -1,27 +1,36 @@
 <?php
-	include 'includes/session.php';
+include 'includes/session.php';
 
-	if(isset($_POST['delete'])){
-		$id = $_POST['id'];
-		
-		$conn = $pdo->open();
+if (isset($_POST['delete'])) {
+	$id = $_POST['id'];
 
-		try{
-			$stmt = $conn->prepare("DELETE FROM users WHERE id=:id");
-			$stmt->execute(['id'=>$id]);
+	$conn = $pdo->open();
 
-			$_SESSION['Éxito'] = 'Usuario eliminado exitosamente';
-		}
-		catch(PDOException $e){
-			$_SESSION['error'] = $e->getMessage();
-		}
+	// Obtener datos del usuario antes de eliminar
+	$stmt = $conn->prepare("SELECT * FROM users WHERE id=:id");
+	$stmt->execute(['id' => $id]);
+	$row = $stmt->fetch();
 
-		$pdo->close();
+	try {
+		$stmt = $conn->prepare("DELETE FROM users WHERE id=:id");
+		$stmt->execute(['id' => $id]);
+
+		// Log usuario eliminado
+		registrarLog($conn, 'logs_usuarios', $id, [
+			'firstname' => $row['firstname'],
+			'lastname'  => $row['lastname'],
+			'email'     => $row['email'],
+			'type'      => $row['type'] == 1 ? 'admin' : 'cliente'
+		], null, 'DELETE', $admin['email'] ?? 'admin');
+
+		$_SESSION['success'] = 'Usuario eliminado exitosamente';
+	} catch (PDOException $e) {
+		$_SESSION['error'] = $e->getMessage();
 	}
-	else{
-		$_SESSION['error'] = 'Seleccionar usuario para eliminar primero';
-	}
 
-	header('location: users.php');
-	
-?>
+	$pdo->close();
+} else {
+	$_SESSION['error'] = 'Seleccionar usuario para eliminar primero';
+}
+
+header('location: users.php');

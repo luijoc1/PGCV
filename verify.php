@@ -8,6 +8,7 @@ if (isset($_POST['login'])) {
 		header('location: login.php');
 		exit();
 	}
+
 	// Sanitizar inputs
 	$email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
 	$password = trim($_POST['password']);
@@ -39,6 +40,20 @@ if (isset($_POST['login'])) {
 	if ($_SESSION['login_attempts'] >= 5) {
 		$minutos = ceil((900 - (time() - $_SESSION['login_time'])) / 60);
 		$_SESSION['error'] = 'Demasiados intentos fallidos. Intenta de nuevo en ' . $minutos . ' minuto(s).';
+
+		// Log bloqueado
+		$conn_log = $pdo->open();
+		registrarLog(
+			$conn_log,
+			'logs_login',
+			0,
+			null,
+			['email' => $email, 'bloqueado_por' => '5 intentos fallidos'],
+			'BLOQUEADO',
+			$email
+		);
+		$pdo->close();
+
 		header('location: login.php');
 		exit();
 	}
@@ -57,6 +72,17 @@ if (isset($_POST['login'])) {
 					$_SESSION['login_attempts'] = 0;
 					$_SESSION['login_time'] = time();
 
+					// Log login exitoso
+					registrarLog(
+						$conn,
+						'logs_login',
+						$row['id'],
+						null,
+						['email' => $email, 'tipo' => $row['type'] == 1 ? 'admin' : 'cliente'],
+						'EXITOSO',
+						$email
+					);
+
 					if ($row['type']) {
 						$_SESSION['admin'] = $row['id'];
 					} else {
@@ -66,6 +92,17 @@ if (isset($_POST['login'])) {
 					$_SESSION['login_attempts']++;
 					$restantes = 5 - $_SESSION['login_attempts'];
 					$_SESSION['error'] = 'Contraseña incorrecta. Te quedan ' . $restantes . ' intento(s).';
+
+					// Log login fallido
+					registrarLog(
+						$conn,
+						'logs_login',
+						$row['id'],
+						null,
+						['email' => $email, 'intentos' => $_SESSION['login_attempts']],
+						'FALLIDO',
+						$email
+					);
 				}
 			} else {
 				$_SESSION['error'] = 'Cuenta no activada. Revisa tu correo electrónico.';
@@ -73,6 +110,17 @@ if (isset($_POST['login'])) {
 		} else {
 			$_SESSION['login_attempts']++;
 			$_SESSION['error'] = 'Correo electrónico no encontrado';
+
+			// Log correo no encontrado
+			registrarLog(
+				$conn,
+				'logs_login',
+				0,
+				null,
+				['email' => $email, 'motivo' => 'correo no encontrado'],
+				'FALLIDO',
+				$email
+			);
 		}
 	} catch (PDOException $e) {
 		$_SESSION['error'] = 'Error de conexión. Intenta de nuevo.';

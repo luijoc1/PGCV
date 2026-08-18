@@ -32,6 +32,19 @@ if (isset($_POST['add'])) {
 		try {
 			$stmt = $conn->prepare("INSERT INTO products (category_id, name, description, slug, price, stock, photo, descuento) VALUES (:category, :name, :description, :slug, :price, :stock, :photo, :descuento)");
 			$stmt->execute(['category' => $category, 'name' => $name, 'description' => $description, 'slug' => $slug, 'price' => $price, 'stock' => $stock, 'photo' => $new_filename, 'descuento' => $descuento]);
+
+			$product_id = $conn->lastInsertId();
+
+			// Log producto agregado
+			registrarLog($conn, 'logs_productos', $product_id, null, [
+				'name'        => $name,
+				'category_id' => $category,
+				'price'       => $price,
+				'stock'       => $stock,
+				'descuento'   => $descuento,
+				'slug'        => $slug
+			}, 'INSERT', $admin['email'] ?? 'admin');
+
 			$_SESSION['success'] = 'Producto agregado exitosamente';
 		} catch (PDOException $e) {
 			$_SESSION['error'] = $e->getMessage();
