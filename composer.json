@@ -1,0 +1,12 @@
+{
+    "name": "alexd/pgcv",
+    "description": "sistema inventario almacen los almendros",
+    "authors": [
+        {
+            "name": "alex david rodriguez y luis jose castellanos"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    }
+}

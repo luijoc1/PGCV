@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="C:\xampp2\htdocs\PGCV\tests" tests="26" assertions="38" errors="0" warnings="0" failures="0" skipped="0" time="0.047400">
+    <testsuite name="CartTest" file="C:\xampp2\htdocs\PGCV\tests\CartTest.php" tests="4" assertions="5" errors="0" warnings="0" failures="0" skipped="0" time="0.038851">
+      <testcase name="test_can_add_product_to_cart" class="CartTest" classname="CartTest" file="C:\xampp2\htdocs\PGCV\tests\CartTest.php" line="29" assertions="2" time="0.019181"/>
+      <testcase name="test_can_update_quantity" class="CartTest" classname="CartTest" file="C:\xampp2\htdocs\PGCV\tests\CartTest.php" line="63" assertions="1" time="0.008239"/>
+      <testcase name="test_can_delete_product_from_cart" class="CartTest" classname="CartTest" file="C:\xampp2\htdocs\PGCV\tests\CartTest.php" line="109" assertions="1" time="0.007521"/>
+      <testcase name="test_database_object_exists" class="CartTest" classname="CartTest" file="C:\xampp2\htdocs\PGCV\tests\CartTest.php" line="33" assertions="1" time="0.003909"/>
+    </testsuite>
+    <testsuite name="DatabaseConnectionTest" file="C:\xampp2\htdocs\PGCV\tests\DatabaseConnectionTest.php" tests="2" assertions="2" errors="0" warnings="0" failures="0" skipped="0" time="0.002735">
+      <testcase name="test_database_connection_is_available" class="DatabaseConnectionTest" classname="DatabaseConnectionTest" file="C:\xampp2\htdocs\PGCV\tests\DatabaseConnectionTest.php" line="9" assertions="1" time="0.001403"/>
+      <testcase name="test_database_object_exists" class="DatabaseConnectionTest" classname="DatabaseConnectionTest" file="C:\xampp2\htdocs\PGCV\tests\DatabaseConnectionTest.php" line="33" assertions="1" time="0.001332"/>
+    </testsuite>
+    <testsuite name="PrecioConDescuentoTest" file="C:\xampp2\htdocs\PGCV\tests\PrecioConDescuentoTest.php" tests="5" assertions="5" errors="0" warnings="0" failures="0" skipped="0" time="0.001267">
+      <testcase name="test_precio_sin_descuento" class="PrecioConDescuentoTest" classname="PrecioConDescuentoTest" file="C:\xampp2\htdocs\PGCV\tests\PrecioConDescuentoTest.php" line="9" assertions="1" time="0.000096"/>
+      <testcase name="test_descuento_10_por_ciento" class="PrecioConDescuentoTest" classname="PrecioConDescuentoTest" file="C:\xampp2\htdocs\PGCV\tests\PrecioConDescuentoTest.php" line="16" assertions="1" time="0.000105"/>
+      <testcase name="test_descuento_50_por_ciento" class="PrecioConDescuentoTest" classname="PrecioConDescuentoTest" file="C:\xampp2\htdocs\PGCV\tests\PrecioConDescuentoTest.php" line="23" assertions="1" time="0.000098"/>
+      <testcase name="test_descuento_100_por_ciento" class="PrecioConDescuentoTest" classname="PrecioConDescuentoTest" file="C:\xampp2\htdocs\PGCV\tests\PrecioConDescuentoTest.php" line="30" assertions="1" time="0.000090"/>
+      <testcase name="test_precio_decimal" class="PrecioConDescuentoTest" classname="PrecioConDescuentoTest" file="C:\xampp2\htdocs\PGCV\tests\PrecioConDescuentoTest.php" line="37" assertions="1" time="0.000878"/>
+    </testsuite>
+    <testsuite name="SessionFunctionsTest" file="C:\xampp2\htdocs\PGCV\tests\SessionFunctionsTest.php" tests="9" assertions="10" errors="0" warnings="0" failures="0" skipped="0" time="0.002527">
+      <testcase name="testGeneraTokenCSRF" class="SessionFunctionsTest" classname="SessionFunctionsTest" file="C:\xampp2\htdocs\PGCV\tests\SessionFunctionsTest.php" line="18" assertions="2" time="0.001340"/>
+      <testcase name="testGenerateCSRFTokenDevuelveMismoTokenSiYaExiste" class="SessionFunctionsTest" classname="SessionFunctionsTest" file="C:\xampp2\htdocs\PGCV\tests\SessionFunctionsTest.php" line="26" assertions="1" time="0.000165"/>
+      <testcase name="testValidaTokenCorrecto" class="SessionFunctionsTest" classname="SessionFunctionsTest" file="C:\xampp2\htdocs\PGCV\tests\SessionFunctionsTest.php" line="35" assertions="1" time="0.000144"/>
+      <testcase name="testValidaTokenIncorrecto" class="SessionFunctionsTest" classname="SessionFunctionsTest" file="C:\xampp2\htdocs\PGCV\tests\SessionFunctionsTest.php" line="44" assertions="1" time="0.000152"/>
+      <testcase name="testValidaTokenSinSesion" class="SessionFunctionsTest" classname="SessionFunctionsTest" file="C:\xampp2\htdocs\PGCV\tests\SessionFunctionsTest.php" line="53" assertions="1" time="0.000114"/>
+      <testcase name="testPrecioSinDescuento" class="SessionFunctionsTest" classname="SessionFunctionsTest" file="C:\xampp2\htdocs\PGCV\tests\SessionFunctionsTest.php" line="62" assertions="1" time="0.000112"/>
+      <testcase name="testPrecioCon10Porciento" class="SessionFunctionsTest" classname="SessionFunctionsTest" file="C:\xampp2\htdocs\PGCV\tests\SessionFunctionsTest.php" line="70" assertions="1" time="0.000138"/>
+      <testcase name="testPrecioCon50Porciento" class="SessionFunctionsTest" classname="SessionFunctionsTest" file="C:\xampp2\htdocs\PGCV\tests\SessionFunctionsTest.php" line="78" assertions="1" time="0.000175"/>
+      <testcase name="testPrecioCon100Porciento" class="SessionFunctionsTest" classname="SessionFunctionsTest" file="C:\xampp2\htdocs\PGCV\tests\SessionFunctionsTest.php" line="86" assertions="1" time="0.000188"/>
+    </testsuite>
+    <testsuite name="SessionUserTest" file="C:\xampp2\htdocs\PGCV\tests\SessionUserTest.php" tests="1" assertions="2" errors="0" warnings="0" failures="0" skipped="0" time="0.000179">
+      <testcase name="test_session_user_exists" class="SessionUserTest" classname="SessionUserTest" file="C:\xampp2\htdocs\PGCV\tests\SessionUserTest.php" line="9" assertions="2" time="0.000179"/>
+    </testsuite>
+    <testsuite name="StockValidatorTest" file="C:\xampp2\htdocs\PGCV\tests\StockValidatorTest.php" tests="5" assertions="14" errors="0" warnings="0" failures="0" skipped="0" time="0.001839">
+      <testcase name="testProductoConStockMenorAlMinimoGeneraAlerta" class="StockValidatorTest" classname="StockValidatorTest" file="C:\xampp2\htdocs\PGCV\tests\StockValidatorTest.php" line="9" assertions="5" time="0.000989"/>
+      <testcase name="testProductoConStockMayorAlMinimoEsNormal" class="StockValidatorTest" classname="StockValidatorTest" file="C:\xampp2\htdocs\PGCV\tests\StockValidatorTest.php" line="33" assertions="3" time="0.000271"/>
+      <testcase name="testStockIgualAlMinimoGeneraAlerta" class="StockValidatorTest" classname="StockValidatorTest" file="C:\xampp2\htdocs\PGCV\tests\StockValidatorTest.php" line="55" assertions="2" time="0.000212"/>
+      <testcase name="testVariosProductos" class="StockValidatorTest" classname="StockValidatorTest" file="C:\xampp2\htdocs\PGCV\tests\StockValidatorTest.php" line="75" assertions="2" time="0.000203"/>
+      <testcase name="testSinProductos" class="StockValidatorTest" classname="StockValidatorTest" file="C:\xampp2\htdocs\PGCV\tests\StockValidatorTest.php" line="107" assertions="2" time="0.000164"/>
+    </testsuite>
+  </testsuite>
+</testsuites>
