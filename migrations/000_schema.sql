@@ -1,5 +1,5 @@
 -- Esquema actual sin datos personales ni credenciales. Importar en una base vacia.
--- Las migraciones 001-006 ya estan incorporadas.
+-- Las migraciones 001-007 y la politica de integridad historica estan incorporadas.
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(200) NOT NULL,
@@ -12,6 +12,7 @@ CREATE TABLE `users` (
   `photo` varchar(200) NOT NULL DEFAULT '',
   `status` int(1) NOT NULL DEFAULT 0,
   `activate_code` varchar(15) NOT NULL DEFAULT '',
+  `activate_expires_at` datetime DEFAULT NULL,
   `reset_code` varchar(15) NOT NULL DEFAULT '',
   `created_on` date NOT NULL,
   `reset_token_hash` char(64) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
@@ -50,7 +51,8 @@ CREATE TABLE `products` (
 
 CREATE TABLE `sales` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `legacy_user_id` int(11) DEFAULT NULL,
   `pay_id` varchar(50) NOT NULL,
   `nombre_facturacion` varchar(100) NOT NULL,
   `documento` varchar(30) NOT NULL,
@@ -66,7 +68,8 @@ CREATE TABLE `sales` (
   UNIQUE KEY `uq_sales_pay_id` (`pay_id`),
   KEY `ix_sales_user_date` (`user_id`,`sales_date`),
   KEY `ix_sales_date` (`sales_date`),
-  CONSTRAINT `ck_sales_total` CHECK (`total` >= 0)
+  CONSTRAINT `ck_sales_total` CHECK (`total` >= 0),
+  CONSTRAINT `fk_sales_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `cart` (
@@ -78,7 +81,9 @@ CREATE TABLE `cart` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_cart_user_product` (`user_id`,`product_id`),
   KEY `ix_cart_product` (`product_id`),
-  CONSTRAINT `ck_cart_quantity` CHECK (`quantity` > 0)
+  CONSTRAINT `ck_cart_quantity` CHECK (`quantity` > 0),
+  CONSTRAINT `fk_cart_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_cart_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `details` (
@@ -94,6 +99,7 @@ CREATE TABLE `details` (
   KEY `ix_details_sale` (`sales_id`),
   KEY `ix_details_product` (`product_id`),
   CONSTRAINT `fk_details_sale` FOREIGN KEY (`sales_id`) REFERENCES `sales` (`id`),
+  CONSTRAINT `fk_details_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `ck_details_quantity` CHECK (`quantity` > 0),
   CONSTRAINT `ck_details_snapshot` CHECK (`product_name` is null and `original_price` is null and `discount_percent` is null and `unit_price` is null or `product_name` is not null and `original_price` is not null and `discount_percent` is not null and `unit_price` is not null and `original_price` >= 0 and `discount_percent` between 0 and 100 and `unit_price` >= 0 and `unit_price` <= `original_price`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -110,7 +116,20 @@ CREATE TABLE `checkout_requests` (
   `user_id` int(11) NOT NULL,
   `sales_id` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`request_key`)
+  PRIMARY KEY (`request_key`),
+  CONSTRAINT `fk_checkout_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_checkout_sale` FOREIGN KEY (`sales_id`) REFERENCES `sales` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `cart_orphan_archive` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `fecha_hora_inicio` timestamp NOT NULL,
+  `archived_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `reason` varchar(40) NOT NULL DEFAULT 'missing_user',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `checkout_sequence` (

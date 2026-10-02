@@ -4,7 +4,7 @@ function databaseIntegrityCounts(PDO $conn)
 {
     $queries = [
         'cart_orphans' => 'SELECT COUNT(*) FROM cart c LEFT JOIN users u ON u.id=c.user_id LEFT JOIN products p ON p.id=c.product_id WHERE u.id IS NULL OR p.id IS NULL',
-        'sales_orphans' => 'SELECT COUNT(*) FROM sales s LEFT JOIN users u ON u.id=s.user_id WHERE u.id IS NULL',
+        'sales_orphans' => 'SELECT COUNT(*) FROM sales s LEFT JOIN users u ON u.id=s.user_id WHERE s.user_id IS NOT NULL AND u.id IS NULL',
         'details_sale_orphans' => 'SELECT COUNT(*) FROM details d LEFT JOIN sales s ON s.id=d.sales_id WHERE s.id IS NULL',
         'category_orphans' => 'SELECT COUNT(*) FROM products p LEFT JOIN category c ON c.id=p.category_id WHERE c.id IS NULL',
         'invalid_products' => 'SELECT COUNT(*) FROM products WHERE price<0 OR stock<0 OR stock_minimo<0 OR descuento<0 OR descuento>100 OR price>=100000000000000',
