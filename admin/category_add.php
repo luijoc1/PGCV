@@ -1,37 +1,22 @@
-
 <?php
-	include 'includes/session.php';
+include 'includes/session.php';
 requireValidCSRFRequest();
+require_once __DIR__ . '/../includes/category_operations.php';
 
-	if(isset($_POST['add'])){
-		$name = $_POST['name'];
-
-		$conn = $pdo->open();
-
-		$stmt = $conn->prepare("SELECT *, COUNT(*) AS numrows FROM category WHERE name=:name");
-		$stmt->execute(['name'=>$name]);
-		$row = $stmt->fetch();
-
-		if($row['numrows'] > 0){
-			$_SESSION['error'] = 'Categoría ya existe';
-		}
-		else{
-			try{
-				$stmt = $conn->prepare("INSERT INTO category (name,cat_slug) VALUES (:name,:cat_slug)");
-				$stmt->execute(['name'=>$name,'cat_slug'=>$name,]);
-				$_SESSION['success'] = 'Categoría añadida con éxito';
-			}
-			catch(PDOException $e){
-				$_SESSION['error'] = $e->getMessage();
-			}
-		}
-
-		$pdo->close();
-	}
-	else{
-		$_SESSION['error'] = 'Complete primero el formulario de categoría';
-	}
-
-	header('location: category.php');
-
-?>
+unset($_SESSION['error'], $_SESSION['success']);
+if (isset($_POST['add'])) {
+    $conn = $pdo->open();
+    try {
+        addCategory($conn, $_POST['name'] ?? null);
+        $_SESSION['success'] = 'Categoría añadida con éxito';
+    } catch (InvalidArgumentException $e) {
+        $_SESSION['error'] = $e->getMessage();
+    } catch (PDOException $e) {
+        error_log('Error en operación de categoría: ' . $e->getMessage());
+        $_SESSION['error'] = 'No se pudo guardar el cambio de categoría. Revisa los datos e intenta de nuevo.';
+    }
+    $pdo->close();
+} else {
+    $_SESSION['error'] = 'Complete el formulario de categoría primero.';
+}
+header('location: category.php');

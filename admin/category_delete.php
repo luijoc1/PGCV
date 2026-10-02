@@ -1,29 +1,22 @@
 <?php
-	include 'includes/session.php';
+include 'includes/session.php';
 requireValidCSRFRequest();
+require_once __DIR__ . '/../includes/category_operations.php';
 
-	if(isset($_POST['delete'])){
-		$id = $_POST['id'];
-		
-		$conn = $pdo->open();
-
-		try{
-			$stmt = $conn->prepare("DELETE FROM category WHERE id=:id");
-			$stmt->execute(['id'=>$id]);
-
-			$_SESSION['success'] = 'Categoría eliminada correctamente';
-		}
-		catch(PDOException $e){
-			error_log('Error al eliminar categoría: ' . $e->getMessage());
-			$_SESSION['error'] = 'No se pudo eliminar la categoría. Revisa si todavía contiene productos.';
-		}
-
-		$pdo->close();
-	}
-	else{
-		$_SESSION['error'] = 'Seleccione la categoría para eliminar primero';
-	}
-
-	header('location: category.php');
-	
-?>
+unset($_SESSION['error'], $_SESSION['success']);
+if (isset($_POST['delete'])) {
+    $conn = $pdo->open();
+    try {
+        deleteEmptyCategory($conn, $_POST['id'] ?? null);
+        $_SESSION['success'] = 'Categoría eliminada correctamente';
+    } catch (InvalidArgumentException $e) {
+        $_SESSION['error'] = $e->getMessage();
+    } catch (PDOException $e) {
+        error_log('Error en operación de categoría: ' . $e->getMessage());
+        $_SESSION['error'] = 'No se pudo guardar el cambio de categoría. Revisa los datos e intenta de nuevo.';
+    }
+    $pdo->close();
+} else {
+    $_SESSION['error'] = 'Complete el formulario de categoría primero.';
+}
+header('location: category.php');

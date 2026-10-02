@@ -1,46 +1,32 @@
 <?php
-	include 'includes/session.php';
+include 'includes/session.php';
 requireValidCSRFRequest();
-	require_once __DIR__ . '/../includes/image_upload.php';
-
-	if(isset($_POST['add'])){
-		$firstname = $_POST['firstname'];
-		$lastname = $_POST['lastname'];
-		$email = $_POST['email'];
-		$password = $_POST['password'];
-		$address = $_POST['address'];
-		$contact = $_POST['contact'];
-
-		$conn = $pdo->open();
-
-		$stmt = $conn->prepare("SELECT COUNT(*) AS numrows FROM users WHERE email=:email");
-		$stmt->execute(['email'=>$email]);
-		$row = $stmt->fetch();
-
-		if($row['numrows'] > 0){
-			$_SESSION['error'] = 'Correo electrónico ya tomado';
-		}
-		else{
-			$password = password_hash($password, PASSWORD_DEFAULT);
-			$filename = photoUploadOrRedirect($_FILES['photo'] ?? null, '', 'users.php');
-			$now = date('Y-m-d');
-			try{
-				$stmt = $conn->prepare("INSERT INTO users (email, password, firstname, lastname, address, contact_info, photo, status, created_on) VALUES (:email, :password, :firstname, :lastname, :address, :contact, :photo, :status, :created_on)");
-				$stmt->execute(['email'=>$email, 'password'=>$password, 'firstname'=>$firstname, 'lastname'=>$lastname, 'address'=>$address, 'contact'=>$contact, 'photo'=>$filename, 'status'=>1, 'created_on'=>$now]);
-				$_SESSION['success'] = 'Usuario agregado exitosamente';
-
-			}
-			catch(PDOException $e){
-				$_SESSION['error'] = $e->getMessage();
-			}
-		}
-
-		$pdo->close();
-	}
-	else{
-		$_SESSION['error'] = 'Rellene el formulario de usuario primero';
-	}
-
-	header('location: users.php');
-
-?>
+require_once __DIR__ . '/../includes/user_administration.php';
+require_once __DIR__ . '/../includes/image_upload.php';
+unset($_SESSION['error'], $_SESSION['success']);
+if (isset($_POST['add'])) {
+    $conn = $pdo->open();
+    $photo = '';
+    try {
+        $photo = '';
+        if ('add' === 'add') {
+            adminUserFields($_POST);
+            $photo = photoUploadOrRedirect($_FILES['photo'] ?? null, '', 'users.php');
+        }
+        administerUser($conn, 'add', $_POST, function ($id, $previous, $current, $operation) use ($conn, $admin) {
+            registrarLog($conn, 'logs_usuarios', $id, $previous, $current, $operation, $admin['email']);
+        }, $photo);
+        $_SESSION['success'] = 'Operación de usuario completada correctamente.';
+    } catch (InvalidArgumentException $e) {
+        removeNewImageUpload($photo);
+        $_SESSION['error'] = $e->getMessage();
+    } catch (PDOException $e) {
+        removeNewImageUpload($photo);
+        $_SESSION['error'] = 'No se pudo guardar el cambio del usuario. Revisa los datos e intenta de nuevo.';
+    }
+    $pdo->close();
+} else {
+    $_SESSION['error'] = 'Complete el formulario de usuario primero.';
+}
+header('location: users.php');
+exit();

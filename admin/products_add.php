@@ -5,11 +5,14 @@ include 'includes/slugify.php';
 require_once __DIR__ . '/../includes/image_upload.php';
 require_once __DIR__ . '/../includes/product_inventory.php';
 
+unset($_SESSION['error'], $_SESSION['success']);
 if (isset($_POST['add'])) {
-	$name = $_POST['name'];
-	$slug = slugify($name);
-	$category = $_POST['category'];
 	try {
+		$identity = productCatalogIdentity($_POST);
+		$name = $identity['name'];
+		$category = $identity['category'];
+		$slug = slugify($name);
+		if ($slug === '' || strlen($slug) > 200) throw new InvalidArgumentException('Ingresa un nombre de producto válido.');
 		$inventory = productInventoryInput($_POST);
 	} catch (InvalidArgumentException $e) {
 		$_SESSION['error'] = $e->getMessage();
@@ -23,6 +26,14 @@ if (isset($_POST['add'])) {
 	$description = safeProductDescription($_POST['description'] ?? '');
 
 	$conn = $pdo->open();
+	try {
+		requireProductCategory($conn, $category);
+	} catch (InvalidArgumentException $e) {
+		$_SESSION['error'] = $e->getMessage();
+		$pdo->close();
+		header('location: products.php');
+		exit();
+	}
 
 	$stmt = $conn->prepare("SELECT COUNT(*) AS numrows FROM products WHERE slug=:slug");
 	$stmt->execute(['slug' => $slug]);
@@ -34,6 +45,7 @@ if (isset($_POST['add'])) {
 		$new_filename = photoUploadOrRedirect($_FILES['photo'] ?? null, '', 'products.php');
 
 		try {
+			$conn->beginTransaction();
 			$product_id = insertCatalogProduct($conn, ['category' => $category, 'name' => $name, 'description' => $description, 'slug' => $slug, 'price' => $price, 'stock' => $stock, 'stock_minimo' => $stock_minimo, 'photo' => $new_filename, 'descuento' => $descuento]);
 
 			// Log producto agregado
@@ -47,8 +59,11 @@ if (isset($_POST['add'])) {
 				'slug'        => $slug
 			], 'INSERT', $admin['email'] ?? 'admin');
 
+			$conn->commit();
 			$_SESSION['success'] = 'Producto agregado exitosamente';
 		} catch (PDOException $e) {
+			if ($conn->inTransaction()) $conn->rollBack();
+			removeNewImageUpload($new_filename);
 			$_SESSION['error'] = $e->getMessage();
 		}
 	}

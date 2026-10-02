@@ -1,49 +1,29 @@
 <?php
 include 'includes/session.php';
 requireValidCSRFRequest();
-require_once __DIR__ . '/includes/image_upload.php';
-
+require_once __DIR__ . '/includes/profile_update.php';
 if (!isset($_SESSION['user'], $user['id'])) {
     header('location: login.php');
     exit();
 }
+$return = 'perfil.php';
 
-$conn = $pdo->open();
-
+unset($_SESSION['error'], $_SESSION['success']);
 if (isset($_POST['edit'])) {
-	$curr_password = $_POST['curr_password'];
-	$email = $_POST['email'];
-	$password = $_POST['password'];
-	$firstname = $_POST['firstname'];
-	$lastname = $_POST['lastname'];
-	$contact = $_POST['contact'];
-	$address = $_POST['address'];
-	if (password_verify($curr_password, $user['password'])) {
-		try {
-			$password = editedPasswordHash($password, $user['password']);
-		} catch (InvalidArgumentException $e) {
-			$_SESSION['error'] = $e->getMessage();
-			header('location: perfil.php');
-			exit();
-		}
-		$filename = photoUploadOrRedirect($_FILES['photo'] ?? null, $user['photo'], 'perfil.php');
-
-		try {
-			$stmt = $conn->prepare("UPDATE users SET email=:email, password=:password, firstname=:firstname, lastname=:lastname, contact_info=:contact, address=:address, photo=:photo WHERE id=:id");
-			$stmt->execute(['email' => $email, 'password' => $password, 'firstname' => $firstname, 'lastname' => $lastname, 'contact' => $contact, 'address' => $address, 'photo' => $filename, 'id' => $user['id']]);
-
-			$_SESSION['success'] = 'Cuenta actualizada con éxito';
-		} catch (PDOException $e) {
-			$_SESSION['error'] = $e->getMessage();
-		}
-	} else {
-		$_SESSION['error'] = 'Contraseña incorrecta';
-	}
+    $conn = $pdo->open();
+    try {
+        updateOwnProfile($conn, $user, $_POST, $_FILES['photo'] ?? null);
+        $_SESSION['success'] = 'Cuenta actualizada con éxito';
+    } catch (InvalidArgumentException $e) {
+        $_SESSION['error'] = $e->getMessage();
+    } catch (PDOException $e) {
+        $_SESSION['error'] = 'No se pudo actualizar el perfil. Intenta de nuevo.';
+    } catch (RuntimeException $e) {
+        $_SESSION['error'] = 'No se pudo guardar la foto. Intenta de nuevo.';
+    }
+    $pdo->close();
 } else {
-	$_SESSION['error'] = 'Rellene el formulario de edición primero';
+    $_SESSION['error'] = 'Complete el formulario de edición primero.';
 }
-
-$pdo->close();
-
-header('location: perfil.php');
+header('location: ' . $return);
 exit();

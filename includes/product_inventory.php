@@ -1,5 +1,34 @@
 <?php
 
+function productCatalogIdentity(array $input, bool $editing = false): array
+{
+    $name = $input['name'] ?? null;
+    if (!is_string($name) || trim($name) === '' || mb_strlen(trim($name), 'UTF-8') > 200) {
+        throw new InvalidArgumentException('Ingresa un nombre de producto de hasta 200 caracteres.');
+    }
+    $result = ['name' => trim($name)];
+    foreach ($editing ? ['category', 'id'] : ['category'] as $field) {
+        $value = $input[$field] ?? null;
+        if ((!is_string($value) && !is_int($value)) || filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 2147483647]]) === false) {
+            throw new InvalidArgumentException('Selecciona un producto y una categoría válidos.');
+        }
+        $result[$field] = (int) $value;
+    }
+    if (isset($input['description']) && !is_string($input['description'])) {
+        throw new InvalidArgumentException('La descripción del producto debe ser texto.');
+    }
+    return $result;
+}
+
+function requireProductCategory(PDO $conn, int $category): void
+{
+    $stmt = $conn->prepare('SELECT id FROM category WHERE id=:id');
+    $stmt->execute(['id' => $category]);
+    if ($stmt->fetchColumn() === false) {
+        throw new InvalidArgumentException('La categoría seleccionada no existe.');
+    }
+}
+
 function productInventoryInput(array $input)
 {
     $result = [];

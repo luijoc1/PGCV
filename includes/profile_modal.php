@@ -1,3 +1,7 @@
+<?php
+// La página que incluye esta plantilla proporciona la cuenta autenticada.
+$profileUser = $user ?? [];
+?>
 <!-- Transaction History -->
 <div class="modal fade" id="transaction">
     <div class="modal-dialog">
@@ -52,21 +56,21 @@
                     <label for="firstname" class="col-sm-3 control-label">Primer nombre</label>
 
                     <div class="col-sm-9">
-                      <input type="text" class="form-control" id="firstname" name="firstname" value="<?php echo escapeHtml($user['firstname']); ?>">
+                      <input type="text" class="form-control" id="firstname" name="firstname" value="<?php echo escapeHtml($profileUser['firstname'] ?? ''); ?>">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="lastname" class="col-sm-3 control-label">Apellido</label>
 
                     <div class="col-sm-9">
-                      <input type="text" class="form-control" id="lastname" name="lastname" value="<?php echo escapeHtml($user['lastname']); ?>">
+                      <input type="text" class="form-control" id="lastname" name="lastname" value="<?php echo escapeHtml($profileUser['lastname'] ?? ''); ?>">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="email" class="col-sm-3 control-label">Correo electrónico</label>
 
                     <div class="col-sm-9">
-                      <input type="text" class="form-control" id="email" name="email" value="<?php echo escapeHtml($user['email']); ?>">
+                      <input type="text" class="form-control" id="email" name="email" value="<?php echo escapeHtml($profileUser['email'] ?? ''); ?>">
                     </div>
                 </div>
                 <div class="form-group">
@@ -80,14 +84,14 @@
                     <label for="contact" class="col-sm-3 control-label">Datos de contacto</label>
 
                     <div class="col-sm-9">
-                      <input type="text" class="form-control" id="contact" name="contact" value="<?php echo escapeHtml($user['contact_info']); ?>">
+                      <input type="text" class="form-control" id="contact" name="contact" value="<?php echo escapeHtml($profileUser['contact_info'] ?? ''); ?>">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="address" class="col-sm-3 control-label">Dirección</label>
 
                     <div class="col-sm-9">
-                      <textarea class="form-control" id="address" name="address"><?php echo escapeHtml($user['address']); ?></textarea>
+                      <textarea class="form-control" id="address" name="address"><?php echo escapeHtml($profileUser['address'] ?? ''); ?></textarea>
                     </div>
                 </div>
                 <div class="form-group">

@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                   <span aria-hidden="true">&times;</span></button>
               <h4 class="modal-title"><b>Añadir nuevo usuario</b></h4>
             </div>
@@ -11,52 +11,52 @@
               <form class="form-horizontal" method="POST" action="users_add.php" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <div class="form-group">
-                    <label for="email" class="col-sm-3 control-label">Correo electrónico</label>
+                    <label for="new_user_email" class="col-sm-3 control-label">Correo electrónico</label>
 
                     <div class="col-sm-9">
-                      <input type="email" class="form-control" id="email" name="email" required>
+                      <input type="email" class="form-control" id="new_user_email" name="email" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="password" class="col-sm-3 control-label">Contraseña</label>
+                    <label for="new_user_password" class="col-sm-3 control-label">Contraseña</label>
 
                     <div class="col-sm-9">
-                      <input type="password" class="form-control" id="password" name="password" required>
+                      <input type="password" class="form-control" id="new_user_password" name="password" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="firstname" class="col-sm-3 control-label">Nombres</label>
+                    <label for="new_user_firstname" class="col-sm-3 control-label">Nombres</label>
 
                     <div class="col-sm-9">
-                      <input type="text" class="form-control" id="firstname" name="firstname" required>
+                      <input type="text" class="form-control" id="new_user_firstname" name="firstname" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="lastname" class="col-sm-3 control-label">Apellidos</label>
+                    <label for="new_user_lastname" class="col-sm-3 control-label">Apellidos</label>
 
                     <div class="col-sm-9">
-                      <input type="text" class="form-control" id="lastname" name="lastname" required>
+                      <input type="text" class="form-control" id="new_user_lastname" name="lastname" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="address" class="col-sm-3 control-label">Direcciòn</label>
+                    <label for="new_user_address" class="col-sm-3 control-label">Dirección</label>
 
                     <div class="col-sm-9">
-                      <textarea class="form-control" id="address" name="address"></textarea>
+                      <textarea class="form-control" id="new_user_address" name="address"></textarea>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="contact" class="col-sm-3 control-label">Informaciòn del Contacto</label>
+                    <label for="new_user_contact" class="col-sm-3 control-label">Datos de contacto</label>
 
                     <div class="col-sm-9">
-                      <input type="text" class="form-control" id="contact" name="contact">
+                      <input type="text" class="form-control" id="new_user_contact" name="contact">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="photo" class="col-sm-3 control-label">Foto</label>
+                    <label for="new_user_photo" class="col-sm-3 control-label">Foto</label>
 
                     <div class="col-sm-9">
-                      <input type="file" id="photo" name="photo">
+                      <input type="file" id="new_user_photo" name="photo">
                     </div>
                 </div>
             </div>
@@ -74,9 +74,9 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                   <span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title"><b>editar usuario</b></h4>
+              <h4 class="modal-title"><b>Editar usuario</b></h4>
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="users_edit.php">
@@ -111,7 +111,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="edit_address" class="col-sm-3 control-label">Direcciòn</label>
+                    <label for="edit_address" class="col-sm-3 control-label">Dirección</label>
 
                     <div class="col-sm-9">
                       <textarea class="form-control" id="edit_address" name="address"></textarea>
@@ -139,7 +139,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                   <span aria-hidden="true">&times;</span></button>
               <h4 class="modal-title"><b>Eliminando...</b></h4>
             </div>
@@ -166,7 +166,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                   <span aria-hidden="true">&times;</span></button>
               <h4 class="modal-title"><b><span class="fullname"></span></b></h4>
             </div>
@@ -175,10 +175,10 @@
                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <input type="hidden" class="userid" name="id">
                 <div class="form-group">
-                    <label for="photo" class="col-sm-3 control-label">Foto</label>
+                    <label for="user_photo" class="col-sm-3 control-label">Foto</label>
 
                     <div class="col-sm-9">
-                      <input type="file" id="photo" name="photo" required>
+                      <input type="file" id="user_photo" name="photo" required>
                     </div>
                 </div>
             </div>
@@ -197,7 +197,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                   <span aria-hidden="true">&times;</span></button>
               <h4 class="modal-title"><b>Activando ...</b></h4>
             </div>

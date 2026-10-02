@@ -4,12 +4,15 @@ requireValidCSRFRequest();
 include 'includes/slugify.php';
 require_once __DIR__ . '/../includes/product_inventory.php';
 
+unset($_SESSION['error'], $_SESSION['success']);
 if (isset($_POST['edit'])) {
-	$id = $_POST['id'];
-	$name = $_POST['name'];
-	$slug = slugify($name);
-	$category = $_POST['category'];
 	try {
+		$identity = productCatalogIdentity($_POST, true);
+		$id = $identity['id'];
+		$name = $identity['name'];
+		$category = $identity['category'];
+		$slug = slugify($name);
+		if ($slug === '' || strlen($slug) > 200) throw new InvalidArgumentException('Ingresa un nombre de producto válido.');
 		$inventory = productInventoryInput($_POST);
 	} catch (InvalidArgumentException $e) {
 		$_SESSION['error'] = $e->getMessage();
@@ -25,10 +28,13 @@ if (isset($_POST['edit'])) {
 	$conn = $pdo->open();
 
 	try {
+		requireProductCategory($conn, $category);
+		$conn->beginTransaction();
 		// Obtener datos anteriores para el log
 		$stmt = $conn->prepare("SELECT * FROM products WHERE id=:id");
 		$stmt->execute(['id' => $id]);
 		$anterior = $stmt->fetch();
+		if (!$anterior) throw new InvalidArgumentException('El producto seleccionado no existe.');
 
 		// Actualizar producto
 		updateCatalogProduct($conn, ['name' => $name, 'slug' => $slug, 'category' => $category, 'price' => $price, 'stock' => $stock, 'stock_minimo' => $stock_minimo, 'description' => $description, 'descuento' => $descuento, 'id' => $id]);
@@ -50,8 +56,13 @@ if (isset($_POST['edit'])) {
 			'descuento'   => $descuento
 		], 'UPDATE', $admin['email'] ?? 'admin');
 
+		$conn->commit();
 		$_SESSION['success'] = 'Producto actualizado con éxito';
+	} catch (InvalidArgumentException $e) {
+		if ($conn->inTransaction()) $conn->rollBack();
+		$_SESSION['error'] = $e->getMessage();
 	} catch (PDOException $e) {
+		if ($conn->inTransaction()) $conn->rollBack();
 		$_SESSION['error'] = $e->getMessage();
 	}
 

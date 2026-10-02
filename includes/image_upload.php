@@ -59,6 +59,40 @@ function saveImageUpload($file)
     return $filename;
 }
 
+function removeNewImageUpload($filename): void
+{
+    if (!is_string($filename) || !preg_match('/\A[a-f0-9]{32}\.(?:jpg|png|gif|webp)\z/', $filename)) return;
+    $directory = realpath(__DIR__ . '/../images');
+    if ($directory === false) return;
+    $path = $directory . DIRECTORY_SEPARATOR . $filename;
+    if (is_link($path) || !is_file($path)) return;
+    if (!@unlink($path)) error_log('No se pudo limpiar la foto nueva después de un fallo de guardado.');
+}
+
+function replaceEntityPhoto(PDO $conn, string $table, $rawId, $file): void
+{
+    if (!in_array($table, ['products', 'users'], true)) throw new InvalidArgumentException('Destino de foto inválido.');
+    if ((!is_string($rawId) && !is_int($rawId)) || filter_var($rawId, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 2147483647]]) === false) {
+        throw new InvalidArgumentException('Selecciona un registro válido para actualizar su foto.');
+    }
+    $filename = null;
+    $conn->beginTransaction();
+    try {
+        $stmt = $conn->prepare('SELECT id FROM ' . $table . ' WHERE id=:id' . ($conn->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : ''));
+        $stmt->execute(['id' => (int) $rawId]);
+        if ($stmt->fetchColumn() === false) throw new InvalidArgumentException('El registro seleccionado no existe.');
+        $filename = saveImageUpload($file);
+        if ($filename === null) throw new InvalidArgumentException('Selecciona una foto para subir.');
+        $stmt = $conn->prepare('UPDATE ' . $table . ' SET photo=:photo WHERE id=:id');
+        $stmt->execute(['photo' => $filename, 'id' => (int) $rawId]);
+        $conn->commit();
+    } catch (Throwable $e) {
+        if ($conn->inTransaction()) $conn->rollBack();
+        removeNewImageUpload($filename);
+        throw $e;
+    }
+}
+
 function photoUploadOrRedirect($file, $fallback, $redirect, $required = false)
 {
     try {
