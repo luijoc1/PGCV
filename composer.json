@@ -10,6 +10,7 @@
         "phpunit/phpunit": "^9.6"
     },
     "require": {
-        "phpmailer/phpmailer": "^7.1"
+        "phpmailer/phpmailer": "^7.1",
+        "tecnickcom/tcpdf": "6.11.4"
     }
 }

@@ -38,7 +38,7 @@ final class SalesReportTest extends TestCase
 
     public function testPdfEngineAcceptsEscapedReportHtml(): void
     {
-        require_once __DIR__ . '/../tcpdf/tcpdf.php';
+        require_once __DIR__ . '/../vendor/autoload.php';
         $pdf = new TCPDF();
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);

@@ -20,7 +20,7 @@ $to_title = $range['to_title'];
 
 $conn = $pdo->open();
 
-	require_once('../tcpdf/tcpdf.php');
+	require_once __DIR__ . '/../vendor/autoload.php';
 	$pdf = new TCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 	$pdf->SetCreator('Almacén los Almendros');
 	$pdf->SetTitle('Reporte de Ventas: ' . $from_title . ' - ' . $to_title);
