@@ -9,6 +9,9 @@
 		$stmt = $conn->prepare("SELECT *, products.id AS prodid, products.name AS prodname, category.name AS catname FROM products LEFT JOIN category ON category.id=products.category_id WHERE products.id=:id");
 		$stmt->execute(['id'=>$id]);
 		$row = $stmt->fetch();
+		if ($row) {
+			$row['description'] = safeProductDescription($row['description']);
+		}
 		
 		$pdo->close();
 

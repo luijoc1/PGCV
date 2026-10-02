@@ -1,9 +1,12 @@
 <?php include 'includes/session.php'; ?>
 <?php
-$where = '';
-if (isset($_GET['category'])) {
-  $catid = $_GET['category'];
-  $where = 'WHERE category_id =' . $catid;
+require_once __DIR__ . '/../includes/product_filter.php';
+try {
+  $catid = productCategoryId($_GET['category'] ?? null);
+} catch (InvalidArgumentException $e) {
+  $_SESSION['error'] = 'La categoría seleccionada es inválida.';
+  header('location: products.php');
+  exit();
 }
 
 ?>
@@ -37,7 +40,7 @@ if (isset($_GET['category'])) {
             <div class='alert alert-danger alert-dismissible'>
               <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
               <h4><i class='icon fa fa-warning'></i> Error!</h4>
-              " . $_SESSION['error'] . "
+              " . escapeHtml($_SESSION['error']) . "
             </div>
           ";
           unset($_SESSION['error']);
@@ -47,7 +50,7 @@ if (isset($_GET['category'])) {
             <div class='alert alert-success alert-dismissible'>
               <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
               <h4><i class='icon fa fa-check'></i> ¡Éxito!</h4>
-              " . $_SESSION['success'] . "
+              " . escapeHtml($_SESSION['success']) . "
             </div>
           ";
           unset($_SESSION['success']);
@@ -61,7 +64,7 @@ if (isset($_GET['category'])) {
                 <div class="pull-right">
                   <form class="form-inline">
                     <div class="form-group">
-                      <label>Categoria: </label>
+                      <label for="select_category">Categoría: </label>
                       <select class="form-control input-sm" id="select_category">
                         <option value="0">Todos</option>
                         <?php
@@ -73,7 +76,7 @@ if (isset($_GET['category'])) {
                         foreach ($stmt as $crow) {
                           $selected = ($crow['id'] == $catid) ? 'selected' : '';
                           echo "
-                            <option value='" . $crow['id'] . "' " . $selected . ">" . $crow['name'] . "</option>
+                            <option value='" . $crow['id'] . "' " . $selected . ">" . escapeHtml($crow['name']) . "</option>
                           ";
                         }
 
@@ -101,17 +104,16 @@ if (isset($_GET['category'])) {
 
                     try {
                       $now = date('Y-m-d');
-                      $stmt = $conn->prepare("SELECT * FROM products $where");
-                      $stmt->execute();
+                      $stmt = productListQuery($conn, $catid);
                       foreach ($stmt as $row) {
-                        $image = (!empty($row['photo'])) ? '../images/' . $row['photo'] : '../images/noimage.jpg';
+                        $image = safeImageUrl($row['photo'], '../images/', 'noimage.jpg');
                         $counter = ($row['date_view'] == $now) ? $row['counter'] : 0;
                         $stock_label = ($row['stock'] > 0) ? '<span class="label label-success">' . $row['stock'] . '</span>' : '<span class="label label-danger">0</span>';
                         echo "
                           <tr>
-                            <td>" . $row['name'] . "</td>
+                            <td>" . escapeHtml($row['name']) . "</td>
                             <td>
-                              <img src='" . $image . "' height='30px' width='30px'>
+                              <img src='" . escapeHtml($image) . "' height='30px' width='30px'>
                               <span class='pull-right'><a href='#edit_photo' class='photo' data-toggle='modal' data-id='" . $row['id'] . "'><i class='fa fa-edit'></i></a></span>
                             </td>
                             <td><a href='#description' data-toggle='modal' class='btn btn-info btn-sm btn-flat desc' data-id='" . $row['id'] . "'><i class='fa fa-search'></i> Ver</a></td>
@@ -210,12 +212,13 @@ if (isset($_GET['category'])) {
         dataType: 'json',
         success: function(response) {
           $('#desc').html(response.description);
-          $('.name').html(response.prodname);
+          $('.name').text(response.prodname);
           $('.prodid').val(response.prodid);
           $('#edit_name').val(response.prodname);
-          $('#catselected').val(response.category_id).html(response.catname);
+          $('#catselected').val(response.category_id).text(response.catname);
           $('#edit_price').val(response.price);
           $('#edit_stock').val(response.stock);
+          $('#edit_stock_minimo').val(response.stock_minimo);
           $('#edit_descuento').val(response.descuento);
           CKEDITOR.instances["editor2"].setData(response.description);
           getCategory();

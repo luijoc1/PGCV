@@ -21,14 +21,14 @@
                 if (isset($_SESSION['error'])) {
                     echo "<div class='alert alert-danger alert-dismissible'>
                             <button type='button' class='close' data-dismiss='alert'>&times;</button>
-                            " . $_SESSION['error'] . "
+                            " . escapeHtml($_SESSION['error']) . "
                           </div>";
                     unset($_SESSION['error']);
                 }
                 if (isset($_SESSION['success'])) {
                     echo "<div class='alert alert-success alert-dismissible'>
                             <button type='button' class='close' data-dismiss='alert'>&times;</button>
-                            " . $_SESSION['success'] . "
+                            " . escapeHtml($_SESSION['success']) . "
                           </div>";
                     unset($_SESSION['success']);
                 }
@@ -59,7 +59,7 @@
                                                 $precio_final = precioConDescuento($row['price'], $row['descuento']);
                                                 echo "
                                                 <tr>
-                                                    <td>" . $row['name'] . "</td>
+                                                    <td>" . escapeHtml($row['name']) . "</td>
                                                     <td>&#36; " . number_format($row['price'], 2) . "</td>
                                                     <td>
                                                         <span style='background:#e74c3c; color:#fff; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:bold;'>
@@ -69,7 +69,7 @@
                                                     <td style='color:#e74c3c; font-weight:bold;'>&#36; " . number_format($precio_final, 2) . "</td>
                                                     <td><span class='label label-success'>" . $row['stock'] . "</span></td>
                                                     <td>
-                                                        <button class='btn btn-warning btn-sm btn-flat quitar-desc' data-id='" . $row['id'] . "' data-nombre='" . $row['name'] . "'>
+                                                        <button class='btn btn-warning btn-sm btn-flat quitar-desc' data-id='" . $row['id'] . "' data-nombre='" . escapeHtml($row['name']) . "'>
                                                         <i class='fa fa-times'></i> Quitar descuento
                                                         </button>
                                                     </td>
@@ -109,9 +109,13 @@
                     <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">
                         <i class="fa fa-times"></i> Cancelar
                     </button>
-                    <a href="#" id="btn-confirmar-quitar" class="btn btn-warning btn-flat">
-                        <i class="fa fa-check"></i> Sí, quitar descuento
-                    </a>
+                    <form method="POST" action="quitar_descuento.php" style="display:inline;">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
+                        <input type="hidden" name="id" id="producto-quitar-id">
+                        <button type="submit" id="btn-confirmar-quitar" class="btn btn-warning btn-flat">
+                            <i class="fa fa-check"></i> Sí, quitar descuento
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -124,7 +128,7 @@
                 var id = $(this).data('id');
                 var nombre = $(this).data('nombre');
                 $('#nombre-producto').text(nombre);
-                $('#btn-confirmar-quitar').attr('href', 'quitar_descuento.php?id=' + id);
+                $('#producto-quitar-id').val(id);
                 $('#modalQuitar').modal('show');
             });
         });

@@ -1,6 +1,7 @@
 
 <?php
 	include 'includes/session.php';
+requireValidCSRFRequest();
 
 	if(isset($_POST['add'])){
 		$name = $_POST['name'];

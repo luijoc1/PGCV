@@ -100,8 +100,8 @@
 
                                             echo "
                                             <tr>
-                                                <td>" . $row['name'] . "</td>
-                                                <td>" . $row['catname'] . "</td>
+                                                <td>" . escapeHtml($row['name']) . "</td>
+                                                <td>" . escapeHtml($row['catname']) . "</td>
                                                 <td><b>" . $row['stock'] . "</b></td>
                                                 <td>" . $row['stock_minimo'] . "</td>
                                                 <td>" . $estado . "</td>

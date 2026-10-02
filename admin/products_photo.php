@@ -1,9 +1,10 @@
 <?php
 	include 'includes/session.php';
+requireValidCSRFRequest();
+	require_once __DIR__ . '/../includes/image_upload.php';
 
 	if(isset($_POST['upload'])){
 		$id = $_POST['id'];
-		$filename = $_FILES['photo']['name'];
 
 		$conn = $pdo->open();
 
@@ -11,11 +12,12 @@
 		$stmt->execute(['id'=>$id]);
 		$row = $stmt->fetch();
 
-		if(!empty($filename)){
-			$ext = pathinfo($filename, PATHINFO_EXTENSION);
-			$new_filename = $row['slug'].'_'.time().'.'.$ext;
-			move_uploaded_file($_FILES['photo']['tmp_name'], '../images/'.$new_filename);	
+		if (!$row) {
+			$_SESSION['error'] = 'Producto no encontrado';
+			header('location: products.php');
+			exit();
 		}
+		$new_filename = photoUploadOrRedirect($_FILES['photo'] ?? null, '', 'products.php', true);
 		
 		try{
 			$stmt = $conn->prepare("UPDATE products SET photo=:photo WHERE id=:id");

@@ -9,6 +9,7 @@
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="category_add.php">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <div class="form-group">
                     <label for="name" class="col-sm-3 control-label">Nombre</label>
                    
@@ -38,6 +39,7 @@
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="category_edit.php">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <input type="hidden" class="catid" name="id">
                 <div class="form-group">
                     <label for="edit_name" class="col-sm-3 control-label">Nombre</label>
@@ -67,6 +69,7 @@
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="category_delete.php">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <input type="hidden" class="catid" name="id">
                 <div class="text-center">
                     <p>BORRAR CATEGORÍA</p>

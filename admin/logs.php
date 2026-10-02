@@ -52,10 +52,10 @@
                                                     echo "
                                                     <tr>
                                                         <td>" . $row['id_registro'] . "</td>
-                                                        <td>" . $row['email'] . "</td>
-                                                        <td><span style='background:" . $color . "; color:#fff; padding:3px 10px; border-radius:20px; font-size:12px;'>" . $row['tipo_operacion'] . "</span></td>
-                                                        <td>" . $row['ip'] . "</td>
-                                                        <td>" . $row['fecha_hora_accion'] . "</td>
+                                                        <td>" . escapeHtml($row['email']) . "</td>
+                                                        <td><span style='background:" . $color . "; color:#fff; padding:3px 10px; border-radius:20px; font-size:12px;'>" . escapeHtml($row['tipo_operacion']) . "</span></td>
+                                                        <td>" . escapeHtml($row['ip']) . "</td>
+                                                        <td>" . escapeHtml($row['fecha_hora_accion']) . "</td>
                                                     </tr>
                                                 ";
                                                 }
@@ -98,12 +98,12 @@
                                                     <tr>
                                                         <td>" . $row['id_registro'] . "</td>
                                                         <td>" . $row['id_referencia'] . "</td>
-                                                        <td><span style='background:" . $color . "; color:#fff; padding:3px 10px; border-radius:20px; font-size:12px;'>" . $row['tipo_operacion'] . "</span></td>
-                                                        <td><small>" . rtrim($anterior_txt, ', ') . "</small></td>
-                                                        <td><small>" . rtrim($nueva_txt, ', ') . "</small></td>
-                                                        <td>" . $row['ip'] . "</td>
-                                                        <td>" . $row['usuario_created'] . "</td>
-                                                        <td>" . $row['fecha_hora_accion'] . "</td>
+                                                        <td><span style='background:" . $color . "; color:#fff; padding:3px 10px; border-radius:20px; font-size:12px;'>" . escapeHtml($row['tipo_operacion']) . "</span></td>
+                                                        <td><small>" . escapeHtml(rtrim($anterior_txt, ', ')) . "</small></td>
+                                                        <td><small>" . escapeHtml(rtrim($nueva_txt, ', ')) . "</small></td>
+                                                        <td>" . escapeHtml($row['ip']) . "</td>
+                                                        <td>" . escapeHtml($row['usuario_created']) . "</td>
+                                                        <td>" . escapeHtml($row['fecha_hora_accion']) . "</td>
                                                     </tr>
                                                 ";
                                                 }
@@ -146,12 +146,12 @@
                                                     <tr>
                                                         <td>" . $row['id_registro'] . "</td>
                                                         <td>" . $row['id_referencia'] . "</td>
-                                                        <td><span style='background:" . $color . "; color:#fff; padding:3px 10px; border-radius:20px; font-size:12px;'>" . $row['tipo_operacion'] . "</span></td>
-                                                        <td><small>" . rtrim($anterior_txt, ', ') . "</small></td>
-                                                        <td><small>" . rtrim($nueva_txt, ', ') . "</small></td>
-                                                        <td>" . $row['ip'] . "</td>
-                                                        <td>" . $row['usuario_created'] . "</td>
-                                                        <td>" . $row['fecha_hora_accion'] . "</td>
+                                                        <td><span style='background:" . $color . "; color:#fff; padding:3px 10px; border-radius:20px; font-size:12px;'>" . escapeHtml($row['tipo_operacion']) . "</span></td>
+                                                        <td><small>" . escapeHtml(rtrim($anterior_txt, ', ')) . "</small></td>
+                                                        <td><small>" . escapeHtml(rtrim($nueva_txt, ', ')) . "</small></td>
+                                                        <td>" . escapeHtml($row['ip']) . "</td>
+                                                        <td>" . escapeHtml($row['usuario_created']) . "</td>
+                                                        <td>" . escapeHtml($row['fecha_hora_accion']) . "</td>
                                                     </tr>
                                                 ";
                                                 }
@@ -194,12 +194,12 @@
                                                     <tr>
                                                         <td>" . $row['id_registro'] . "</td>
                                                         <td>" . $row['id_referencia'] . "</td>
-                                                        <td><span style='background:" . $color . "; color:#fff; padding:3px 10px; border-radius:20px; font-size:12px;'>" . $row['tipo_operacion'] . "</span></td>
-                                                        <td><small>" . rtrim($anterior_txt, ', ') . "</small></td>
-                                                        <td><small>" . rtrim($nueva_txt, ', ') . "</small></td>
-                                                        <td>" . $row['ip'] . "</td>
-                                                        <td>" . $row['usuario_created'] . "</td>
-                                                        <td>" . $row['fecha_hora_accion'] . "</td>
+                                                        <td><span style='background:" . $color . "; color:#fff; padding:3px 10px; border-radius:20px; font-size:12px;'>" . escapeHtml($row['tipo_operacion']) . "</span></td>
+                                                        <td><small>" . escapeHtml(rtrim($anterior_txt, ', ')) . "</small></td>
+                                                        <td><small>" . escapeHtml(rtrim($nueva_txt, ', ')) . "</small></td>
+                                                        <td>" . escapeHtml($row['ip']) . "</td>
+                                                        <td>" . escapeHtml($row['usuario_created']) . "</td>
+                                                        <td>" . escapeHtml($row['fecha_hora_accion']) . "</td>
                                                     </tr>
                                                 ";
                                                 }

@@ -9,7 +9,7 @@
 	$stmt->execute();
 	foreach($stmt as $row){
 		$output .= "
-			<option value='".$row['id']."' class='append_items'>".$row['name']."</option>
+			<option value='".$row['id']."' class='append_items'>".escapeHtml($row['name'])."</option>
 		";
 	}
 

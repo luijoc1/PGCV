@@ -1,16 +1,26 @@
 <?php
 include 'includes/session.php';
+requireValidCSRFRequest();
 include 'includes/slugify.php';
+require_once __DIR__ . '/../includes/product_inventory.php';
 
 if (isset($_POST['edit'])) {
 	$id = $_POST['id'];
 	$name = $_POST['name'];
 	$slug = slugify($name);
 	$category = $_POST['category'];
-	$price = $_POST['price'];
-	$stock = $_POST['stock'];
-	$descuento = isset($_POST['descuento']) ? intval($_POST['descuento']) : 0;
-	$description = $_POST['description'];
+	try {
+		$inventory = productInventoryInput($_POST);
+	} catch (InvalidArgumentException $e) {
+		$_SESSION['error'] = $e->getMessage();
+		header('location: products.php');
+		exit();
+	}
+	$price = $inventory['price'];
+	$stock = $inventory['stock'];
+	$stock_minimo = $inventory['stock_minimo'];
+	$descuento = $inventory['descuento'];
+	$description = safeProductDescription($_POST['description'] ?? '');
 
 	$conn = $pdo->open();
 
@@ -21,8 +31,7 @@ if (isset($_POST['edit'])) {
 		$anterior = $stmt->fetch();
 
 		// Actualizar producto
-		$stmt = $conn->prepare("UPDATE products SET name=:name, slug=:slug, category_id=:category, price=:price, stock=:stock, description=:description, descuento=:descuento WHERE id=:id");
-		$stmt->execute(['name' => $name, 'slug' => $slug, 'category' => $category, 'price' => $price, 'stock' => $stock, 'description' => $description, 'descuento' => $descuento, 'id' => $id]);
+		updateCatalogProduct($conn, ['name' => $name, 'slug' => $slug, 'category' => $category, 'price' => $price, 'stock' => $stock, 'stock_minimo' => $stock_minimo, 'description' => $description, 'descuento' => $descuento, 'id' => $id]);
 
 		// Log producto editado
 		registrarLog($conn, 'logs_productos', $id, [
@@ -30,12 +39,14 @@ if (isset($_POST['edit'])) {
 			'category_id' => $anterior['category_id'],
 			'price'       => $anterior['price'],
 			'stock'       => $anterior['stock'],
+			'stock_minimo' => $anterior['stock_minimo'],
 			'descuento'   => $anterior['descuento']
 		], [
 			'name'        => $name,
 			'category_id' => $category,
 			'price'       => $price,
 			'stock'       => $stock,
+			'stock_minimo' => $stock_minimo,
 			'descuento'   => $descuento
 		], 'UPDATE', $admin['email'] ?? 'admin');
 

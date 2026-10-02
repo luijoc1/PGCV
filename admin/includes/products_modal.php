@@ -28,6 +28,7 @@
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="products_add.php" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <div class="form-group">
                   <label for="name" class="col-sm-1 control-label">Nombre</label>
 
@@ -63,6 +64,10 @@
       <input type="number" class="form-control" id="descuento" name="descuento" min="0" max="100" value="0">
       <span class="input-group-addon">%</span>
     </div>
+  </div>
+  <label for="stock_minimo" class="col-sm-2 control-label">Stock mínimo</label>
+  <div class="col-sm-4">
+    <input type="number" class="form-control" id="stock_minimo" name="stock_minimo" min="0" max="2147483647" value="5" required>
   </div>
 </div>
                 <div class="form-group">
@@ -100,6 +105,7 @@
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="products_photo.php" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <input type="hidden" class="prodid" name="id">
                 <div class="form-group">
                     <label for="photo" class="col-sm-3 control-label">Foto</label>

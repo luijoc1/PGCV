@@ -1,19 +1,24 @@
 <?php
 	include 'includes/session.php';
+requireValidCSRFRequest();
+require_once __DIR__ . '/../includes/product_deletion.php';
 
 	if(isset($_POST['delete'])){
-		$id = $_POST['id'];
+		$id = $_POST['id'] ?? null;
 		
 		$conn = $pdo->open();
 
 		try{
-			$stmt = $conn->prepare("DELETE FROM products WHERE id=:id");
-			$stmt->execute(['id'=>$id]);
+			deleteUnreferencedProduct($conn, $id);
 
 			$_SESSION['success'] = 'Producto eliminado exitosamente';
 		}
-		catch(PDOException $e){
+		catch(InvalidArgumentException $e){
 			$_SESSION['error'] = $e->getMessage();
+		}
+		catch(PDOException $e){
+			error_log('Error al eliminar producto: ' . $e->getMessage());
+			$_SESSION['error'] = 'No se pudo eliminar el producto. Inténtalo de nuevo.';
 		}
 
 		$pdo->close();
@@ -23,5 +28,6 @@
 	}
 
 	header('location: products.php');
+	exit();
 	
 ?>

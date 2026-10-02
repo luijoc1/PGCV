@@ -9,10 +9,12 @@
       </div>
       <div class="modal-body">
         <form class="form-horizontal" method="POST" action="products_delete.php">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
           <input type="hidden" class="prodid" name="id">
           <div class="text-center">
             <p>BORRAR PRODUCTO</p>
             <h2 class="bold name"></h2>
+            <p>Solo se pueden eliminar productos que no estén vinculados a ventas ni carritos.</p>
           </div>
       </div>
       <div class="modal-footer">
@@ -35,6 +37,7 @@
       </div>
       <div class="modal-body">
         <form class="form-horizontal" method="POST" action="products_edit.php">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
           <input type="hidden" class="prodid" name="id">
           <div class="form-group">
             <label for="edit_name" class="col-sm-1 control-label">Nombre</label>
@@ -71,6 +74,10 @@
                 <input type="number" class="form-control" id="edit_descuento" name="descuento" min="0" max="100" value="0">
                 <span class="input-group-addon">%</span>
               </div>
+            </div>
+            <label for="edit_stock_minimo" class="col-sm-2 control-label">Stock mínimo</label>
+            <div class="col-sm-4">
+              <input type="number" class="form-control" id="edit_stock_minimo" name="stock_minimo" min="0" max="2147483647" required>
             </div>
           </div>
           <p><b>Descripción</b></p>

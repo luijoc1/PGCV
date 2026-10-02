@@ -1,39 +1,40 @@
 <?php
 include 'includes/session.php';
+requireValidCSRFRequest();
 include 'includes/slugify.php';
+require_once __DIR__ . '/../includes/image_upload.php';
+require_once __DIR__ . '/../includes/product_inventory.php';
 
 if (isset($_POST['add'])) {
 	$name = $_POST['name'];
 	$slug = slugify($name);
 	$category = $_POST['category'];
-	$price = $_POST['price'];
-	$stock = $_POST['stock'];
-	$descuento = isset($_POST['descuento']) ? intval($_POST['descuento']) : 0;
-	$description = $_POST['description'];
-	$filename = $_FILES['photo']['name'];
+	try {
+		$inventory = productInventoryInput($_POST);
+	} catch (InvalidArgumentException $e) {
+		$_SESSION['error'] = $e->getMessage();
+		header('location: products.php');
+		exit();
+	}
+	$price = $inventory['price'];
+	$stock = $inventory['stock'];
+	$stock_minimo = $inventory['stock_minimo'];
+	$descuento = $inventory['descuento'];
+	$description = safeProductDescription($_POST['description'] ?? '');
 
 	$conn = $pdo->open();
 
-	$stmt = $conn->prepare("SELECT *, COUNT(*) AS numrows FROM products WHERE slug=:slug");
+	$stmt = $conn->prepare("SELECT COUNT(*) AS numrows FROM products WHERE slug=:slug");
 	$stmt->execute(['slug' => $slug]);
 	$row = $stmt->fetch();
 
 	if ($row['numrows'] > 0) {
 		$_SESSION['error'] = 'Producto ya existe';
 	} else {
-		if (!empty($filename)) {
-			$ext = pathinfo($filename, PATHINFO_EXTENSION);
-			$new_filename = $slug . '.' . $ext;
-			move_uploaded_file($_FILES['photo']['tmp_name'], '../images/' . $new_filename);
-		} else {
-			$new_filename = '';
-		}
+		$new_filename = photoUploadOrRedirect($_FILES['photo'] ?? null, '', 'products.php');
 
 		try {
-			$stmt = $conn->prepare("INSERT INTO products (category_id, name, description, slug, price, stock, photo, descuento) VALUES (:category, :name, :description, :slug, :price, :stock, :photo, :descuento)");
-			$stmt->execute(['category' => $category, 'name' => $name, 'description' => $description, 'slug' => $slug, 'price' => $price, 'stock' => $stock, 'photo' => $new_filename, 'descuento' => $descuento]);
-
-			$product_id = $conn->lastInsertId();
+			$product_id = insertCatalogProduct($conn, ['category' => $category, 'name' => $name, 'description' => $description, 'slug' => $slug, 'price' => $price, 'stock' => $stock, 'stock_minimo' => $stock_minimo, 'photo' => $new_filename, 'descuento' => $descuento]);
 
 			// Log producto agregado
 			registrarLog($conn, 'logs_productos', $product_id, null, [
@@ -41,9 +42,10 @@ if (isset($_POST['add'])) {
 				'category_id' => $category,
 				'price'       => $price,
 				'stock'       => $stock,
+				'stock_minimo' => $stock_minimo,
 				'descuento'   => $descuento,
 				'slug'        => $slug
-			}, 'INSERT', $admin['email'] ?? 'admin');
+			], 'INSERT', $admin['email'] ?? 'admin');
 
 			$_SESSION['success'] = 'Producto agregado exitosamente';
 		} catch (PDOException $e) {

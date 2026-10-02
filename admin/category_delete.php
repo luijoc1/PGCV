@@ -1,5 +1,6 @@
 <?php
 	include 'includes/session.php';
+requireValidCSRFRequest();
 
 	if(isset($_POST['delete'])){
 		$id = $_POST['id'];
@@ -13,7 +14,8 @@
 			$_SESSION['success'] = 'Categoría eliminada correctamente';
 		}
 		catch(PDOException $e){
-			$_SESSION['error'] = $e->getMessage();
+			error_log('Error al eliminar categoría: ' . $e->getMessage());
+			$_SESSION['error'] = 'No se pudo eliminar la categoría. Revisa si todavía contiene productos.';
 		}
 
 		$pdo->close();
