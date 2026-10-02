@@ -4,6 +4,7 @@ if (PHP_SAPI !== 'cli') { http_response_code(404); exit(); }
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/authentication.php';
 require_once __DIR__ . '/../includes/password_reset.php';
+require_once __DIR__ . '/../includes/activation_migration.php';
 require_once __DIR__ . '/../includes/customer_transaction.php';
 require_once __DIR__ . '/../includes/checkout.php';
 require_once __DIR__ . '/../includes/csrf.php';
@@ -11,6 +12,9 @@ require_once __DIR__ . '/../includes/sale_status.php';
 require_once __DIR__ . '/../includes/sales_report.php';
 require_once __DIR__ . '/../includes/stock_alert.php';
 require_once __DIR__ . '/../includes/product_deletion.php';
+require_once __DIR__ . '/../includes/category_operations.php';
+require_once __DIR__ . '/../includes/user_administration.php';
+require_once __DIR__ . '/../includes/profile_update.php';
 date_default_timezone_set('America/Bogota');
 
 function projectTestConnection($database)
@@ -100,6 +104,10 @@ try {
     $control->exec('CREATE DATABASE `' . $database . '`');
     $conn = projectTestConnection($database);
     $conn->exec(file_get_contents(__DIR__ . '/../migrations/000_schema.sql'));
+    // Exercise migration from the previous schema, only in the guarded random test DB.
+    $conn->exec('ALTER TABLE users DROP COLUMN activate_expires_at');
+    $check(ensureActivationExpiryColumn($conn));
+    $check(!ensureActivationExpiryColumn($conn));
     $conn->exec('CREATE TABLE integration_gate (id INT PRIMARY KEY,ready INT); CREATE TABLE integration_workers (id INT PRIMARY KEY); INSERT INTO integration_gate VALUES (1,0)');
     $stmt = $conn->prepare("INSERT INTO users (id,email,password,firstname,lastname,type,status,created_on) VALUES (:id,:email,:password,'Test','Client',:type,:status,'2026-10-01')");
     foreach ([[1,0,0],[2,0,1]] as [$id,$type,$status]) {
@@ -109,6 +117,28 @@ try {
     $admin = $conn->query('SELECT * FROM users WHERE id=' . (int) $adminId)->fetch(PDO::FETCH_ASSOC);
     $check(password_verify('test-admin-password', $admin['password']));
     $check(authenticatedAccount($conn, ['admin' => $adminId, 'auth_signature' => accountSessionSignature($admin)], 1) !== null);
+    $userLogger = function ($id, $previous, $current, $operation) use ($conn) {
+        $stmt = $conn->prepare('INSERT INTO logs_usuarios (id_referencia,informacion_anterior,nueva_informacion,tipo_operacion,ip,usuario_created) VALUES (?,?,?,?,?,?)');
+        $stmt->execute([$id, $previous ? json_encode($previous) : null, $current ? json_encode($current) : null, $operation, '127.0.0.1', 'test-admin@example.com']);
+    };
+    $userInput = ['firstname' => 'Test', 'lastname' => 'User', 'email' => 'managed-test@example.com', 'password' => 'test-password', 'address' => '', 'contact' => ''];
+    administerUser($conn, 'add', $userInput, $userLogger);
+    $managed = $conn->query("SELECT * FROM users WHERE email='managed-test@example.com'")->fetch(PDO::FETCH_ASSOC);
+    $check(password_verify('test-password', $managed['password']) && (int) $managed['type'] === 0);
+    $userInput['id'] = $managed['id'];
+    $userInput['password'] = '';
+    $userInput['firstname'] = 'Edited';
+    administerUser($conn, 'edit', $userInput, $userLogger);
+    $check($conn->query('SELECT password FROM users WHERE id=' . (int) $managed['id'])->fetchColumn() === $managed['password']);
+    $conn->exec('UPDATE users SET status=0 WHERE id=' . (int) $managed['id']);
+    administerUser($conn, 'activate', $userInput, $userLogger);
+    $check((int) $conn->query('SELECT status FROM users WHERE id=' . (int) $managed['id'])->fetchColumn() === 1);
+    updateOwnProfile($conn, $managed, ['curr_password' => 'test-password', 'password' => '', 'firstname' => 'Profile', 'lastname' => 'User', 'email' => 'managed-test@example.com'], null);
+    $check($conn->query('SELECT firstname FROM users WHERE id=' . (int) $managed['id'])->fetchColumn() === 'Profile');
+    $check($conn->query('SELECT password FROM users WHERE id=' . (int) $managed['id'])->fetchColumn() === $managed['password']);
+    administerUser($conn, 'delete', $userInput, $userLogger);
+    $check((int) $conn->query('SELECT COUNT(*) FROM users WHERE id=' . (int) $managed['id'])->fetchColumn() === 0);
+    $check($conn->query('SELECT tipo_operacion FROM logs_usuarios ORDER BY id_registro')->fetchAll(PDO::FETCH_COLUMN) === ['INSERT', 'UPDATE', 'UPDATE', 'DELETE']);
     $account = $conn->query('SELECT * FROM users WHERE id=1')->fetch(PDO::FETCH_ASSOC);
     $session = ['user' => 1, 'auth_signature' => accountSessionSignature($account)];
     $check(authenticatedAccount($conn, $session, 0) === null);
@@ -124,6 +154,15 @@ try {
     $check(validateCSRFToken($csrf) && !validateCSRFToken('invalid'));
     $conn->exec("INSERT INTO category (id,name,cat_slug) VALUES (1,'Test','test'); INSERT INTO products (id,category_id,name,description,slug,price,stock,descuento) VALUES (1,1,'Original','','original',100,5,10),(2,1,'Last Unit','','last-unit',20,1,0);
         INSERT INTO cart (id,user_id,product_id,quantity) VALUES (1,1,1,1)");
+    $extraCategory = addCategory($conn, 'Extra test category');
+    $check($extraCategory > 1);
+    editCategory($conn, $extraCategory, 'Edited test category');
+    $check($conn->query('SELECT name FROM category WHERE id=' . $extraCategory)->fetchColumn() === 'Edited test category');
+    deleteEmptyCategory($conn, $extraCategory);
+    $check((int) $conn->query('SELECT COUNT(*) FROM category WHERE id=' . $extraCategory)->fetchColumn() === 0);
+    try { deleteEmptyCategory($conn, 1); $check(false); } catch (InvalidArgumentException $e) { $check(true); }
+    try { addCategory($conn, 'Test'); $check(false); } catch (InvalidArgumentException $e) { $check(true); }
+    $check((int) $conn->query('SELECT COUNT(*) FROM products WHERE category_id=1')->fetchColumn() === 2);
     updateOwnedCart($conn, 1, 1, 2);
     try { deleteUnreferencedProduct($conn, 1); $check(false); } catch (InvalidArgumentException $e) { $check(true); }
     $check((int) $conn->query('SELECT quantity FROM cart WHERE id=1')->fetchColumn() === 2);
@@ -150,7 +189,7 @@ try {
     $check(findCustomerTransaction($conn, 1, $saleId)['sale']['sales_date'] === $transaction['sale']['sales_date']);
     $range = salesReportRange(date('m/d/Y') . ' - ' . date('m/d/Y'));
     $check(count(salesReportRows($conn, $range)) === 1);
-    require_once __DIR__ . '/../tcpdf/tcpdf.php';
+    require_once __DIR__ . '/../vendor/autoload.php';
     $pdf = new TCPDF(); $pdf->setPrintHeader(false); $pdf->setPrintFooter(false); $pdf->AddPage();
     $pdf->writeHTML('<table>' . salesReportHtml(salesReportRows($conn, $range)) . '</table>');
     $check(strpos($pdf->Output('integration.pdf','S'), '%PDF-') === 0);
