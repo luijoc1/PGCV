@@ -157,47 +157,10 @@
 
     <?php include 'includes/scripts.php'; ?>
 
+    <script src="dist/js/billing-summary.js"></script>
     <script>
         $(function() {
-            $('#form-facturacion').on('submit', function() {
-                $('button[form="form-facturacion"]').prop('disabled', true).text('Registrando pedido...');
-            });
-            // Cargar resumen del carrito
-            $.ajax({
-                type: 'POST',
-                url: 'cart_detalles.php',
-                dataType: 'json',
-                success: function(response) {
-                    var rows = $(response).filter('tr');
-                    var resumen = $('<tbody>');
-                    rows.each(function() {
-                        var cantidadInput = $(this).find('input[type=text]');
-                        // Las filas de total y mensajes no representan productos.
-                        if (!cantidadInput.length) return;
-                        var nombreCelda = $(this).find('td').eq(2).clone();
-                        nombreCelda.find('small, br').remove();
-                        var nombre = nombreCelda.text().trim();
-                        var cantidad = cantidadInput.val();
-                        var subtotal = $(this).find('td').last().text().trim();
-                        var fila = $('<tr>');
-                        $('<td>').text(nombre + ' x' + cantidad).appendTo(fila);
-                        $('<td>').addClass('text-right').text(subtotal).appendTo(fila);
-                        resumen.append(fila);
-                    });
-                    $('#resumen-tbody').empty().append(resumen.children());
-                }
-            });
-
-            // Cargar total
-            $.ajax({
-                type: 'POST',
-                url: 'cart_total.php',
-                dataType: 'json',
-                success: function(response) {
-                    var total = parseFloat(response);
-                    $('#resumen-total').text('$ ' + total.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
-                }
-            });
+            PGCVBillingSummary.init($);
         });
     </script>
 

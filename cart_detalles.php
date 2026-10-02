@@ -119,7 +119,7 @@ if (isset($_SESSION['user'])) {
     <tr>
         <td><button type='button' data-id='" . $row['productid'] . "' class='btn btn-danger btn-flat cart_delete'><i class='fa fa-remove'></i></button></td>
         <td><img src='" . escapeHtml($image) . "' width='30px' height='30px'></td>
-        <td>" . escapeHtml($product['name']) . $stock_warning . "</td>
+        <td>" . escapeHtml($product['prodname']) . $stock_warning . "</td>
         <td>" . $precio_html . "</td>
 						<td class='input-group'>
 							<span class='input-group-btn'>

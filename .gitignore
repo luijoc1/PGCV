@@ -2,6 +2,7 @@ includes/config.php
 tienda.sql
 /vendor/
 /storage/backups/*
+/storage/maintenance.lock
 !/storage/backups/.htaccess
 /storage/visual-review/*.png
 /REVISION_PROYECTO.md
@@ -9,3 +10,4 @@ tienda.sql
 /phpunit.xml
 /junit-report-allTest.xml
 /ResultadoallTest.txt
+/node_modules/

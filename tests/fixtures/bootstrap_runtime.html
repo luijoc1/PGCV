@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<title>PGCV Bootstrap runtime checks</title>
+<link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+<body>
+<h1>Bootstrap runtime checks</h1>
+<ul id="results"></ul>
+<div class="dropdown"><button id="dropdown-toggle" data-toggle="dropdown">Menu</button><ul class="dropdown-menu"><li>Item</li></ul></div>
+<button id="collapse-toggle" data-toggle="collapse" data-target="#panel">Panel</button><div id="panel" class="collapse">Content</div>
+<div id="dialog" class="modal"><div class="modal-dialog"><div class="modal-content">Dialog</div></div></div>
+<div id="slides" class="carousel"><div class="carousel-inner"><div class="item active">First</div><div class="item">Second</div></div></div>
+<div id="notice" class="alert">Notice<button data-dismiss="alert">Close</button></div>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../dist/js/bootstrap-pgcv.js"></script>
+<script>
+(async function () {
+  var $ = window.jQuery, passed = 0, failed = 0;
+  function check(ok, label) {
+    var item = document.createElement('li');
+    item.textContent = (ok ? 'PASS: ' : 'FAIL: ') + label;
+    document.querySelector('#results').appendChild(item);
+    if (ok) passed++; else failed++;
+  }
+  function tick() { return new Promise(function (resolve) { setTimeout(resolve, 400); }); }
+  check(typeof $.fn.button === 'undefined', 'CVE-2024-6485: Button is not registered');
+  check(typeof $.fn.tooltip === 'undefined' && typeof $.fn.popover === 'undefined', 'CVE-2025-1647: Tooltip and Popover are not registered');
+  $('#dropdown-toggle').trigger('click');
+  check($('.dropdown').hasClass('open'), 'Dropdown opens');
+  $('#collapse-toggle').trigger('click'); await tick();
+  check($('#panel').hasClass('in'), 'Collapse opens');
+  $('#dialog').modal('show'); await tick();
+  check($('#dialog').hasClass('in'), 'Modal opens');
+  $('#dialog').modal('hide'); await tick();
+  check(!document.body.classList.contains('modal-open'), 'Modal closes');
+  $('#slides').carousel({ interval: false }); $('#slides').carousel('next'); await tick();
+  check($('#slides .item').eq(1).hasClass('active'), 'Carousel advances');
+  $('#notice button').trigger('click');
+  check(document.querySelector('#notice') === null, 'Alert closes');
+  document.body.dataset.result = failed ? 'failed' : 'passed';
+  document.title = passed + ' passed, ' + failed + ' failed — Bootstrap runtime';
+}());
+</script>
+</body>
+</html>

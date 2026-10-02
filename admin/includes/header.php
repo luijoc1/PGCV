@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <?php require_once __DIR__ . '/../../includes/table_loading.php'; ?>
   	<meta charset="utf-8">
   	<meta http-equiv="X-UA-Compatible" content="IE=edge">
   	<title>Panel administrativo</title>
@@ -8,6 +9,8 @@
   	<meta content="width=device-width, initial-scale=1" name="viewport">
   	<!-- Bootstrap 3.3.7 -->
   	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/jodit/es2021/jodit.min.css">
+    <link rel="stylesheet" href="../dist/css/product-editor.css">
   	<!-- Font Awesome -->
   	<link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
     <!-- Select2 -->

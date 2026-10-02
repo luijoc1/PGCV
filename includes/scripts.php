@@ -7,8 +7,8 @@ $.ajaxPrefilter(function(options, originalOptions, xhr) {
   }
 });
 </script>
-<!-- Bootstrap 3.3.7 -->
-<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- Bootstrap 3.4.1: PGCV runtime without Button, Tooltip or Popover -->
+<script src="dist/js/bootstrap-pgcv.js"></script>
 <!-- DataTables -->
 <script src="bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
@@ -18,11 +18,10 @@ $.ajaxPrefilter(function(options, originalOptions, xhr) {
 <script src="bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.min.js"></script>
-<!-- CK Editor -->
-<script src="bower_components/ckeditor/ckeditor.js"></script>
 <script>
   $(function () {
     // Datatable
+    document.documentElement.classList.remove('pgcv-tables-pending');
     $('#example1').DataTable({
       scrollX: true,
       language: {
@@ -37,10 +36,6 @@ $.ajaxPrefilter(function(options, originalOptions, xhr) {
         aria: {sortAscending: ': ordenar de menor a mayor', sortDescending: ': ordenar de mayor a menor'}
       }
     });
-    //CK Editor
-    if (document.getElementById('editor1')) {
-      CKEDITOR.replace('editor1');
-    }
   });
 </script>
 <!--Magnify -->

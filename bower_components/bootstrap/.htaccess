@@ -1,0 +1,5 @@
+# PGCV serves dist/js/bootstrap-pgcv.js instead of the complete upstream bundle.
+# Prevent accidentally loading components excluded for known XSS advisories.
+<FilesMatch "^(bootstrap(\.min)?|button|tooltip|popover)\.js$">
+    Require all denied
+</FilesMatch>

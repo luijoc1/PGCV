@@ -21,5 +21,7 @@
     "package.json",
     "ISSUE_TEMPLATE.md",
     "typing-tests"
-  ]
+  ],
+  "version": "2.31.0",
+  "pgcvAssetSource": "npm:moment@2.31.0"
 }

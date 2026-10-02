@@ -357,9 +357,8 @@ $conn = $pdo->open();
                   </select>
                 </form>
               </div>
-              <div class="chart">
-                <div id="legend" class="text-center"></div>
-                <canvas id="barChart" style="height:300px"></canvas>
+              <div class="chart" style="position:relative;height:300px">
+                <canvas id="barChart" role="img" aria-label="Ventas mensuales de <?php echo (int) $year; ?>"></canvas>
               </div>
             </div>
           </div>
@@ -420,6 +419,7 @@ $conn = $pdo->open();
 
   <?php $pdo->close(); ?>
   <?php include 'includes/scripts.php'; ?>
+  <script src="../bower_components/chart.js/dist/chart.umd.min.js"></script>
   <script>
     $(function() {
       function dinero(v) {
@@ -429,46 +429,43 @@ $conn = $pdo->open();
         return '$' + v;
       }
 
-      var barChartCanvas = $('#barChart').get(0).getContext('2d')
-      var barChart = new Chart(barChartCanvas)
+      var barChartCanvas = document.getElementById('barChart');
       var barChartData = {
         labels: <?php echo $months; ?>,
         datasets: [{
           label: 'VENTAS',
-          fillColor: 'rgba(60,141,188,0.9)',
-          strokeColor: 'rgba(60,141,188,0.8)',
-          pointColor: '#3b8bba',
-          pointStrokeColor: 'rgba(60,141,188,1)',
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: 'rgba(60,141,188,1)',
+          backgroundColor: 'rgba(60,141,188,0.9)',
+          borderColor: 'rgba(60,141,188,0.8)',
+          borderWidth: 2,
           data: <?php echo $sales; ?>
         }]
       }
       var barChartOptions = {
-        scaleBeginAtZero: true,
-        scaleShowGridLines: true,
-        scaleGridLineColor: 'rgba(0,0,0,.05)',
-        scaleGridLineWidth: 1,
-        scaleShowHorizontalLines: true,
-        scaleShowVerticalLines: false,
-        barShowStroke: true,
-        barStrokeWidth: 2,
-        barValueSpacing: 5,
-        barDatasetSpacing: 1,
-        scaleLabel: function(o) {
-          return isNaN(o.value) ? o.value : dinero(o.value);
+        scales: {
+          x: {grid: {display: false}},
+          y: {
+            beginAtZero: true,
+            grid: {color: 'rgba(0,0,0,.05)'},
+            ticks: {callback: dinero}
+          }
         },
-        tooltipTemplate: function(o) {
-          return o.label + ': $' + Number(o.value).toLocaleString('es-CO');
+        plugins: {
+          legend: {position: 'top'},
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return 'VENTAS: $' + Number(context.parsed.y).toLocaleString('es-CO');
+              }
+            }
+          }
         },
-        legendTemplate: '<ul class="<%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span style="background-color:<%=datasets[i].fillColor%>"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>',
         responsive: true,
-        maintainAspectRatio: true
+        maintainAspectRatio: false
       }
 
-      barChartOptions.datasetFill = false
-      var myChart = barChart.Bar(barChartData, barChartOptions)
-      document.getElementById('legend').innerHTML = myChart.generateLegend();
+      new Chart(barChartCanvas, {
+        type: 'bar', data: barChartData, options: barChartOptions
+      });
     });
   </script>
   <script>

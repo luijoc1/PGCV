@@ -12,14 +12,9 @@
     "library"
   ],
   "homepage": "https://github.com/jquery/jquery-dist",
-  "version": "3.2.1",
-  "_release": "3.2.1",
-  "_resolution": {
-    "type": "version",
-    "tag": "3.2.1",
-    "commit": "77d2a51d0520d2ee44173afdf4e40a9201f5964e"
-  },
+  "version": "3.7.1",
   "_source": "https://github.com/jquery/jquery-dist.git",
   "_target": "^3.2.1",
-  "_originalSource": "jquery"
+  "_originalSource": "jquery",
+  "pgcvAssetSource": "npm:jquery@3.7.1"
 }

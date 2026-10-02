@@ -220,7 +220,7 @@ try {
           $('#edit_stock').val(response.stock);
           $('#edit_stock_minimo').val(response.stock_minimo);
           $('#edit_descuento').val(response.descuento);
-          CKEDITOR.instances["editor2"].setData(response.description);
+          PGCVProductEditors.setValue('editor2', response.description);
           getCategory();
         }
       });

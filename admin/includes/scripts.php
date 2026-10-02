@@ -7,19 +7,13 @@ $.ajaxPrefilter(function(options, originalOptions, xhr) {
   }
 });
 </script>
-<!-- jQuery UI 1.11.4 -->
-<script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- Bootstrap 3.4.1: PGCV runtime without Button, Tooltip or Popover -->
+<script src="../dist/js/bootstrap-pgcv.js"></script>
 <!-- Select2 -->
 <script src="../bower_components/select2/dist/js/select2.full.min.js"></script>
-<!-- Moment JS -->
-<script src="../bower_components/moment/moment.js"></script>
 <!-- DataTables -->
 <script src="../bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="../bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<!-- ChartJS -->
-<script src="../bower_components/chart.js/Chart.js"></script>
 <!-- daterangepicker -->
 <script src="../bower_components/moment/min/moment.min.js"></script>
 <script src="../bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
@@ -33,8 +27,9 @@ $.ajaxPrefilter(function(options, originalOptions, xhr) {
 <script src="../bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
-<!-- CK Editor -->
-<script src="../bower_components/ckeditor/ckeditor.js"></script>
+<!-- Product description editor -->
+<script src="../bower_components/jodit/es2021/jodit.min.js"></script>
+<script src="../dist/js/product-editor.js"></script>
 <!-- Active Script -->
 <script>
   $(function() {
@@ -64,6 +59,7 @@ $.ajaxPrefilter(function(options, originalOptions, xhr) {
       paginate: {first: 'Primera', last: 'Última', next: 'Siguiente', previous: 'Anterior'},
       aria: {sortAscending: ': ordenar de menor a mayor', sortDescending: ': ordenar de mayor a menor'}
     };
+    document.documentElement.classList.remove('pgcv-tables-pending');
     $('#example1').DataTable({
       scrollX: true,
       language: tableLanguage
@@ -89,9 +85,7 @@ $.ajaxPrefilter(function(options, originalOptions, xhr) {
     //Initialize Select2 Elements
     $('.select2').select2()
 
-    //CK Editor
-    if (document.getElementById('editor1')) CKEDITOR.replace('editor1');
-    if (document.getElementById('editor2')) CKEDITOR.replace('editor2');
+    PGCVProductEditors.init();
   });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

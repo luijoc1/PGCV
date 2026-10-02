@@ -1,11 +1,12 @@
 {
   "name": "Chart.js",
-  "version": "1.0.2",
+  "version": "4.5.1",
   "description": "Simple HTML5 Charts using the canvas element",
   "homepage": "https://github.com/nnnick/Chart.js",
   "author": "nnnick",
   "main": [
     "Chart.js"
   ],
-  "dependencies": {}
+  "dependencies": {},
+  "pgcvAssetSource": "npm:chart.js@4.5.1"
 }

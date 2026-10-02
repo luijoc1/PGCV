@@ -10,5 +10,7 @@
     "javascript",
     "browser",
     "library"
-  ]
+  ],
+  "version": "3.7.1",
+  "pgcvAssetSource": "npm:jquery@3.7.1"
 }
