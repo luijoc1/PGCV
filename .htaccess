@@ -10,3 +10,9 @@ php_flag log_errors on
 
 # Evitar listar directorios
 Options -Indexes
+
+# Maintenance gate: update /PGCV if the application directory changes.
+RewriteEngine On
+RewriteCond %{DOCUMENT_ROOT}/PGCV/storage/maintenance.lock -f
+RewriteRule \.php(?:/.*)?$ - [R=503,L,NC]
+ErrorDocument 503 "Servicio temporalmente en mantenimiento."
