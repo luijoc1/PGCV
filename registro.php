@@ -6,19 +6,19 @@ use PHPMailer\PHPMailer\Exception;
 include 'includes/session.php';
 require_once __DIR__ . '/includes/mailer.php';
 include 'includes/config.php';
-if (isset($_POST['signup'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
 	// Validar token CSRF
-	if (!validateCSRFToken($_POST['csrf_token'] ?? '')) {
+	if (!is_string($_POST['csrf_token'] ?? null) || !validateCSRFToken($_POST['csrf_token'])) {
 		$_SESSION['error'] = 'Solicitud inválida. Intenta de nuevo.';
 		header('location: registrarse.php');
 		exit();
 	}
 	// Sanitizar inputs
-	$firstname = htmlspecialchars(trim($_POST['firstname']), ENT_QUOTES, 'UTF-8');
-	$lastname  = htmlspecialchars(trim($_POST['lastname']), ENT_QUOTES, 'UTF-8');
-	$email     = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
-	$password  = trim($_POST['password']);
-	$repassword = trim($_POST['repassword']);
+	$firstname = htmlspecialchars(is_string($_POST['firstname'] ?? null) ? trim($_POST['firstname']) : '', ENT_QUOTES, 'UTF-8');
+	$lastname  = htmlspecialchars(is_string($_POST['lastname'] ?? null) ? trim($_POST['lastname']) : '', ENT_QUOTES, 'UTF-8');
+	$email     = is_string($_POST['email'] ?? null) ? trim($_POST['email']) : '';
+	$password  = is_string($_POST['password'] ?? null) ? trim($_POST['password']) : '';
+	$repassword = is_string($_POST['repassword'] ?? null) ? trim($_POST['repassword']) : '';
 
 	// Validaciones
 	if (empty($firstname) || empty($lastname)) {
@@ -92,8 +92,8 @@ if (isset($_POST['signup'])) {
 			$code = substr(str_shuffle($set), 0, 12);
 
 			try {
-				$stmt = $conn->prepare("INSERT INTO users (email, password, firstname, lastname, activate_code, created_on) VALUES (:email, :password, :firstname, :lastname, :code, :now)");
-				$stmt->execute(['email' => $email, 'password' => $password, 'firstname' => $firstname, 'lastname' => $lastname, 'code' => $code, 'now' => $now]);
+				$stmt = $conn->prepare("INSERT INTO users (email, password, firstname, lastname, activate_code, activate_expires_at, created_on) VALUES (:email, :password, :firstname, :lastname, :code, :expires, :now)");
+				$stmt->execute(['email' => $email, 'password' => $password, 'firstname' => $firstname, 'lastname' => $lastname, 'code' => $code, 'expires' => gmdate('Y-m-d H:i:s', time() + 86400), 'now' => $now]);
 				$userid = $conn->lastInsertId();
 
 

@@ -1,7 +1,9 @@
 <?php include 'includes/session.php'; ?>
 <?php
 	$output = '';
-	if(!isset($_GET['code']) OR !isset($_GET['user'])){
+	if (!is_string($_GET['code'] ?? null) || $_GET['code'] === ''
+		|| !is_scalar($_GET['user'] ?? null)
+		|| filter_var($_GET['user'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
 		$output .= '
 			<div class="alert alert-danger">
                 <h4><i class="icon fa fa-warning"></i> Error!</h4>
@@ -13,11 +15,11 @@
 	else{
 		$conn = $pdo->open();
 
-		$stmt = $conn->prepare("SELECT *, COUNT(*) AS numrows FROM users WHERE activate_code=:code AND id=:id");
+		$stmt = $conn->prepare("SELECT * FROM users WHERE activate_code=:code AND id=:id LIMIT 1");
 		$stmt->execute(['code'=>$_GET['code'], 'id'=>$_GET['user']]);
 		$row = $stmt->fetch();
 
-		if($row['numrows'] > 0){
+		if ($row) {
 			if($row['status']){
 				$output .= '
 					<div class="alert alert-danger">
@@ -29,14 +31,18 @@
 			}
 			else{
 				try{
-					$stmt = $conn->prepare("UPDATE users SET status=:status WHERE id=:id");
-					$stmt->execute(['status'=>1, 'id'=>$row['id']]);
+					$stmt = $conn->prepare("UPDATE users SET status=1 WHERE id=:id AND status=0 AND activate_code=:code AND activate_expires_at>:now");
+					$stmt->execute(['id'=>$row['id'], 'code'=>$_GET['code'], 'now'=>gmdate('Y-m-d H:i:s')]);
+					if ($stmt->rowCount() !== 1) {
+						$output .= '<div class="alert alert-danger">El enlace de activación venció o ya no es válido. Contacta con el administrador para activar tu cuenta.</div>';
+					} else {
 					$output .= '
 						<div class="alert alert-success">
 			                <h4><i class="icon fa fa-check"></i> Success!</h4>
-			                Cuenta activada - Email: <b>'.escapeHtml($row['email']).'</b>.
+                Cuenta activada - Email: <b>'.escapeHtml($row['email']).'</b>.
 			            </div>Iniciar sesión</a> o de vuelta a <a href="index.php">Página principal</a>.</h4>
 					';
+					}
 				}
 				catch(PDOException $e){
 					$output .= '
