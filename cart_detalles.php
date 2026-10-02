@@ -1,5 +1,7 @@
 <?php
 include 'includes/session.php';
+requireValidCSRFRequest(true);
+header('Content-Type: application/json; charset=utf-8');
 $conn = $pdo->open();
 
 $output = '';
@@ -7,7 +9,7 @@ $output = '';
 if (isset($_SESSION['user'])) {
 	if (isset($_SESSION['cart'])) {
 		foreach ($_SESSION['cart'] as $row) {
-			$stmt = $conn->prepare("SELECT *, COUNT(*) AS numrows FROM cart WHERE user_id=:user_id AND product_id=:product_id");
+			$stmt = $conn->prepare("SELECT COUNT(*) AS numrows FROM cart WHERE user_id=:user_id AND product_id=:product_id");
 			$stmt->execute(['user_id' => $user['id'], 'product_id' => $row['productid']]);
 			$crow = $stmt->fetch();
 			if ($crow['numrows'] < 1) {
@@ -26,7 +28,7 @@ if (isset($_SESSION['user'])) {
 		$stmt = $conn->prepare("SELECT *, cart.id AS cartid FROM cart LEFT JOIN products ON products.id=cart.product_id WHERE user_id=:user");
 		$stmt->execute(['user' => $user['id']]);
 		foreach ($stmt as $row) {
-			$image = (!empty($row['photo'])) ? 'images/' . $row['photo'] : 'images/noimage.jpg';
+			$image = safeImageUrl($row['photo'], 'images/', 'noimage.jpg');
 			$stock_available = $row['stock'];
 
 			// Si el stock es menor que la cantidad en el carrito, ajustar la cantidad
@@ -57,8 +59,8 @@ if (isset($_SESSION['user'])) {
 			$output .= "
     <tr>
         <td><button type='button' data-id='" . $row['cartid'] . "' class='btn btn-danger btn-flat cart_delete'><i class='fa fa-remove'></i></button></td>
-        <td><img src='" . $image . "' width='30px' height='30px'></td>
-        <td>" . $row['name'] . $stock_warning . "</td>
+        <td><img src='" . escapeHtml($image) . "' width='30px' height='30px'></td>
+        <td>" . escapeHtml($row['name']) . $stock_warning . "</td>
         <td>" . $precio_html . "</td>
 						<td class='input-group'>
 							<span class='input-group-btn'>
@@ -78,7 +80,7 @@ if (isset($_SESSION['user'])) {
 				<tr>
 					<td colspan='5' align='right'><b>Total</b></td>
 					<td><b>&#36; " . number_format($total, 2) . "</b></td>
-				<tr>
+				</tr>
 			";
 	} catch (PDOException $e) {
 		$output .= $e->getMessage();
@@ -103,7 +105,7 @@ if (isset($_SESSION['user'])) {
 				$row['quantity'] = $product['stock'];
 			}
 
-			$image = (!empty($product['photo'])) ? 'images/' . $product['photo'] : 'images/noimage.jpg';
+			$image = safeImageUrl($product['photo'], 'images/', 'noimage.jpg');
 			$precio_final = precioConDescuento($product['price'], $product['descuento']);
 			$subtotal = $precio_final * $row['quantity'];
 			$total += $subtotal;
@@ -116,8 +118,8 @@ if (isset($_SESSION['user'])) {
 			$output .= "
     <tr>
         <td><button type='button' data-id='" . $row['productid'] . "' class='btn btn-danger btn-flat cart_delete'><i class='fa fa-remove'></i></button></td>
-        <td><img src='" . $image . "' width='30px' height='30px'></td>
-        <td>" . $product['name'] . $stock_warning . "</td>
+        <td><img src='" . escapeHtml($image) . "' width='30px' height='30px'></td>
+        <td>" . escapeHtml($product['name']) . $stock_warning . "</td>
         <td>" . $precio_html . "</td>
 						<td class='input-group'>
 							<span class='input-group-btn'>
@@ -138,13 +140,13 @@ if (isset($_SESSION['user'])) {
 				<tr>
 					<td colspan='5' align='right'><b>Total</b></td>
 					<td><b>&#36; " . number_format($total, 2) . "</b></td>
-				<tr>
+				</tr>
 			";
 	} else {
 		$output .= "
 				<tr>
 					<td colspan='6' align='center'>Carrito de compras vacío</td>
-				<tr>
+				</tr>
 			";
 	}
 }

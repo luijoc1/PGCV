@@ -1,53 +1,24 @@
 <?php
 include 'includes/session.php';
+require_once __DIR__ . '/../includes/sales_report.php';
+date_default_timezone_set('America/Bogota');
 
-function generateRow($from, $to, $conn)
-{
-	$contents = '';
-
-	$stmt = $conn->prepare("SELECT *, sales.id AS salesid FROM sales LEFT JOIN users ON users.id=sales.user_id WHERE sales_date BETWEEN '$from' AND '$to' ORDER BY sales_date DESC");
-	$stmt->execute();
-	$total = 0;
-	$i = 0;
-	foreach ($stmt as $row) {
-		$stmt2 = $conn->prepare("SELECT * FROM details LEFT JOIN products ON products.id=details.product_id WHERE sales_id=:id");
-		$stmt2->execute(['id' => $row['salesid']]);
-		$amount = 0;
-		foreach ($stmt2 as $details) {
-			$precio_final = precioConDescuento($details['price'], $details['descuento'] ?? 0);
-			$subtotal = $precio_final * $details['quantity'];
-			$amount += $subtotal;
-		}
-		$total += $amount;
-		$bg = ($i % 2 == 0) ? '#ffffff' : '#f5f7fa';
-		$contents .= '
-			<tr style="background-color:' . $bg . ';">
-				<td>' . date('M d, Y', strtotime($row['sales_date'])) . '</td>
-				<td>' . $row['firstname'] . ' ' . $row['lastname'] . '</td>
-				<td align="center">' . $row['pay_id'] . '</td>
-				<td align="right">&#36; ' . number_format($amount, 2) . '</td>
-			</tr>
-			';
-		$i++;
-	}
-
-	$contents .= '
-			<tr style="background-color:#1a2e4a;">
-				<td colspan="3" align="right" style="color:#ffffff;"><b>TOTAL</b></td>
-				<td align="right" style="color:#ffffff;"><b>&#36; ' . number_format($total, 2) . '</b></td>
-			</tr>
-		';
-	return $contents;
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['print'])) {
+    $_SESSION['error'] = 'Selecciona un rango de fechas para imprimir el reporte.';
+    header('location: sales.php');
+    exit();
 }
+try {
+    $range = salesReportRange($_POST['date_range'] ?? null);
+} catch (InvalidArgumentException $e) {
+    $_SESSION['error'] = $e->getMessage();
+    header('location: sales.php');
+    exit();
+}
+$from_title = $range['from_title'];
+$to_title = $range['to_title'];
 
-if (isset($_POST['print'])) {
-	$ex = explode(' - ', $_POST['date_range']);
-	$from = date('Y-m-d', strtotime($ex[0]));
-	$to = date('Y-m-d', strtotime($ex[1]));
-	$from_title = date('M d, Y', strtotime($ex[0]));
-	$to_title = date('M d, Y', strtotime($ex[1]));
-
-	$conn = $pdo->open();
+$conn = $pdo->open();
 
 	require_once('../tcpdf/tcpdf.php');
 	$pdf = new TCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -84,7 +55,7 @@ if (isset($_POST['print'])) {
 				</tr>
 		';
 
-	$content .= generateRow($from, $to, $conn);
+	$content .= salesReportHtml(salesReportRows($conn, $range));
 	$content .= '</table>';
 
 	$content .= '
@@ -102,7 +73,3 @@ if (isset($_POST['print'])) {
 	$pdf->Output('reporte_ventas.pdf', 'I');
 
 	$pdo->close();
-} else {
-	$_SESSION['error'] = 'Necesita rango de fechas para proporcionar impresión de ventas';
-	header('location: sales.php');
-}

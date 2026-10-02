@@ -1,18 +1,25 @@
 <?php
 include 'includes/session.php';
+require_once __DIR__ . '/../includes/mailer.php';
+requireValidCSRFRequest(true);
+require_once __DIR__ . '/../includes/sale_status.php';
+header('Content-Type: application/json; charset=utf-8');
 include '../includes/config.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+date_default_timezone_set('America/Bogota');
+
 $output = ['success' => false];
 
 if (isset($_POST['id']) && isset($_POST['estado'])) {
-  $id = $_POST['id'];
+  $id = filter_var($_POST['id'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 2147483647]]);
   $estado = $_POST['estado'];
 
   $estados_validos = ['pendiente', 'en_proceso', 'enviado', 'entregado'];
-  if (!in_array($estado, $estados_validos)) {
+  if ($id === false || !in_array($estado, $estados_validos, true)) {
+    http_response_code(400);
     echo json_encode($output);
     exit();
   }
@@ -26,11 +33,16 @@ if (isset($_POST['id']) && isset($_POST['estado'])) {
                         WHERE sales.id=:id");
     $stmt->execute(['id' => $id]);
     $sale = $stmt->fetch();
+    if (!$sale) {
+      http_response_code(404);
+      $pdo->close();
+      echo json_encode($output);
+      exit();
+    }
     $estado_anterior = $sale['estado'];
 
-    // Actualizar estado
-    $stmt = $conn->prepare("UPDATE sales SET estado=:estado WHERE id=:id");
-    $stmt->execute(['estado' => $estado, 'id' => $id]);
+    // Conservar la fecha original de compra al actualizar el estado.
+    updateSaleStatus($conn, $id, $estado);
 
     // Log cambio de estado
     registrarLog($conn, 'logs_ventas', $id, [
@@ -73,13 +85,13 @@ if (isset($_POST['id']) && isset($_POST['estado'])) {
           <td style="background:#1a2e4a; padding:28px 36px; text-align:center;">
             <span style="font-size:18px; font-weight:bold; color:#ffffff;">Almacén los Almendros</span><br><br>
             <h1 style="color:#ffffff; font-size:20px; margin:8px 0 4px;">Actualización de tu pedido</h1>
-            <p style="color:rgba(255,255,255,0.65); font-size:13px; margin:0;">Transacción N° ' . $sale['pay_id'] . '</p>
+            <p style="color:rgba(255,255,255,0.65); font-size:13px; margin:0;">Transacción N° ' . escapeHtml($sale['pay_id']) . '</p>
           </td>
         </tr>
         <tr>
           <td style="padding:28px 36px; text-align:center;">
             <p style="color:#444; font-size:15px; margin:0 0 20px;">
-              Hola <strong>' . $sale['firstname'] . ' ' . $sale['lastname'] . '</strong>, el estado de tu pedido ha sido actualizado.
+              Hola <strong>' . escapeHtml($sale['firstname']) . ' ' . escapeHtml($sale['lastname']) . '</strong>, el estado de tu pedido ha sido actualizado.
             </p>
             <div style="display:inline-block; background:' . $color . '; color:#fff; padding:12px 32px; border-radius:8px; font-size:18px; font-weight:bold; margin-bottom:20px;">
               ' . $estado_texto . '
@@ -101,17 +113,9 @@ if (isset($_POST['id']) && isset($_POST['estado'])) {
 </html>';
 
     require_once '../vendor/autoload.php';
-    $mail = new PHPMailer(true);
+    $mail = null;
     try {
-      $mail->isSMTP();
-      $mail->Host = 'smtp.gmail.com';
-      $mail->SMTPAuth = true;
-      $mail->Username = MAIL_USER;
-      $mail->Password = MAIL_PASS;
-      $mail->SMTPOptions = array('ssl' => array('verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true));
-      $mail->SMTPSecure = 'ssl';
-      $mail->Port = 465;
-      $mail->setFrom(MAIL_USER);
+      $mail = configuredMailer();
       $mail->addAddress($sale['email']);
       $mail->isHTML(true);
       $mail->CharSet = 'UTF-8';
@@ -119,6 +123,7 @@ if (isset($_POST['id']) && isset($_POST['estado'])) {
       $mail->Body = $correo_body;
       $mail->send();
     } catch (Exception $e) {
+      error_log('Fallo de correo de estado: ' . $e->getMessage());
       // Si falla el correo no interrumpimos
     }
 

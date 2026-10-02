@@ -1,4 +1,5 @@
 <?php include 'includes/session.php'; ?>
+<?php require_once __DIR__ . '/includes/checkout.php'; ?>
 <?php include 'includes/header.php'; ?>
 
 <body class="hold-transition skin-blue layout-top-nav">
@@ -9,6 +10,13 @@
         <div class="content-wrapper">
             <div class="container">
                 <section class="content">
+
+                    <?php foreach (['error' => 'danger', 'success' => 'success'] as $messageKey => $messageClass): ?>
+                        <?php if (isset($_SESSION[$messageKey])): ?>
+                            <div class="alert alert-<?php echo $messageClass; ?>"><?php echo escapeHtml($_SESSION[$messageKey]); ?></div>
+                            <?php unset($_SESSION[$messageKey]); ?>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
 
                     <?php
                     if (!isset($_SESSION['user'])) {
@@ -32,6 +40,7 @@
 
                                     <form action="ventas.php" method="POST" id="form-facturacion">
                                         <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+                                        <input type="hidden" name="checkout_token" value="<?php echo issueCheckoutToken(); ?>">
                                         <div class="box box-solid">
                                             <div class="box-header with-border">
                                                 <h3 class="box-title">Datos de facturación</h3>
@@ -39,34 +48,34 @@
                                             <div class="box-body">
 
                                                 <div class="form-group">
-                                                    <label>Nombre completo</label>
-                                                    <input type="text" name="nombre_facturacion" class="form-control"
-                                                        value="<?php echo htmlspecialchars($user['firstname'] . ' ' . $user['lastname']); ?>" required>
+                                                    <label for="billing-name">Nombre completo</label>
+                                                    <input type="text" name="nombre_facturacion" id="billing-name" autocomplete="name" class="form-control"
+                                                        value="<?php echo htmlspecialchars($user['firstname'] . ' ' . $user['lastname']); ?>" maxlength="100" required>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Documento (cédula / NIT)</label>
-                                                    <input type="text" name="documento" class="form-control" placeholder="1098765432" required>
+                                                    <label for="billing-document">Documento (cédula / NIT)</label>
+                                                    <input type="text" name="documento" id="billing-document" class="form-control" placeholder="1098765432" maxlength="30" required>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Dirección de entrega</label>
-                                                    <input type="text" name="direccion" class="form-control"
+                                                    <label for="billing-address">Dirección de entrega</label>
+                                                    <input type="text" name="direccion" id="billing-address" autocomplete="street-address" class="form-control"
                                                         value="<?php echo htmlspecialchars($user['address']); ?>"
-                                                        placeholder="Calle 10 # 5-20" required>
+                                                        placeholder="Calle 10 # 5-20" maxlength="200" required>
                                                 </div>
 
                                                 <div class="row">
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
-                                                            <label>Teléfono</label>
-                                                            <input type="text" name="telefono" class="form-control" placeholder="3001234567" required>
+                                                            <label for="billing-phone">Teléfono</label>
+                                                            <input type="tel" name="telefono" id="billing-phone" autocomplete="tel" class="form-control" placeholder="3001234567" maxlength="20" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
-                                                            <label>Ciudad</label>
-                                                            <input type="text" name="ciudad" class="form-control" placeholder="Santa Marta" required>
+                                                            <label for="billing-city">Ciudad</label>
+                                                            <input type="text" name="ciudad" id="billing-city" autocomplete="address-level2" class="form-control" placeholder="Santa Marta" maxlength="100" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -99,6 +108,7 @@
                                                     </label>
                                                 </div>
 
+                                                <p class="text-muted">El pedido se registra para coordinar el pago. Este formulario no realiza cobros en línea.</p>
                                             </div>
                                         </div>
                                     </form>
@@ -123,7 +133,7 @@
                                     </div>
 
                                     <button type="submit" form="form-facturacion" class="btn btn-success btn-lg btn-block" style="padding: 15px;">
-                                        <i class="fa fa-lock"></i> Confirmar y pagar
+                                        <i class="fa fa-lock"></i> Confirmar pedido
                                     </button>
 
                                     <p class="text-muted text-center" style="margin-top: 10px; font-size: 12px;">
@@ -149,21 +159,32 @@
 
     <script>
         $(function() {
+            $('#form-facturacion').on('submit', function() {
+                $('button[form="form-facturacion"]').prop('disabled', true).text('Registrando pedido...');
+            });
             // Cargar resumen del carrito
             $.ajax({
                 type: 'POST',
                 url: 'cart_detalles.php',
-                dataType: 'html',
+                dataType: 'json',
                 success: function(response) {
                     var rows = $(response).filter('tr');
-                    var resumen = '';
+                    var resumen = $('<tbody>');
                     rows.each(function() {
-                        var nombre = $(this).find('td').eq(2).text().trim();
-                        var cantidad = $(this).find('input[type=text]').val();
+                        var cantidadInput = $(this).find('input[type=text]');
+                        // Las filas de total y mensajes no representan productos.
+                        if (!cantidadInput.length) return;
+                        var nombreCelda = $(this).find('td').eq(2).clone();
+                        nombreCelda.find('small, br').remove();
+                        var nombre = nombreCelda.text().trim();
+                        var cantidad = cantidadInput.val();
                         var subtotal = $(this).find('td').last().text().trim();
-                        resumen += '<tr><td>' + nombre + ' x' + cantidad + '</td><td class="text-right">' + subtotal + '</td></tr>';
+                        var fila = $('<tr>');
+                        $('<td>').text(nombre + ' x' + cantidad).appendTo(fila);
+                        $('<td>').addClass('text-right').text(subtotal).appendTo(fila);
+                        resumen.append(fila);
                     });
-                    $('#resumen-tbody').html(resumen);
+                    $('#resumen-tbody').empty().append(resumen.children());
                 }
             });
 
@@ -174,7 +195,7 @@
                 dataType: 'json',
                 success: function(response) {
                     var total = parseFloat(response);
-                    $('#resumen-total').text('$' + total.toFixed(2));
+                    $('#resumen-total').text('$ ' + total.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
                 }
             });
         });

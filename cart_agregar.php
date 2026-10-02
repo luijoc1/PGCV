@@ -1,12 +1,25 @@
 <?php
 	include 'includes/session.php';
+requireValidCSRFRequest(true);
+	require_once __DIR__ . '/includes/cart_operations.php';
+	header('Content-Type: application/json; charset=UTF-8');
+	if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+		http_response_code(405);
+		header('Allow: POST');
+		echo json_encode(['error' => true, 'message' => 'Usa POST para agregar artículos.']);
+		exit();
+	}
+	$id = cartPositiveInteger($_POST['id'] ?? null);
+	$quantity = cartPositiveInteger($_POST['quantity'] ?? null);
+	if ($id === null || $quantity === null) {
+		echo json_encode(['error' => true, 'message' => 'El producto y la cantidad deben ser enteros positivos.']);
+		exit();
+	}
 
 	$conn = $pdo->open();
 
 	$output = array('error'=>false);
 
-	$id = $_POST['id'];
-	$quantity = $_POST['quantity'];
 
 	// Validar stock disponible
 	$stmt = $conn->prepare("SELECT stock FROM products WHERE id=:id");
@@ -30,10 +43,10 @@
 	}
 
 	if(isset($_SESSION['user'])){
-		$stmt = $conn->prepare("SELECT *, COUNT(*) AS numrows FROM cart WHERE user_id=:user_id AND product_id=:product_id");
+		$stmt = $conn->prepare("SELECT quantity FROM cart WHERE user_id=:user_id AND product_id=:product_id LIMIT 1");
 		$stmt->execute(['user_id'=>$user['id'], 'product_id'=>$id]);
 		$row = $stmt->fetch();
-		if($row['numrows'] < 1){
+		if(!$row){
 			try{
 				$stmt = $conn->prepare("INSERT INTO cart (user_id, product_id, quantity) VALUES (:user_id, :product_id, :quantity)");
 				$stmt->execute(['user_id'=>$user['id'], 'product_id'=>$id, 'quantity'=>$quantity]);

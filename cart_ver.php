@@ -15,18 +15,22 @@
 	        		<h1 class="page-header">Su carrito de compras</h1>
 	        		<div class="box box-solid">
 	        			<div class="box-body">
+		        		<div class="table-responsive" role="region" aria-label="Productos del carrito" tabindex="0">
 		        		<table class="table table-bordered">
 		        			<thead>
-		        				<th></th>
-		        				<th>Foto</th>
-		        				<th>Nombre</th>
-		        				<th>Precio</th>
-		        				<th width="20%">Cantidad</th>
-		        				<th>Subtotal</th>
+                                <tr>
+		        				<th scope="col"><span class="sr-only">Acciones</span></th>
+		        				<th scope="col">Foto</th>
+		        				<th scope="col">Nombre</th>
+		        				<th scope="col">Precio</th>
+		        				<th scope="col" width="20%">Cantidad</th>
+		        				<th scope="col">Subtotal</th>
+                                </tr>
 		        			</thead>
 		        			<tbody id="tbody">
 		        			</tbody>
 		        		</table>
+                            </div>
 	        			</div>
 	        		</div>
 	        		<?php
@@ -188,7 +192,7 @@ function getTotal(){
 		success:function(response){
 			total = parseFloat(response);
 			// Actualizar el total mostrado
-			$('#total-display').text('$' + total.toFixed(2));
+			$('#total-display').text('$ ' + total.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
 		}
 	});
 }

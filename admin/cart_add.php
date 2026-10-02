@@ -1,5 +1,6 @@
 <?php
 	include 'includes/session.php';
+requireValidCSRFRequest();
 
 	if(isset($_POST['add'])){
 		$id = $_POST['id'];
@@ -8,8 +9,8 @@
 
 		$conn = $pdo->open();
 
-		$stmt = $conn->prepare("SELECT *, COUNT(*) AS numrows FROM cart WHERE product_id=:id");
-		$stmt->execute(['id'=>$product]);
+		$stmt = $conn->prepare("SELECT COUNT(*) AS numrows FROM cart WHERE product_id=:id AND user_id=:user");
+		$stmt->execute(['id'=>$product, 'user'=>$id]);
 		$row = $stmt->fetch();
 
 		if($row['numrows'] > 0){

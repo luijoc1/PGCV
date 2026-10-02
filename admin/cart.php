@@ -27,7 +27,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        <?php echo $user['firstname'].' '.$user['lastname'].' Carrito' ?>
+        <?php echo escapeHtml($user['firstname']).' '.escapeHtml($user['lastname']).' Carrito' ?>
       </h1>
       <ol class="breadcrumb">
         <li><a href="home.php"><i class="fa fa-dashboard"></i> Casa</a></li>
@@ -44,7 +44,7 @@
             <div class='alert alert-danger alert-dismissible'>
               <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
               <h4><i class='icon fa fa-warning'></i> Error!</h4>
-              ".$_SESSION['error']."
+              ".escapeHtml($_SESSION['error'])."
             </div>
           ";
           unset($_SESSION['error']);
@@ -54,7 +54,7 @@
             <div class='alert alert-success alert-dismissible'>
               <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
               <h4><i class='icon fa fa-check'></i> ¡Éxito!</h4>
-              ".$_SESSION['success']."
+              ".escapeHtml($_SESSION['success'])."
             </div>
           ";
           unset($_SESSION['success']);
@@ -84,7 +84,7 @@
                       foreach($stmt as $row){
                         echo "
                           <tr>
-                            <td>".$row['name']."</td>
+                            <td>".escapeHtml($row['name'])."</td>
                             <td>".$row['quantity']."</td>
                             <td>
                               <button class='btn btn-success btn-sm edit btn-flat' data-id='".$row['cartid']."'><i class='fa fa-edit'></i> Editar cantidad</button>
@@ -165,7 +165,7 @@ function getRow(id){
     success: function(response){
       $('.cartid').val(response.cartid);
       $('.userid').val(response.user_id);
-      $('.productname').html(response.name);
+      $('.productname').text(response.name);
       $('#edit_quantity').val(response.quantity);
     }
   });

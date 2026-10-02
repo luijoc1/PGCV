@@ -1,5 +1,6 @@
 <?php
 include 'includes/session.php';
+require_once __DIR__ . '/../includes/sale_history.php';
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header('location: sales.php');
@@ -22,7 +23,7 @@ if (!$sale) {
     exit();
 }
 
-$stmt = $conn->prepare("SELECT details.*, products.name, products.price, products.descuento 
+$stmt = $conn->prepare("SELECT " . saleDetailColumns() . "
                         FROM details 
                         LEFT JOIN products ON products.id = details.product_id 
                         WHERE details.sales_id = :sales_id");
@@ -110,9 +111,15 @@ $pdf->Cell(35, 8, 'Precio unit.', 1, 0, 'C', true);
 $pdf->Cell(35, 8, 'Subtotal', 1, 1, 'C', true);
 $pdf->SetTextColor(0, 0, 0);
 $pdf->SetFont('helvetica', '', 10);
+foreach ($productos as $detail) {
+    if (!isset($detail['historical_unit_price'])) {
+        $pdf->Cell(0, 7, 'Venta antigua: detalle estimado con precios actuales.', 0, 1);
+        break;
+    }
+}
 $fill = false;
 foreach ($productos as $p) {
-    $precio_final = precioConDescuento($p['price'], $p['descuento'] ?? 0);
+    $precio_final = saleDetailUnitPrice($p);
     $subtotal = $precio_final * $p['quantity'];
     $pdf->SetFillColor(249, 249, 249);
     $pdf->Cell(90, 7, $p['name'], 1, 0, 'L', $fill);

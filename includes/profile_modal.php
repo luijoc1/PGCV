@@ -10,8 +10,9 @@
             <div class="modal-body">
               <p>
                 Fecha: <span id="date"></span>
-                <span class="pull-right">Transaction#: <span id="transid"></span></span> 
+                <span class="pull-right">Transacción: <span id="transid"></span></span> 
               </p>
+              <div class="table-responsive" role="region" aria-label="Detalles de la transacción" tabindex="0">
               <table class="table table-bordered">
                 <thead>
                   <th>Producto</th>
@@ -26,6 +27,7 @@
                   </tr>
                 </tbody>
               </table>
+              </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
@@ -45,46 +47,47 @@
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="perfil_editar.php" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <div class="form-group">
                     <label for="firstname" class="col-sm-3 control-label">Primer nombre</label>
 
                     <div class="col-sm-9">
-                      <input type="text" class="form-control" id="firstname" name="firstname" value="<?php echo $user['firstname']; ?>">
+                      <input type="text" class="form-control" id="firstname" name="firstname" value="<?php echo escapeHtml($user['firstname']); ?>">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="lastname" class="col-sm-3 control-label">Apellido</label>
 
                     <div class="col-sm-9">
-                      <input type="text" class="form-control" id="lastname" name="lastname" value="<?php echo $user['lastname']; ?>">
+                      <input type="text" class="form-control" id="lastname" name="lastname" value="<?php echo escapeHtml($user['lastname']); ?>">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="email" class="col-sm-3 control-label">Email</label>
+                    <label for="email" class="col-sm-3 control-label">Correo electrónico</label>
 
                     <div class="col-sm-9">
-                      <input type="text" class="form-control" id="email" name="email" value="<?php echo $user['email']; ?>">
+                      <input type="text" class="form-control" id="email" name="email" value="<?php echo escapeHtml($user['email']); ?>">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="password" class="col-sm-3 control-label">Contraseña</label>
 
                     <div class="col-sm-9">
-                      <input type="password" class="form-control" id="password" name="password" value="<?php echo $user['password']; ?>">
+                      <input type="password" class="form-control" id="password" name="password" autocomplete="new-password" placeholder="Dejar vacío para conservar la contraseña">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="contact" class="col-sm-3 control-label">Datos de contacto</label>
 
                     <div class="col-sm-9">
-                      <input type="text" class="form-control" id="contact" name="contact" value="<?php echo $user['contact_info']; ?>">
+                      <input type="text" class="form-control" id="contact" name="contact" value="<?php echo escapeHtml($user['contact_info']); ?>">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="address" class="col-sm-3 control-label">Direcciòn</label>
+                    <label for="address" class="col-sm-3 control-label">Dirección</label>
 
                     <div class="col-sm-9">
-                      <textarea class="form-control" id="address" name="address"><?php echo $user['address']; ?></textarea>
+                      <textarea class="form-control" id="address" name="address"><?php echo escapeHtml($user['address']); ?></textarea>
                     </div>
                 </div>
                 <div class="form-group">
@@ -100,7 +103,7 @@
                     <label for="curr_password" class="col-sm-3 control-label">Contraseña actual</label>
 
                     <div class="col-sm-9">
-                      <input type="password" class="form-control" id="curr_password" name="curr_password" placeholder="input current password to save changes" required>
+                      <input type="password" class="form-control" id="curr_password" name="curr_password" autocomplete="current-password" placeholder="Tu contraseña actual para guardar los cambios" required>
                     </div>
                 </div>
             </div>

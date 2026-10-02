@@ -10,19 +10,19 @@
 			$stmt->execute(['user_id'=>$user['id']]);
 			foreach($stmt as $row){
 				$output['count']++;
-				$image = (!empty($row['photo'])) ? 'images/'.$row['photo'] : 'images/noimage.jpg';
-				$productname = (strlen($row['prodname']) > 30) ? substr_replace($row['prodname'], '...', 27) : $row['prodname'];
+				$image = safeImageUrl($row['photo'], 'images/', 'noimage.jpg');
+				$productname = (mb_strlen($row['prodname'] ?? '', 'UTF-8') > 30) ? mb_substr($row['prodname'], 0, 27, 'UTF-8') . '...' : ($row['prodname'] ?? 'Producto no disponible');
 				$output['list'] .= "
 					<li>
-						<a href='producto.php?product=".$row['slug']."'>
+						<a href='producto.php?product=".rawurlencode((string) $row['slug'])."'>
 							<div class='pull-left'>
-								<img src='".$image."' class='thumbnail' alt='User Image'>
+								<img src='".escapeHtml($image)."' class='thumbnail' alt='User Image'>
 							</div>
 							<h4>
-		                        <b>".$row['catname']."</b>
+		                        <b>".escapeHtml($row['catname'])."</b>
 		                        <small>&times; ".$row['quantity']."</small>
 		                    </h4>
-		                    <p>".$productname."</p>
+		                    <p>".escapeHtml($productname)."</p>
 						</a>
 					</li>
 				";
@@ -46,18 +46,18 @@
 				$stmt = $conn->prepare("SELECT *, products.name AS prodname, category.name AS catname FROM products LEFT JOIN category ON category.id=products.category_id WHERE products.id=:id");
 				$stmt->execute(['id'=>$row['productid']]);
 				$product = $stmt->fetch();
-				$image = (!empty($product['photo'])) ? 'images/'.$product['photo'] : 'images/noimage.jpg';
+				$image = safeImageUrl($product['photo'], 'images/', 'noimage.jpg');
 				$output['list'] .= "
 					<li>
-						<a href='producto.php?product=".$product['slug']."'>
+						<a href='producto.php?product=".rawurlencode((string) $product['slug'])."'>
 							<div class='pull-left'>
-								<img src='".$image."' class='img-circle' alt='User Image'>
+								<img src='".escapeHtml($image)."' class='img-circle' alt='User Image'>
 							</div>
 							<h4>
-		                        <b>".$product['catname']."</b>
+		                        <b>".escapeHtml($product['catname'])."</b>
 		                        <small>&times; ".$row['quantity']."</small>
 		                    </h4>
-		                    <p>".$product['prodname']."</p>
+		                    <p>".escapeHtml($product['prodname'])."</p>
 						</a>
 					</li>
 				";
@@ -70,4 +70,3 @@
 	echo json_encode($output);
 
 ?>
-

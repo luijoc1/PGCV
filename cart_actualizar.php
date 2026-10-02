@@ -1,40 +1,46 @@
 <?php
 	include 'includes/session.php';
+requireValidCSRFRequest(true);
+	require_once __DIR__ . '/includes/cart_operations.php';
+	header('Content-Type: application/json; charset=UTF-8');
+	if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+		http_response_code(405);
+		header('Allow: POST');
+		echo json_encode(['error' => true, 'message' => 'Usa POST para actualizar el carrito.']);
+		exit();
+	}
+	$id = cartPositiveInteger($_POST['id'] ?? null);
+	$qty = cartPositiveInteger($_POST['qty'] ?? null);
+	if ($id === null || $qty === null) {
+		echo json_encode(['error' => true, 'message' => 'El artículo y la cantidad deben ser enteros positivos.']);
+		exit();
+	}
 
 	$conn = $pdo->open();
 
 	$output = array('error'=>false);
 
-	$id = $_POST['id'];
-	$qty = $_POST['qty'];
 
 	// Validar stock disponible
 	if(isset($_SESSION['user'])){
-		$stmt = $conn->prepare("SELECT products.stock FROM cart LEFT JOIN products ON products.id=cart.product_id WHERE cart.id=:id");
-		$stmt->execute(['id'=>$id]);
-		$cart_item = $stmt->fetch();
-		
-		if(!$cart_item || $cart_item['stock'] < $qty){
-			$output['error'] = true;
-			$output['message'] = 'Cantidad solicitada excede el stock disponible. Stock disponible: '.($cart_item ? $cart_item['stock'] : 0);
-			$pdo->close();
-			echo json_encode($output);
-			exit();
-		}
-		
 		try{
-			$stmt = $conn->prepare("UPDATE cart SET quantity=:quantity WHERE id=:id");
-			$stmt->execute(['quantity'=>$qty, 'id'=>$id]);
+			updateOwnedCart($conn, $_SESSION['user'], $id, $qty);
 			$output['message'] = 'Actualizado';
+		}
+		catch(InvalidArgumentException $e){
+			$output['error'] = true;
+			$output['message'] = $e->getMessage();
 		}
 		catch(PDOException $e){
 			$output['error'] = true;
-			$output['message'] = $e->getMessage();
+			error_log('Error al actualizar carrito: ' . $e->getMessage());
+			$output['message'] = 'No se pudo actualizar el carrito.';
 		}
 	}
 	else{
 		// Para usuarios no registrados, validar stock
-		foreach($_SESSION['cart'] as $key => $row){
+		$output = ['error' => true, 'message' => 'Artículo no encontrado en tu carrito.'];
+		foreach(($_SESSION['cart'] ?? []) as $key => $row){
 			if($row['productid'] == $id){
 				$stmt = $conn->prepare("SELECT stock FROM products WHERE id=:id");
 				$stmt->execute(['id'=>$id]);
@@ -49,6 +55,7 @@
 				}
 				
 				$_SESSION['cart'][$key]['quantity'] = $qty;
+				$output['error'] = false;
 				$output['message'] = 'Actualizado';
 			}
 		}

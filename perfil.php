@@ -2,6 +2,7 @@
 <?php
 if (!isset($_SESSION['user'])) {
 	header('location: index.php');
+	exit();
 }
 ?>
 <?php include 'includes/header.php'; ?>
@@ -22,7 +23,7 @@ if (!isset($_SESSION['user'])) {
 							if (isset($_SESSION['error'])) {
 								echo "
 	        					<div class='callout callout-danger'>
-	        						" . $_SESSION['error'] . "
+	        						" . escapeHtml($_SESSION['error']) . "
 	        					</div>
 	        				";
 								unset($_SESSION['error']);
@@ -31,7 +32,7 @@ if (!isset($_SESSION['user'])) {
 							if (isset($_SESSION['success'])) {
 								echo "
 	        					<div class='callout callout-success'>
-	        						" . $_SESSION['success'] . "
+	        						" . escapeHtml($_SESSION['success']) . "
 	        					</div>
 	        				";
 								unset($_SESSION['success']);
@@ -40,30 +41,22 @@ if (!isset($_SESSION['user'])) {
 							<div class="box box-solid">
 								<div class="box-body">
 									<div class="col-sm-3">
-										<img src="<?php echo (!empty($user['photo'])) ? 'images/' . $user['photo'] : 'images/profile.jpg'; ?>" width="100%">
+										<img src="<?php echo safeImageUrl($user['photo'], 'images/', 'profile.jpg'); ?>" class="profile-avatar" alt="Foto de perfil">
 									</div>
 									<div class="col-sm-9">
-										<div class="row">
-											<div class="col-sm-4">
-												<h4>Nombre:</h4>
-												<h4>Correo electrónico:</h4>
-												<h4>Información de contacto:</h4>
-												<h4>Dirección:</h4>
-												<h4>Miembro desde:</h4>
-											</div>
-											<div class="col-sm-8">
-												<h4>
-													<?php echo $user['firstname'] . ' ' . $user['lastname']; ?>
-													<span class="pull-right">
-														<a href="#edit" class="btn btn-success btn-flat btn-sm" data-toggle="modal">
-															<i class="fa fa-edit"></i> Edit
-														</a>
-													</span>
-												</h4>
-												<h4><?php echo $user['email']; ?></h4>
-												<h4><?php echo (!empty($user['contact_info'])) ? $user['contact_info'] : 'N/a'; ?></h4>
-												<h4><?php echo (!empty($user['address'])) ? $user['address'] : 'N/a'; ?></h4>
-												<h4><?php
+										<dl class="profile-details">
+                                                <dt>Nombre</dt>
+                                                <dd>
+													<?php echo escapeHtml($user['firstname']) . ' ' . escapeHtml($user['lastname']); ?>
+                                                </dd>
+                                                <dt>Correo electrónico</dt>
+                                                <dd><?php echo escapeHtml($user['email']); ?></dd>
+                                                <dt>Información de contacto</dt>
+                                                <dd><?php echo escapeHtml(!empty($user['contact_info']) ? $user['contact_info'] : 'Sin registrar'); ?></dd>
+                                                <dt>Dirección</dt>
+                                                <dd><?php echo escapeHtml(!empty($user['address']) ? $user['address'] : 'Sin registrar'); ?></dd>
+                                                <dt>Miembro desde</dt>
+                                                <dd><?php
 													if (!empty($user['created_on'])) {
 														$partes = explode('-', $user['created_on']);
 														$meses = ['', 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -71,9 +64,9 @@ if (!isset($_SESSION['user'])) {
 													} else {
 														echo 'N/a';
 													}
-													?></h4>
-											</div>
-										</div>
+													?></dd>
+                                            </dl>
+                                            <a href="#edit" class="btn btn-success btn-flat btn-sm" data-toggle="modal"><i class="fa fa-edit"></i> Editar perfil</a>
 									</div>
 								</div>
 							</div>
@@ -87,7 +80,7 @@ if (!isset($_SESSION['user'])) {
 											<th class="hidden"></th>
 											<th>Fecha</th>
 											<th>Transacción#</th>
-											<th>Cantidad </th>
+											<th>Total</th>
 											<th>Estado</th>
 											<th>Detalles completos</th>
 											<th>Factura</th>
@@ -100,14 +93,7 @@ if (!isset($_SESSION['user'])) {
 												$stmt = $conn->prepare("SELECT * FROM sales WHERE user_id=:user_id ORDER BY sales_date DESC");
 												$stmt->execute(['user_id' => $user['id']]);
 												foreach ($stmt as $row) {
-													$stmt2 = $conn->prepare("SELECT * FROM details LEFT JOIN products ON products.id=details.product_id WHERE sales_id=:id");
-													$stmt2->execute(['id' => $row['id']]);
-													$total = 0;
-													foreach ($stmt2 as $row2) {
-														$precio_final = precioConDescuento($row2['price'], $row2['descuento'] ?? 0);
-														$subtotal = $precio_final * $row2['quantity'];
-														$total += $subtotal;
-													}
+													$total = (float) $row['total'];
 													$estados = [
 														'pendiente'  => ['label' => 'Pendiente',  'color' => '#f39c12'],
 														'en_proceso' => ['label' => 'En proceso', 'color' => '#3a8eff'],
@@ -121,7 +107,7 @@ if (!isset($_SESSION['user'])) {
     <tr>
         <td class='hidden'></td>
         <td>" . date('M d, Y', strtotime($row['sales_date'])) . "</td>
-        <td>" . $row['pay_id'] . "</td>
+        <td>" . escapeHtml($row['pay_id']) . "</td>
         <td>&#36; " . number_format($total, 2) . "</td>
         <td>
             <span style='background:" . $estado_info['color'] . "; color:#fff; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:bold;'>
@@ -163,6 +149,9 @@ if (!isset($_SESSION['user'])) {
 			$(document).on('click', '.transact', function(e) {
 				e.preventDefault();
 				$('#transaction').modal('show');
+				$('.prepend_items').remove();
+				$('#date, #transid').text('');
+				$('#total').empty();
 				var id = $(this).data('id');
 				$.ajax({
 					type: 'POST',
@@ -172,10 +161,14 @@ if (!isset($_SESSION['user'])) {
 					},
 					dataType: 'json',
 					success: function(response) {
-						$('#date').html(response.date);
-						$('#transid').html(response.transaction);
+						$('#date').text(response.date);
+						$('#transid').text(response.transaction);
 						$('#detail').prepend(response.list);
 						$('#total').html(response.total);
+					},
+					error: function(xhr) {
+						$('#transaction').modal('hide');
+						alert((xhr.responseJSON && xhr.responseJSON.message) || 'No se pudo consultar la transacción.');
 					}
 				});
 			});

@@ -9,6 +9,7 @@
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="cart_add.php">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <input type="hidden" class="userid" name="id">
                 <div class="form-group">
                     <label for="product" class="col-sm-3 control-label">Producto</label>
@@ -47,6 +48,7 @@
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="cart_edit.php">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <input type="hidden" class="cartid" name="cartid">
                 <input type="hidden" class="userid" name="userid">
                 <div class="form-group">
@@ -77,6 +79,7 @@
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="cart_delete.php">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <input type="hidden" class="cartid" name="cartid">
                 <input type="hidden" class="userid" name="userid">
                 <div class="text-center">

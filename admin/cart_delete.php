@@ -1,5 +1,6 @@
 <?php
 	include 'includes/session.php';
+requireValidCSRFRequest();
 
 	if(isset($_POST['delete'])){
 		$userid = $_POST['userid'];
