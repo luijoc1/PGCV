@@ -9,32 +9,33 @@
           	</div>
           	<div class="modal-body">
             	<form class="form-horizontal" method="POST" action="profile_update.php?return=<?php echo basename($_SERVER['PHP_SELF']); ?>" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
           		  <div class="form-group">
                   	<label for="email" class="col-sm-3 control-label">Correo electrónico</label>
 
                   	<div class="col-sm-9">
-                    	<input type="text" class="form-control" id="email" name="email" value="<?php echo $admin['email']; ?>">
+                    	<input type="text" class="form-control" id="email" name="email" value="<?php echo escapeHtml($admin['email']); ?>">
                   	</div>
                 </div>
                 <div class="form-group">
                     <label for="password" class="col-sm-3 control-label">Contraseña</label>
 
                     <div class="col-sm-9"> 
-                      <input type="password" class="form-control" id="password" name="password" value="<?php echo $admin['password']; ?>">
+                      <input type="password" class="form-control" id="password" name="password" autocomplete="new-password" placeholder="Dejar vacío para conservar la contraseña">
                     </div>
                 </div>
                 <div class="form-group">
                   	<label for="firstname" class="col-sm-3 control-label">Primer nombre</label>
 
                   	<div class="col-sm-9">
-                    	<input type="text" class="form-control" id="firstname" name="firstname" value="<?php echo $admin['firstname']; ?>">
+                    	<input type="text" class="form-control" id="firstname" name="firstname" value="<?php echo escapeHtml($admin['firstname']); ?>">
                   	</div>
                 </div>
                 <div class="form-group">
                   	<label for="lastname" class="col-sm-3 control-label">Apellido</label>
 
                   	<div class="col-sm-9">
-                    	<input type="text" class="form-control" id="lastname" name="lastname" value="<?php echo $admin['lastname']; ?>">
+                    	<input type="text" class="form-control" id="lastname" name="lastname" value="<?php echo escapeHtml($admin['lastname']); ?>">
                   	</div>
                 </div>
                 <div class="form-group">

@@ -1,7 +1,9 @@
 <?php
 	include 'includes/session.php';
+requireValidCSRFRequest();
+	require_once __DIR__ . '/../includes/image_upload.php';
 
-	if(isset($_GET['return'])){
+	if(is_string($_GET['return'] ?? null) && preg_match('/\A[a-zA-Z0-9_-]+\.php\z/', $_GET['return'])){
 		$return = $_GET['return'];
 		
 	}
@@ -15,22 +17,15 @@
 		$password = $_POST['password'];
 		$firstname = $_POST['firstname'];
 		$lastname = $_POST['lastname'];
-		$photo = $_FILES['photo']['name'];
 		if(password_verify($curr_password, $admin['password'])){
-			if(!empty($photo)){
-				move_uploaded_file($_FILES['photo']['tmp_name'], '../images/'.$photo);
-				$filename = $photo;	
+			try {
+				$password = editedPasswordHash($password, $admin['password']);
+			} catch (InvalidArgumentException $e) {
+				$_SESSION['error'] = $e->getMessage();
+				header('location: home.php');
+				exit();
 			}
-			else{
-				$filename = $admin['photo'];
-			}
-
-			if($password == $admin['password']){
-				$password = $admin['password'];
-			}
-			else{
-				$password = password_hash($password, PASSWORD_DEFAULT);
-			}
+			$filename = photoUploadOrRedirect($_FILES['photo'] ?? null, $admin['photo'], 'home.php');
 
 			$conn = $pdo->open();
 
@@ -56,5 +51,6 @@
 	}
 
 	header('location:'.$return);
+	exit();
 
 ?>

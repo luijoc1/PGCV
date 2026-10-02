@@ -1,55 +1,49 @@
 <?php
-	include 'includes/session.php';
+include 'includes/session.php';
+require_once __DIR__ . '/includes/password_reset.php';
 
-	if(!isset($_GET['code']) OR !isset($_GET['user'])){
-		header('location: index.php');
-	    exit(); 
-	}
-
-	$path = 'password_restablecer.php?code='.$_GET['code'].'&user='.$_GET['user'];
-
-	if(isset($_POST['reset'])){
-		$password = $_POST['password'];
-		$repassword = $_POST['repassword'];
-
-		if($password != $repassword){
-			$_SESSION['error'] = 'Las contraseñas no coinciden';
-			header('location: '.$path);
-		}
-		else{
-			$conn = $pdo->open();
-
-			$stmt = $conn->prepare("SELECT *, COUNT(*) AS numrows FROM users WHERE reset_code=:code AND id=:id");
-			$stmt->execute(['code'=>$_GET['code'], 'id'=>$_GET['user']]);
-			$row = $stmt->fetch();
-
-			if($row['numrows'] > 0){
-				$password = password_hash($password, PASSWORD_DEFAULT);
-
-				try{
-					$stmt = $conn->prepare("UPDATE users SET password=:password WHERE id=:id");
-					$stmt->execute(['password'=>$password, 'id'=>$row['id']]);
-
-					$_SESSION['success'] = 'La contraseña se restableció correctamente';
-					header('location: login.php');
-				}
-				catch(PDOException $e){
-					$_SESSION['error'] = $e->getMessage();
-					header('location: '.$path);
-				}
-			}
-			else{
-				$_SESSION['error'] = 'El código no coincide con el usuario';
-				header('location: '.$path);
-			}
-
-			$pdo->close();
-		}
-
-	}
-	else{
-		$_SESSION['error'] = 'Ingrese la nueva contraseña primero';
-		header('location: '.$path);
-	}
-
-?>
+$parameters = passwordResetParameters($_GET['code'] ?? null, $_GET['user'] ?? null);
+if ($parameters === null) {
+    $_SESSION['error'] = 'Enlace de recuperación inválido.';
+    header('location: password_olvidada.php');
+    exit();
+}
+$path = 'password_restablecer.php?' . http_build_query($parameters);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['reset'])) {
+    $_SESSION['error'] = 'Ingrese la nueva contraseña primero';
+    header('location: ' . $path);
+    exit();
+}
+if (!is_string($_POST['csrf_token'] ?? null) || !validateCSRFToken($_POST['csrf_token'])) {
+    $_SESSION['error'] = 'Solicitud inválida. Intenta de nuevo.';
+    header('location: ' . $path);
+    exit();
+}
+$password = $_POST['password'] ?? null;
+$repassword = $_POST['repassword'] ?? null;
+if (!is_string($password) || !is_string($repassword) || strlen($password) < 6) {
+    $_SESSION['error'] = 'La contraseña debe tener al menos 6 caracteres';
+    header('location: ' . $path);
+    exit();
+}
+if ($password !== $repassword) {
+    $_SESSION['error'] = 'Las contraseñas no coinciden';
+    header('location: ' . $path);
+    exit();
+}
+$conn = $pdo->open();
+try {
+    if (consumePasswordReset($conn, $parameters['code'], $parameters['user'], $password)) {
+        $_SESSION['success'] = 'La contraseña se restableció correctamente';
+        $path = 'login.php';
+    } else {
+        $_SESSION['error'] = 'El enlace de recuperación es inválido, venció o ya fue utilizado.';
+        $path = 'password_olvidada.php';
+    }
+} catch (PDOException $e) {
+    error_log('Error al restablecer contraseña: ' . $e->getMessage());
+    $_SESSION['error'] = 'No se pudo restablecer la contraseña. Intenta de nuevo.';
+}
+$pdo->close();
+header('location: ' . $path);
+exit();

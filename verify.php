@@ -1,135 +1,46 @@
 <?php
 include 'includes/session.php';
 
-if (isset($_POST['login'])) {
-	// Validar token CSRF
-	if (!validateCSRFToken($_POST['csrf_token'] ?? '')) {
-		$_SESSION['error'] = 'Solicitud inválida. Intenta de nuevo.';
-		header('location: login.php');
-		exit();
-	}
-
-	// Sanitizar inputs
-	$email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
-	$password = trim($_POST['password']);
-
-	// Validar formato de email
-	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-		$_SESSION['error'] = 'Formato de correo electrónico inválido';
-		header('location: login.php');
-		exit();
-	}
-
-	// Validar que la contraseña no esté vacía
-	if (empty($password)) {
-		$_SESSION['error'] = 'Ingresa tu contraseña';
-		header('location: login.php');
-		exit();
-	}
-
-	// Límite de intentos (5 intentos por 15 minutos)
-	if (!isset($_SESSION['login_attempts'])) $_SESSION['login_attempts'] = 0;
-	if (!isset($_SESSION['login_time'])) $_SESSION['login_time'] = time();
-
-	// Resetear intentos si pasaron 15 minutos
-	if (time() - $_SESSION['login_time'] > 900) {
-		$_SESSION['login_attempts'] = 0;
-		$_SESSION['login_time'] = time();
-	}
-
-	if ($_SESSION['login_attempts'] >= 5) {
-		$minutos = ceil((900 - (time() - $_SESSION['login_time'])) / 60);
-		$_SESSION['error'] = 'Demasiados intentos fallidos. Intenta de nuevo en ' . $minutos . ' minuto(s).';
-
-		// Log bloqueado
-		$conn_log = $pdo->open();
-		registrarLog(
-			$conn_log,
-			'logs_login',
-			0,
-			null,
-			['email' => $email, 'bloqueado_por' => '5 intentos fallidos'],
-			'BLOQUEADO',
-			$email
-		);
-		$pdo->close();
-
-		header('location: login.php');
-		exit();
-	}
-
-	$conn = $pdo->open();
-
-	try {
-		$stmt = $conn->prepare("SELECT *, COUNT(*) AS numrows FROM users WHERE email = :email");
-		$stmt->execute(['email' => $email]);
-		$row = $stmt->fetch();
-
-		if ($row['numrows'] > 0) {
-			if ($row['status']) {
-				if (password_verify($password, $row['password'])) {
-					// Login exitoso - resetear intentos
-					$_SESSION['login_attempts'] = 0;
-					$_SESSION['login_time'] = time();
-
-					// Log login exitoso
-					registrarLog(
-						$conn,
-						'logs_login',
-						$row['id'],
-						null,
-						['email' => $email, 'tipo' => $row['type'] == 1 ? 'admin' : 'cliente'],
-						'EXITOSO',
-						$email
-					);
-
-					if ($row['type']) {
-						$_SESSION['admin'] = $row['id'];
-					} else {
-						$_SESSION['user'] = $row['id'];
-					}
-				} else {
-					$_SESSION['login_attempts']++;
-					$restantes = 5 - $_SESSION['login_attempts'];
-					$_SESSION['error'] = 'Contraseña incorrecta. Te quedan ' . $restantes . ' intento(s).';
-
-					// Log login fallido
-					registrarLog(
-						$conn,
-						'logs_login',
-						$row['id'],
-						null,
-						['email' => $email, 'intentos' => $_SESSION['login_attempts']],
-						'FALLIDO',
-						$email
-					);
-				}
-			} else {
-				$_SESSION['error'] = 'Cuenta no activada. Revisa tu correo electrónico.';
-			}
-		} else {
-			$_SESSION['login_attempts']++;
-			$_SESSION['error'] = 'Correo electrónico no encontrado';
-
-			// Log correo no encontrado
-			registrarLog(
-				$conn,
-				'logs_login',
-				0,
-				null,
-				['email' => $email, 'motivo' => 'correo no encontrado'],
-				'FALLIDO',
-				$email
-			);
-		}
-	} catch (PDOException $e) {
-		$_SESSION['error'] = 'Error de conexión. Intenta de nuevo.';
-	}
-
-	$pdo->close();
-} else {
-	$_SESSION['error'] = 'Ingresa tus credenciales primero';
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['login']) || !validateCSRFToken($_POST['csrf_token'] ?? null)) {
+    $_SESSION['error'] = 'Solicitud inválida. Recarga la página e intenta de nuevo.';
+    header('location: login.php');
+    exit();
+}
+$email = is_string($_POST['email'] ?? null) ? trim($_POST['email']) : '';
+$password = $_POST['password'] ?? null;
+if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !is_string($password) || $password === '') {
+    $_SESSION['error'] = 'Ingresa un correo válido y tu contraseña.';
+    header('location: login.php');
+    exit();
 }
 
+$conn = $pdo->open();
+try {
+    // REMOTE_ADDR procede de la conexión; no se confía en encabezados del navegador.
+    $retry = reserveLoginAttempt($conn, $email, $_SERVER['REMOTE_ADDR'] ?? 'unknown');
+    if ($retry > 0) {
+        $_SESSION['error'] = 'Demasiados intentos. Intenta de nuevo en ' . (int) ceil($retry / 60) . ' minuto(s).';
+        registrarLog($conn, 'logs_login', 0, null, null, 'BLOQUEADO', $email);
+    } else {
+        $stmt = $conn->prepare('SELECT * FROM users WHERE email=:email LIMIT 1');
+        $stmt->execute(['email' => $email]);
+        $account = $stmt->fetch(PDO::FETCH_ASSOC);
+        $hash = $account['password'] ?? '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi';
+        $valid = password_verify($password, $hash);
+        if ($account && $valid && (int) $account['status'] === 1 && in_array((int) $account['type'], [0, 1], true)) {
+            registrarLog($conn, 'logs_login', $account['id'], null, null, 'EXITOSO', $email);
+            clearSuccessfulLoginAttempts($conn, $email);
+            establishAccountSession($account);
+        } else {
+            $_SESSION['error'] = 'Correo o contraseña incorrectos, o cuenta no habilitada.';
+            registrarLog($conn, 'logs_login', 0, null, null, 'FALLIDO', $email);
+        }
+    }
+} catch (Throwable $e) {
+    clearAccountSession();
+    error_log('Error al iniciar sesión: ' . $e->getMessage());
+    $_SESSION['error'] = 'No se pudo iniciar sesión. Intenta de nuevo.';
+}
+$pdo->close();
 header('location: login.php');
 exit();

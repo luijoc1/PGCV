@@ -12,6 +12,6 @@
 		
 		$pdo->close();
 
-		echo json_encode($row);
+		echo json_encode($row ? publicAccountFields($row) : null);
 	}
 ?>

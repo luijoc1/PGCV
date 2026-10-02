@@ -1,5 +1,12 @@
 <?php
 include 'includes/session.php';
+requireValidCSRFRequest();
+require_once __DIR__ . '/includes/image_upload.php';
+
+if (!isset($_SESSION['user'], $user['id'])) {
+    header('location: login.php');
+    exit();
+}
 
 $conn = $pdo->open();
 
@@ -11,20 +18,15 @@ if (isset($_POST['edit'])) {
 	$lastname = $_POST['lastname'];
 	$contact = $_POST['contact'];
 	$address = $_POST['address'];
-	$photo = $_FILES['photo']['name'];
 	if (password_verify($curr_password, $user['password'])) {
-		if (!empty($photo)) {
-			move_uploaded_file($_FILES['photo']['tmp_name'], 'images/' . $photo);
-			$filename = $photo;
-		} else {
-			$filename = $user['photo'];
+		try {
+			$password = editedPasswordHash($password, $user['password']);
+		} catch (InvalidArgumentException $e) {
+			$_SESSION['error'] = $e->getMessage();
+			header('location: perfil.php');
+			exit();
 		}
-
-		if ($password == $user['password']) {
-			$password = $user['password'];
-		} else {
-			$password = password_hash($password, PASSWORD_DEFAULT);
-		}
+		$filename = photoUploadOrRedirect($_FILES['photo'] ?? null, $user['photo'], 'perfil.php');
 
 		try {
 			$stmt = $conn->prepare("UPDATE users SET email=:email, password=:password, firstname=:firstname, lastname=:lastname, contact_info=:contact, address=:address, photo=:photo WHERE id=:id");
@@ -44,3 +46,4 @@ if (isset($_POST['edit'])) {
 $pdo->close();
 
 header('location: perfil.php');
+exit();

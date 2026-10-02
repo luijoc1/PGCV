@@ -4,6 +4,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 include 'includes/session.php';
+require_once __DIR__ . '/includes/mailer.php';
 include 'includes/config.php';
 if (isset($_POST['signup'])) {
 	// Validar token CSRF
@@ -143,7 +144,7 @@ if (isset($_POST['signup'])) {
             </table>
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
               <tr><td align="center">
-                <a href="http://localhost/PGCV/activate.php?code=' . $code . '&user=' . $userid . '"
+                <a href="' . escapeHtml(applicationUrl('activate.php', ['code' => $code, 'user' => $userid])) . '"
                    style="display:inline-block; background:#1a2e4a; color:#ffffff; text-decoration:none;
                           padding:13px 32px; border-radius:8px; font-size:15px; font-weight:bold;">
                   🔓 Activar mi cuenta
@@ -180,25 +181,10 @@ if (isset($_POST['signup'])) {
 				//Load phpmailer
 				require 'vendor/autoload.php';
 
-				$mail = new PHPMailer(true);
+				$mail = null;
 				try {
 					//Server settings
-					$mail->isSMTP();
-					$mail->Host = 'smtp.gmail.com';
-					$mail->SMTPAuth = true;
-					$mail->Username = MAIL_USER;
-					$mail->Password = MAIL_PASS;
-					$mail->SMTPOptions = array(
-						'ssl' => array(
-							'verify_peer' => false,
-							'verify_peer_name' => false,
-							'allow_self_signed' => true
-						)
-					);
-					$mail->SMTPSecure = 'ssl';
-					$mail->Port = 465;
-
-					$mail->setFrom(MAIL_USER);
+					$mail = configuredMailer();
 
 					//Recipients
 					$mail->addAddress($email);

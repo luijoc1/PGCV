@@ -5,11 +5,11 @@
 
   <?php
     if(isset($_SESSION['error'])){
-      echo "<div class='callout callout-danger text-center'><p>".$_SESSION['error']."</p></div>";
+      echo "<div class='callout callout-danger text-center'><p>".escapeHtml($_SESSION['error'])."</p></div>";
       unset($_SESSION['error']);
     }
     if(isset($_SESSION['success'])){
-      echo "<div class='callout callout-success text-center'><p>".$_SESSION['success']."</p></div>";
+      echo "<div class='callout callout-success text-center'><p>".escapeHtml($_SESSION['success'])."</p></div>";
       unset($_SESSION['success']);
     }
   ?>
@@ -32,11 +32,12 @@
       </p>
 
       <form action="restablecer.php" method="POST">
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
         <div class="form-group">
-          <label style="font-size:13px; color:#666;">Correo electrónico</label>
+          <label for="reset-email" style="font-size:13px; color:#666;">Correo electrónico</label>
           <div style="position:relative;">
             <i class="fa fa-envelope" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#aaa;"></i>
-            <input type="email" class="form-control" name="email" placeholder="correo@ejemplo.com"
+            <input type="email" class="form-control" name="email" id="reset-email" autocomplete="email" placeholder="correo@ejemplo.com"
                    style="padding-left:36px;" required>
           </div>
         </div>

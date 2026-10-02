@@ -4,30 +4,34 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 include 'includes/session.php';
+require_once __DIR__ . '/includes/mailer.php';
+require_once __DIR__ . '/includes/password_reset.php';
 
-if (isset($_POST['reset'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset'])) {
 
-	$email = $_POST['email'];
+	if (!is_string($_POST['csrf_token'] ?? null) || !validateCSRFToken($_POST['csrf_token'])) {
+		$_SESSION['error'] = 'Solicitud inválida. Intenta de nuevo.';
+		header('location: password_olvidada.php');
+		exit();
+	}
+	$email = is_string($_POST['email'] ?? null) ? trim($_POST['email']) : '';
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		$_SESSION['error'] = 'Ingresa un correo electrónico válido.';
+		header('location: password_olvidada.php');
+		exit();
+	}
 
 	$conn = $pdo->open();
 
-	$stmt = $conn->prepare("SELECT *, COUNT(*) AS numrows FROM users WHERE email=:email");
+	$stmt = $conn->prepare("SELECT id, email FROM users WHERE email=:email LIMIT 1");
 	$stmt->execute(['email' => $email]);
 	$row = $stmt->fetch();
 
-	if ($row['numrows'] > 0) {
-
-		// Generar código de recuperación
-		$set = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-		$code = substr(str_shuffle($set), 0, 15);
+	if ($row) {
 
 		try {
 
-			$stmt = $conn->prepare("UPDATE users SET reset_code=:code WHERE id=:id");
-			$stmt->execute([
-				'code' => $code,
-				'id' => $row['id']
-			]);
+			$code = issuePasswordReset($conn, $row['id']);
 
 			$message = '
             <!DOCTYPE html>
@@ -62,7 +66,7 @@ if (isset($_POST['reset'])) {
                                         <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta.</p>
 
                                         <p>
-                                            <strong>Correo:</strong> ' . $email . '
+                                            <strong>Correo:</strong> ' . htmlspecialchars($email, ENT_QUOTES, 'UTF-8') . '
                                         </p>
 
                                         <p>
@@ -70,7 +74,7 @@ if (isset($_POST['reset'])) {
                                         </p>
 
                                         <p style="text-align:center;margin:35px 0;">
-                                            <a href="http://localhost/PGCV/password_restablecer.php?code=' . $code . '&user=' . $row['id'] . '"
+                                            <a href="' . escapeHtml(applicationUrl('password_restablecer.php', ['code' => $code, 'user' => $row['id']])) . '"
                                             style="
                                             background:#1a2e4a;
                                             color:#ffffff;
@@ -84,6 +88,7 @@ if (isset($_POST['reset'])) {
                                         </p>
 
                                         <p style="color:#777;">
+                                            Este enlace vence en una hora y solo puede usarse una vez.
                                             Si no solicitaste este cambio, puedes ignorar este correo.
                                         </p>
 
@@ -107,30 +112,11 @@ if (isset($_POST['reset'])) {
 
 			require 'vendor/autoload.php';
 
-			$mail = new PHPMailer(true);
+			$mail = null;
 
 			try {
 
-				$mail->isSMTP();
-				$mail->Host = 'smtp.gmail.com';
-				$mail->SMTPAuth = true;
-
-				// Usa la configuración del config.php
-				$mail->Username = MAIL_USER;
-				$mail->Password = MAIL_PASS;
-
-				$mail->SMTPOptions = array(
-					'ssl' => array(
-						'verify_peer' => false,
-						'verify_peer_name' => false,
-						'allow_self_signed' => true
-					)
-				);
-
-				$mail->SMTPSecure = 'ssl';
-				$mail->Port = 465;
-
-				$mail->setFrom(MAIL_USER, 'Almacén los Almendros');
+				$mail = configuredMailer();
 				$mail->addAddress($email);
 				$mail->addReplyTo(MAIL_USER, 'Almacén los Almendros');
 
@@ -143,10 +129,12 @@ if (isset($_POST['reset'])) {
 
 				$_SESSION['success'] = 'Se envió un enlace de recuperación a tu correo electrónico.';
 			} catch (Exception $e) {
-				$_SESSION['error'] = 'No fue posible enviar el correo.<br><strong>Detalle:</strong> ' . $mail->ErrorInfo;
+				error_log('Error de correo de recuperación: ' . $e->getMessage());
+				$_SESSION['error'] = 'No fue posible enviar el correo. Intenta de nuevo.';
 			}
-		} catch (PDOException $e) {
-			$_SESSION['error'] = $e->getMessage();
+		} catch (\Throwable $e) {
+			error_log('Error al generar recuperación: ' . $e->getMessage());
+			$_SESSION['error'] = 'No fue posible generar el enlace. Intenta de nuevo.';
 		}
 	} else {
 		$_SESSION['error'] = 'No existe una cuenta registrada con ese correo electrónico.';

@@ -2,6 +2,7 @@
 <?php
 if (isset($_SESSION['user'])) {
   header('location: cart_ver.php');
+  exit();
 }
 ?>
 <?php include 'includes/header.php'; ?>
@@ -13,7 +14,7 @@ if (isset($_SESSION['user'])) {
     if (isset($_SESSION['error'])) {
       echo "
         <div class='callout callout-danger text-center'>
-          <p>" . $_SESSION['error'] . "</p> 
+          <p>" . escapeHtml($_SESSION['error']) . "</p> 
         </div>
       ";
       unset($_SESSION['error']);
@@ -21,7 +22,7 @@ if (isset($_SESSION['user'])) {
     if (isset($_SESSION['success'])) {
       echo "
         <div class='callout callout-success text-center'>
-          <p>" . $_SESSION['success'] . "</p> 
+          <p>" . escapeHtml($_SESSION['success']) . "</p> 
         </div>
       ";
       unset($_SESSION['success']);
@@ -45,19 +46,19 @@ if (isset($_SESSION['user'])) {
           <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
 
           <div class="form-group">
-            <label style="font-size: 13px; color: #666;">Correo electrónico</label>
+            <label for="login-email" style="font-size: 13px; color: #666;">Correo electrónico</label>
             <div style="position: relative;">
               <i class="fa fa-envelope" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #aaa;"></i>
-              <input type="email" class="form-control" name="email" placeholder="correo@ejemplo.com"
+              <input type="email" class="form-control" name="email" id="login-email" autocomplete="username" placeholder="correo@ejemplo.com"
                 style="padding-left: 36px;" required>
             </div>
           </div>
 
           <div class="form-group">
-            <label style="font-size: 13px; color: #666;">Contraseña</label>
+            <label for="login-password" style="font-size: 13px; color: #666;">Contraseña</label>
             <div style="position: relative;">
               <i class="fa fa-lock" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #aaa;"></i>
-              <input type="password" class="form-control" name="password" placeholder="••••••••"
+              <input type="password" class="form-control" name="password" id="login-password" autocomplete="current-password" placeholder="••••••••"
                 style="padding-left: 36px;" required>
             </div>
           </div>

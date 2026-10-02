@@ -27,7 +27,7 @@
             <div class='alert alert-danger alert-dismissible'>
               <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
               <h4><i class='icon fa fa-warning'></i> Error!</h4>
-              ".$_SESSION['error']."
+              ".escapeHtml($_SESSION['error'])."
             </div>
           ";
           unset($_SESSION['error']);
@@ -67,7 +67,7 @@
                       $stmt = $conn->prepare("SELECT * FROM users WHERE type=:type");
                       $stmt->execute(['type'=>0]);
                       foreach($stmt as $row){
-                        $image = (!empty($row['photo'])) ? '../images/'.$row['photo'] : '../images/profile.jpg';
+                        $image = safeImageUrl($row['photo'], '../images/', 'profile.jpg');
                         $status = ($row['status']) ? '<span class="label label-success">active</span>' : '<span class="label label-danger">not verified</span>';
                         $active = (!$row['status']) ? '<span class="pull-right"><a href="#activate" class="status" data-toggle="modal" data-id="'.$row['id'].'"><i class="fa fa-check-square-o"></i></a></span>' : '';
                                               $status = ($row['status']) ? '<span class="label label-success">activo</span>' : '<span class="label label-danger">No Activo</span>';
@@ -75,11 +75,11 @@
                         echo "
                           <tr>
                             <td>
-                              <img src='".$image."' height='30px' width='30px'>
+                              <img src='".escapeHtml($image)."' height='30px' width='30px'>
                               <span class='pull-right'><a href='#edit_photo' class='photo' data-toggle='modal' data-id='".$row['id']."'><i class='fa fa-edit'></i></a></span>
                             </td>
-                            <td>".$row['email']."</td>
-                            <td>".$row['firstname'].' '.$row['lastname']."</td>
+                            <td>".escapeHtml($row['email'])."</td>
+                            <td>".escapeHtml($row['firstname']).' '.escapeHtml($row['lastname'])."</td>
                             <td>
                               ".$status."
                               ".$active."
@@ -158,12 +158,12 @@ function getRow(id){
     success: function(response){
       $('.userid').val(response.id);
       $('#edit_email').val(response.email);
-      $('#edit_password').val(response.password);
+      $('#edit_password').val('');
       $('#edit_firstname').val(response.firstname);
       $('#edit_lastname').val(response.lastname);
       $('#edit_address').val(response.address);
       $('#edit_contact').val(response.contact_info);
-      $('.fullname').html(response.firstname+' '+response.lastname);
+      $('.fullname').text(response.firstname+' '+response.lastname);
     }
   });
 }

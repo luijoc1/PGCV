@@ -1,5 +1,6 @@
 <?php
 include 'includes/session.php';
+requireValidCSRFRequest();
 
 if (isset($_POST['edit'])) {
 	$id = $_POST['id'];
@@ -16,11 +17,17 @@ if (isset($_POST['edit'])) {
 	$stmt = $conn->prepare("SELECT * FROM users WHERE id=:id");
 	$stmt->execute(['id' => $id]);
 	$row = $stmt->fetch();
-
-	if ($password == $row['password']) {
-		$password = $row['password'];
-	} else {
-		$password = password_hash($password, PASSWORD_DEFAULT);
+	if (!$row) {
+		$_SESSION['error'] = 'Usuario no encontrado.';
+		header('location: users.php');
+		exit();
+	}
+	try {
+		$password = editedPasswordHash($password, $row['password']);
+	} catch (InvalidArgumentException $e) {
+		$_SESSION['error'] = $e->getMessage();
+		header('location: users.php');
+		exit();
 	}
 
 	try {
@@ -53,3 +60,4 @@ if (isset($_POST['edit'])) {
 }
 
 header('location: users.php');
+exit();

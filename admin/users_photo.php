@@ -1,19 +1,18 @@
 <?php
 	include 'includes/session.php';
+requireValidCSRFRequest();
+	require_once __DIR__ . '/../includes/image_upload.php';
 
 	if(isset($_POST['upload'])){
 		$id = $_POST['id'];
-		$filename = $_FILES['photo']['name'];
-		if(!empty($filename)){
-			move_uploaded_file($_FILES['photo']['tmp_name'], '../images/'.$filename);	
-		}
+		$filename = photoUploadOrRedirect($_FILES['photo'] ?? null, '', 'users.php', true);
 		
 		$conn = $pdo->open();
 
 		try{
 			$stmt = $conn->prepare("UPDATE users SET photo=:photo WHERE id=:id");
 			$stmt->execute(['photo'=>$filename, 'id'=>$id]);
-			$_SESSION['Éxito'] = 'Foto de usuario actualizada correctamente';
+			$_SESSION['success'] = 'Foto de usuario actualizada correctamente';
 		}
 		catch(PDOException $e){
 			$_SESSION['error'] = $e->getMessage();

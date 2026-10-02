@@ -34,7 +34,7 @@
 					$output .= '
 						<div class="alert alert-success">
 			                <h4><i class="icon fa fa-check"></i> Success!</h4>
-			                Cuenta activada - Email: <b>'.$row['email'].'</b>.
+			                Cuenta activada - Email: <b>'.escapeHtml($row['email']).'</b>.
 			            </div>Iniciar sesión</a> o de vuelta a <a href="index.php">Página principal</a>.</h4>
 					';
 				}

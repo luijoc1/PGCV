@@ -2,6 +2,7 @@
 <?php
 if (isset($_SESSION['user'])) {
   header('location: cart_ver.php');
+  exit();
 }
 
 if (isset($_SESSION['captcha'])) {
@@ -20,7 +21,7 @@ if (isset($_SESSION['captcha'])) {
     if (isset($_SESSION['error'])) {
       echo "
         <div class='callout callout-danger text-center'>
-          <p>" . $_SESSION['error'] . "</p> 
+          <p>" . escapeHtml($_SESSION['error']) . "</p> 
         </div>
       ";
       unset($_SESSION['error']);
@@ -28,7 +29,7 @@ if (isset($_SESSION['captcha'])) {
     if (isset($_SESSION['success'])) {
       echo "
         <div class='callout callout-success text-center'>
-          <p>" . $_SESSION['success'] . "</p> 
+          <p>" . escapeHtml($_SESSION['success']) . "</p> 
         </div>
       ";
       unset($_SESSION['success']);
@@ -50,49 +51,49 @@ if (isset($_SESSION['captcha'])) {
 
           <div style="display: flex; gap: 12px;">
             <div class="form-group" style="flex: 1;">
-              <label style="font-size: 13px; color: #666;">Nombres</label>
+              <label for="signup-firstname" style="font-size: 13px; color: #666;">Nombres</label>
               <div style="position: relative;">
                 <i class="fa fa-user" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #aaa;"></i>
-                <input type="text" class="form-control" name="firstname" placeholder="Juan"
+                <input type="text" class="form-control" name="firstname" id="signup-firstname" autocomplete="given-name" placeholder="Juan"
                   style="padding-left: 36px;"
-                  value="<?php echo (isset($_SESSION['firstname'])) ? $_SESSION['firstname'] : '' ?>" required>
+                  value="<?php echo escapeHtml($_SESSION['firstname'] ?? ''); ?>" required>
               </div>
             </div>
             <div class="form-group" style="flex: 1;">
-              <label style="font-size: 13px; color: #666;">Apellidos</label>
+              <label for="signup-lastname" style="font-size: 13px; color: #666;">Apellidos</label>
               <div style="position: relative;">
                 <i class="fa fa-user" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #aaa;"></i>
-                <input type="text" class="form-control" name="lastname" placeholder="Pérez"
+                <input type="text" class="form-control" name="lastname" id="signup-lastname" autocomplete="family-name" placeholder="Pérez"
                   style="padding-left: 36px;"
-                  value="<?php echo (isset($_SESSION['lastname'])) ? $_SESSION['lastname'] : '' ?>" required>
+                  value="<?php echo escapeHtml($_SESSION['lastname'] ?? ''); ?>" required>
               </div>
             </div>
           </div>
 
           <div class="form-group">
-            <label style="font-size: 13px; color: #666;">Correo electrónico</label>
+            <label for="signup-email" style="font-size: 13px; color: #666;">Correo electrónico</label>
             <div style="position: relative;">
               <i class="fa fa-envelope" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #aaa;"></i>
-              <input type="email" class="form-control" name="email" placeholder="correo@ejemplo.com"
+              <input type="email" class="form-control" name="email" id="signup-email" autocomplete="email" placeholder="correo@ejemplo.com"
                 style="padding-left: 36px;"
-                value="<?php echo (isset($_SESSION['email'])) ? $_SESSION['email'] : '' ?>" required>
+                value="<?php echo escapeHtml($_SESSION['email'] ?? ''); ?>" required>
             </div>
           </div>
 
           <div class="form-group">
-            <label style="font-size: 13px; color: #666;">Contraseña</label>
+            <label for="signup-password" style="font-size: 13px; color: #666;">Contraseña</label>
             <div style="position: relative;">
               <i class="fa fa-lock" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #aaa;"></i>
-              <input type="password" class="form-control" name="password" placeholder="••••••••"
+              <input type="password" class="form-control" name="password" id="signup-password" autocomplete="new-password" minlength="6" placeholder="Mínimo 6 caracteres"
                 style="padding-left: 36px;" required>
             </div>
           </div>
 
           <div class="form-group">
-            <label style="font-size: 13px; color: #666;">Repetir contraseña</label>
+            <label for="signup-repassword" style="font-size: 13px; color: #666;">Repetir contraseña</label>
             <div style="position: relative;">
               <i class="fa fa-lock" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #aaa;"></i>
-              <input type="password" class="form-control" name="repassword" placeholder="••••••••"
+              <input type="password" class="form-control" name="repassword" id="signup-repassword" autocomplete="new-password" minlength="6" placeholder="Repite tu contraseña"
                 style="padding-left: 36px;" required>
             </div>
           </div>

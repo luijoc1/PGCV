@@ -1,25 +1,38 @@
 <?php
 include '../includes/conn.php';
 session_start();
+require_once __DIR__ . '/../../includes/csrf.php';
+require_once __DIR__ . '/../../includes/output.php';
+require_once __DIR__ . '/../../includes/authentication.php';
 
-if (!isset($_SESSION['admin']) || trim($_SESSION['admin']) == '') {
+if (!isset($_SESSION['admin'])) {
 	header('location: ../index.php');
 	exit();
 }
 
 $conn = $pdo->open();
 
-$stmt = $conn->prepare("SELECT * FROM users WHERE id=:id");
-$stmt->execute(['id' => $_SESSION['admin']]);
-$admin = $stmt->fetch();
+try {
+    $admin = authenticatedAccount($conn, $_SESSION, 1);
+} catch (PDOException $e) {
+    clearAccountSession();
+    error_log('Error al comprobar sesión administrativa: ' . $e->getMessage());
+    http_response_code(503);
+    exit('No se pudo comprobar la sesión. Intenta de nuevo.');
+}
 
 $pdo->close();
+if (!$admin) {
+    clearAccountSession();
+    header('location: ../login.php');
+    exit();
+}
 function precioConDescuento($precio, $descuento)
 {
 	if ($descuento > 0) {
-		return $precio - ($precio * $descuento / 100);
+		return round(round($precio, 2) * (1 - round($descuento, 2) / 100), 2);
 	}
-	return $precio;
+	return round($precio, 2);
 }
 
 // Registrar log

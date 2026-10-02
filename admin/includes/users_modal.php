@@ -9,6 +9,7 @@
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="users_add.php" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <div class="form-group">
                     <label for="email" class="col-sm-3 control-label">Correo electrónico</label>
 
@@ -79,6 +80,7 @@
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="users_edit.php">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <input type="hidden" class="userid" name="id">
                 <div class="form-group">
                     <label for="edit_email" class="col-sm-3 control-label">Correo electrónico</label>
@@ -91,7 +93,7 @@
                     <label for="edit_password" class="col-sm-3 control-label">Contraseña</label>
 
                     <div class="col-sm-9">
-                      <input type="password" class="form-control" id="edit_password" name="password">
+                      <input type="password" class="form-control" id="edit_password" name="password" autocomplete="new-password" placeholder="Dejar vacío para conservar la contraseña">
                     </div>
                 </div>
                 <div class="form-group">
@@ -143,6 +145,7 @@
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="users_delete.php">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <input type="hidden" class="userid" name="id">
                 <div class="text-center">
                     <p>BORRAR USUARIO</p>
@@ -169,6 +172,7 @@
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="users_photo.php" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <input type="hidden" class="userid" name="id">
                 <div class="form-group">
                     <label for="photo" class="col-sm-3 control-label">Foto</label>
@@ -199,6 +203,7 @@
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="users_activate.php">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <input type="hidden" class="userid" name="id">
                 <div class="text-center">
                     <p>ACTIVAR USUARIO</p>

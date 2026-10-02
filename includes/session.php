@@ -1,52 +1,49 @@
 <?php
 include 'includes/conn.php';
 session_start();
+require_once __DIR__ . '/csrf.php';
+require_once __DIR__ . '/output.php';
+require_once __DIR__ . '/authentication.php';
 
 date_default_timezone_set('America/Bogota');
 
 if (isset($_SESSION['admin'])) {
-	header('location: admin/home.php');
+	$conn = $pdo->open();
+	$account = authenticatedAccount($conn, $_SESSION, 1);
+	$pdo->close();
+	if ($account) {
+		header('location: admin/home.php');
+		exit();
+	}
+	clearAccountSession();
 }
 
 if (isset($_SESSION['user'])) {
 	$conn = $pdo->open();
 
 	try {
-		$stmt = $conn->prepare("SELECT * FROM users WHERE id=:id");
-		$stmt->execute(['id' => $_SESSION['user']]);
-		$user = $stmt->fetch();
+		$user = authenticatedAccount($conn, $_SESSION, 0);
+		if (!$user) {
+			clearAccountSession();
+			unset($user);
+		}
 	} catch (PDOException $e) {
-		echo "Hay algún problema en la conexión: " . $e->getMessage();
+		clearAccountSession();
+		error_log('Error al comprobar sesión: ' . $e->getMessage());
+		http_response_code(503);
+		exit('No se pudo comprobar la sesión. Intenta de nuevo.');
 	}
 
 	$pdo->close();
-}
-
-// Generar token CSRF
-function generateCSRFToken()
-{
-	if (!isset($_SESSION['csrf_token'])) {
-		$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-	}
-	return $_SESSION['csrf_token'];
-}
-
-// Validar token CSRF
-function validateCSRFToken($token)
-{
-	if (!isset($_SESSION['csrf_token']) || $token !== $_SESSION['csrf_token']) {
-		return false;
-	}
-	return true;
 }
 
 // Calcular precio con descuento
 function precioConDescuento($precio, $descuento)
 {
 	if ($descuento > 0) {
-		return $precio - ($precio * $descuento / 100);
+		return round(round($precio, 2) * (1 - round($descuento, 2) / 100), 2);
 	}
-	return $precio;
+	return round($precio, 2);
 }
 
 // Registrar log
