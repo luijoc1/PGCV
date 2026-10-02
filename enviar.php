@@ -1,24 +1,30 @@
 <?php
-$name = $_POST['name'];
-$mail = $_POST['mail'];
-$subject = $_POST['subject'];
-$message = $_POST['message'];
-
-$header = 'From: ' . $mail . " \r\n";
-$header .= "X-Mailer: PHP/" . phpversion() . " \r\n";
-$header .= "Mime-Version: 1.0 \r\n";
-$header .= "Content-Type: text/plain";
-
-$message = "Este mensaje fue enviado por: " . $name . " \r\n";
-$message .= "Su e-mail es: " . $mail . " \r\n";
-$message .= "Asunto de contacto: " . $subject . " \r\n";
-$message .= "Mensaje: " . $_POST['message'] . " \r\n";
-$message .= "Enviado el: " . date('d/m/Y', time());
-
-$para = 'alexdavidr@gmail.com';
-$asunto = 'mensaje de prueba';
-
-mail($para, $asunto, utf8_decode($message), $header);
-
-header("Location:contacto.php");
-?>
+session_start();
+require_once __DIR__ . '/includes/csrf.php';
+requireValidCSRFRequest();
+require_once __DIR__ . '/includes/conn.php';
+require_once __DIR__ . '/includes/mailer.php';
+require_once __DIR__ . '/includes/contact_mail.php';
+try {
+    $contact = contactMessage($_POST);
+    $conn = $pdo->open();
+    if (reserveContactAttempt($conn, $_SERVER['REMOTE_ADDR'] ?? 'unknown') > 0) {
+        throw new InvalidArgumentException('Demasiadas solicitudes. Intenta de nuevo en quince minutos.');
+    }
+    $mail = configuredMailer();
+    $mail->addAddress(defined('MAIL_CONTACT_TO') ? MAIL_CONTACT_TO : 'alexdavidr@gmail.com');
+    $mail->addReplyTo($contact['mail'], $contact['name']);
+    $mail->isHTML(false);
+    $mail->Subject = 'Contacto: ' . $contact['subject'];
+    $mail->Body = "Nombre: " . $contact['name'] . "\nCorreo: " . $contact['mail'] . "\n\n" . $contact['message'];
+    if (!$mail->send()) throw new RuntimeException('Fallo de envío.');
+    $_SESSION['success'] = 'Tu mensaje fue enviado correctamente.';
+} catch (InvalidArgumentException $e) {
+    $_SESSION['error'] = $e->getMessage();
+} catch (Throwable $e) {
+    error_log('Error de contacto: ' . $e->getMessage());
+    $_SESSION['error'] = 'No se pudo enviar el mensaje. Intenta de nuevo.';
+}
+$pdo->close();
+header('location: contacto.php');
+exit();
