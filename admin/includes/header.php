@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
   	<meta charset="utf-8">
   	<meta http-equiv="X-UA-Compatible" content="IE=edge">
   	<title>Panel administrativo</title>
   	<!-- Tell the browser to be responsive to screen width -->
-  	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  	<meta content="width=device-width, initial-scale=1" name="viewport">
   	<!-- Bootstrap 3.3.7 -->
   	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
   	<!-- Font Awesome -->
@@ -41,6 +41,20 @@
   		}
       .bold{
         font-weight:bold;
+      }
+      .dataTables_scrollHead th, .dataTables_scrollBody td {
+        white-space: nowrap;
+      }
+      .dataTables_scrollBody {
+        -webkit-overflow-scrolling: touch;
+      }
+      @media (max-width: 767px) {
+        .dataTables_wrapper .dataTables_paginate .pagination {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .content .row > .col-sm-3 { margin-bottom: 12px; }
       }
 
       /*chart style*/

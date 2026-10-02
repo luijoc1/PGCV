@@ -40,7 +40,7 @@
 									";
                                 } else {
                                     foreach ($stmt as $row) {
-                                        $image = (!empty($row['photo'])) ? 'images/' . $row['photo'] : 'images/noimage.jpg';
+                                        $image = safeImageUrl($row['photo'], 'images/', 'noimage.jpg');
                                         $precio_final = precioConDescuento($row['price'], $row['descuento']);
                                         $inc = ($inc == 3) ? 1 : $inc + 1;
                                         if ($inc == 1) echo "<div class='row'>";
@@ -51,11 +51,11 @@
 														-" . $row['descuento'] . "%
 													</div>
 													<div style='width:100%; height:180px; overflow:hidden; background:#f5f5f5;'>
-														<img src='" . $image . "' style='width:100%; height:100%; object-fit:cover;'>
+														<img src='" . escapeHtml($image) . "' style='width:100%; height:100%; object-fit:cover;'>
 													</div>
 													<div style='padding:12px 14px;'>
-														<p style='font-size:13px; color:#666; margin:0 0 4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;' title='" . $row['name'] . "'>
-															" . $row['name'] . "
+														<p style='font-size:13px; color:#666; margin:0 0 4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;' title='" . escapeHtml($row['name']) . "'>
+															" . escapeHtml($row['name']) . "
 														</p>
 														<p style='font-size:12px; color:#999; margin:0; text-decoration:line-through;'>
 															&#36; " . number_format($row['price'], 2) . "
@@ -63,7 +63,7 @@
 														<p style='font-size:18px; font-weight:bold; color:#e74c3c; margin:0 0 12px;'>
 															&#36; " . number_format($precio_final, 2) . "
 														</p>
-														<a href='producto.php?product=" . $row['slug'] . "'
+														<a href='producto.php?product=" . rawurlencode((string) $row['slug']) . "'
 														   style='display:block; text-align:center; background:#1a2e4a; color:#fff;
 														          text-decoration:none; padding:8px; border-radius:6px; font-size:13px;'>
 															<i class='fa fa-eye'></i> Ver producto

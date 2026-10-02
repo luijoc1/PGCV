@@ -16,9 +16,9 @@
                 echo "
                     <li style='padding: 6px 0; border-bottom: 1px solid #f0f0f0;'>
                         <i class='fa fa-angle-right' style='color: #3a8eff; margin-right: 6px;'></i>
-                        <a href='producto.php?product=".$row['slug']."'
+                        <a href='producto.php?product=".rawurlencode((string) $row['slug'])."'
                            style='font-size: 13px; color: #1a2e4a; text-decoration: none;'>
-                            ".$row['name']."
+                            ".escapeHtml($row['name'])."
                         </a>
                     </li>
                 ";

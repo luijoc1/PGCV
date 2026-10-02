@@ -1,5 +1,12 @@
 <!-- jQuery 3 -->
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script>
+$.ajaxPrefilter(function(options, originalOptions, xhr) {
+  if (!options.crossDomain && /^(POST|PUT|PATCH|DELETE)$/i.test(options.type)) {
+    xhr.setRequestHeader('X-CSRF-Token', <?php echo json_encode(generateCSRFToken(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>);
+  }
+});
+</script>
 <!-- Bootstrap 3.3.7 -->
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- DataTables -->
@@ -16,9 +23,24 @@
 <script>
   $(function () {
     // Datatable
-    $('#example1').DataTable()
+    $('#example1').DataTable({
+      scrollX: true,
+      language: {
+        search: 'Buscar:',
+        lengthMenu: 'Mostrar _MENU_ registros',
+        info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+        infoEmpty: 'Sin registros',
+        infoFiltered: '(de _MAX_ registros en total)',
+        zeroRecords: 'No se encontraron registros',
+        emptyTable: 'Todavía no hay transacciones',
+        paginate: {first: 'Primera', last: 'Última', next: 'Siguiente', previous: 'Anterior'},
+        aria: {sortAscending: ': ordenar de menor a mayor', sortDescending: ': ordenar de mayor a menor'}
+      }
+    });
     //CK Editor
-    CKEDITOR.replace('editor1')
+    if (document.getElementById('editor1')) {
+      CKEDITOR.replace('editor1');
+    }
   });
 </script>
 <!--Magnify -->
@@ -51,7 +73,7 @@ $(function(){
   		dataType: 'json',
   		success: function(response){
   			$('#callout').show();
-  			$('.message').html(response.message);
+  			$('.message').text(response.message);
   			if(response.error){
   				$('#callout').removeClass('callout-success').addClass('callout-danger');
   			}
@@ -76,7 +98,7 @@ function getCart(){
 		dataType: 'json',
 		success: function(response){
 			$('#cart_menu').html(response.list);
-			$('.cart_count').html(response.count);
+			$('.cart_count').text(response.count);
 		}
 	});
 }

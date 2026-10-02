@@ -5,7 +5,7 @@
         <a href="index.php" class="navbar-brand" style="color: #fff; font-size: 18px; font-weight: bold;">
           <i class="fa fa-shopping-bag" style="color: #3a8eff; margin-right: 6px;"></i>Los Almendros
         </a>
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" style="border-color: #3a8eff;">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Abrir menú de navegación" style="border-color: #3a8eff;">
           <i class="fa fa-bars" style="color: #fff;"></i>
         </button>
       </div>
@@ -25,8 +25,8 @@
                 $stmt->execute();
                 foreach ($stmt as $row) {
                   echo "
-                      <li><a href='category.php?category=" . $row['cat_slug'] . "'
-                             style='color: rgba(255,255,255,0.85); font-size: 13px;'>" . $row['name'] . "</a></li>
+                      <li><a href='category.php?category=" . rawurlencode((string) $row['cat_slug']) . "'
+                             style='color: rgba(255,255,255,0.85); font-size: 13px;'>" . escapeHtml($row['name']) . "</a></li>
                     ";
                 }
               } catch (PDOException $e) {
@@ -45,7 +45,7 @@
         <form method="POST" class="navbar-form navbar-left" action="buscar.php">
           <div class="input-group">
             <input type="text" class="form-control" id="navbar-search-input" name="keyword"
-              placeholder="Buscar producto" required
+              placeholder="Buscar producto" aria-label="Buscar producto" required
               style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: #fff;">
             <span class="input-group-btn" id="searchBtn" style="display:none;">
               <button type="submit" class="btn btn-flat" style="background: #3a8eff; color: #fff;">
@@ -73,18 +73,18 @@
           </li>
           <?php
           if (isset($_SESSION['user'])) {
-            $image = (!empty($user['photo'])) ? 'images/' . $user['photo'] : 'images/profile.jpg';
+            $image = safeImageUrl($user['photo'], 'images/', 'profile.jpg');
             echo '
                 <li class="dropdown user user-menu">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <img src="' . $image . '" class="user-image" alt="User Image">
-                    <span class="hidden-xs" style="color:#fff;">' . $user['firstname'] . ' ' . $user['lastname'] . '</span>
+                    <img src="' . escapeHtml($image) . '" class="user-image" alt="User Image">
+                    <span class="hidden-xs" style="color:#fff;">' . escapeHtml($user['firstname']) . ' ' . escapeHtml($user['lastname']) . '</span>
                   </a>
                   <ul class="dropdown-menu">
                     <li class="user-header" style="background: #1a2e4a;">
-                      <img src="' . $image . '" class="img-circle" alt="User Image">
+                      <img src="' . escapeHtml($image) . '" class="img-circle" alt="User Image">
                       <p style="color:#fff;">
-                        ' . $user['firstname'] . ' ' . $user['lastname'] . '
+                        ' . escapeHtml($user['firstname']) . ' ' . escapeHtml($user['lastname']) . '
                         <small>Miembro desde ' . date('M. Y', strtotime($user['created_on'])) . '</small>
                       </p>
                     </li>
@@ -93,7 +93,10 @@
                         <a href="perfil.php" class="btn btn-default btn-flat">Perfil</a>
                       </div>
                       <div class="pull-right">
-                        <a href="cerrar_sesion.php" class="btn btn-default btn-flat">Cerrar sesión</a>
+                        <form method="POST" action="cerrar_sesion.php" style="display:inline;">
+                          <input type="hidden" name="csrf_token" value="' . htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8') . '">
+                          <button type="submit" class="btn btn-default btn-flat">Cerrar sesión</button>
+                        </form>
                       </div>
                     </li>
                   </ul>

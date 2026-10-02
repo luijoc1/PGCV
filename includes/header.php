@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+<html lang="es">
 <head>
   	<meta charset="utf-8">
   	<meta http-equiv="X-UA-Compatible" content="IE=edge">
   	<title>Almacén los Almendros</title>
   	<!-- Dile al navegador que responda al ancho de la pantalla -->
-  	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  	<meta content="width=device-width, initial-scale=1" name="viewport">
   	<!-- Bootstrap 3.3.7 -->
   	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
   	<!-- DataTables -->
@@ -72,6 +73,74 @@
       margin-top:20px;
     }
 
+    .profile-avatar {
+      display: block;
+      width: 160px;
+      max-width: 100%;
+      height: 160px;
+      object-fit: cover;
+      margin: 0 auto 16px;
+      border-radius: 8px;
+    }
+    .profile-details {
+      display: grid;
+      grid-template-columns: minmax(120px, 1fr) minmax(0, 2fr);
+      gap: 8px 16px;
+    }
+    .profile-details dd {
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+    #example1 th, #example1 td, .dataTables_scrollHead th {
+      white-space: nowrap;
+    }
+    #resumen-total, #resumen-tbody td:last-child {
+      white-space: nowrap;
+      text-align: right;
+    }
+    @media (max-width: 767px) {
+      .profile-details {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+      .profile-details dd {
+        margin-bottom: 12px;
+      }
+    }
+
+    @media (max-width: 991px) {
+      .layout-top-nav .main-header {
+        max-height: none;
+      }
+      .layout-top-nav .main-header .navbar-header {
+        float: none;
+        width: 100%;
+      }
+      .layout-top-nav .main-header .navbar-collapse {
+        float: none !important;
+        clear: both;
+      }
+      .layout-top-nav .main-header .navbar-custom-menu {
+        position: static;
+        float: none;
+        clear: both;
+        width: 100%;
+      }
+      .layout-top-nav .main-header .navbar-custom-menu > .navbar-nav {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        float: none;
+        margin: 0;
+      }
+      .layout-top-nav .main-header .navbar-form .input-group {
+        width: 100%;
+      }
+      .layout-top-nav .main-header #navbar-search-input {
+        width: 150px;
+      }
+    }
+
     #trending{
       list-style: none;
       padding:10px 5px 10px 15px;
@@ -105,4 +174,3 @@
     </style>
 
 </head>
-</html>

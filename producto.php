@@ -61,16 +61,16 @@ if ($product['date_view'] == $now) {
 									<!-- IMAGEN -->
 									<div class="col-sm-5">
 										<div style="border:1px solid #e0e0e0; border-radius:8px; background:#f5f7fa; display:flex; align-items:center; justify-content:center; height:280px; overflow:hidden;">
-											<img src="<?php echo (!empty($product['photo'])) ? 'images/' . $product['photo'] : 'images/noimage.jpg'; ?>"
+											<img src="<?php echo safeImageUrl($product['photo'], 'images/', 'noimage.jpg'); ?>"
 												style="max-width:100%; max-height:100%; object-fit:contain;"
-												class="zoom" data-magnify-src="images/large-<?php echo $product['photo']; ?>">
+												class="zoom" data-magnify-src="<?php echo safeImageUrl('large-' . $product['photo']); ?>">
 										</div>
 									</div>
 
 									<!-- DETALLES -->
 									<div class="col-sm-7">
 										<h2 style="color:#1a2e4a; font-size:20px; font-weight:bold; margin:0 0 10px;">
-											<?php echo $product['prodname']; ?>
+											<?php echo escapeHtml($product['prodname']); ?>
 										</h2>
 
 										<?php if ($product['descuento'] > 0): ?>
@@ -92,9 +92,9 @@ if ($product['date_view'] == $now) {
 										<div style="border-top:1px solid #f0f0f0; padding-top:14px; margin-bottom:14px;">
 											<p style="font-size:13px; color:#666; margin-bottom:8px;">
 												<b style="color:#1a2e4a;">Categoría:</b>
-												<a href="category.php?category=<?php echo $product['cat_slug']; ?>"
+												<a href="category.php?category=<?php echo rawurlencode((string) $product['cat_slug']); ?>"
 													style="color:#3a8eff; text-decoration:none;">
-													<?php echo $product['catname']; ?>
+													<?php echo escapeHtml($product['catname']); ?>
 												</a>
 											</p>
 											<p style="font-size:13px; color:#666; margin-bottom:8px;">
@@ -106,7 +106,7 @@ if ($product['date_view'] == $now) {
 											<?php if (!empty($product['description'])): ?>
 												<p style="font-size:13px; color:#666; margin-bottom:0;">
 													<b style="color:#1a2e4a;">Descripción:</b><br>
-													<span style="line-height:1.7;"><?php echo $product['description']; ?></span>
+													<span style="line-height:1.7;"><?php echo safeProductDescription($product['description']); ?></span>
 												</p>
 											<?php endif; ?>
 										</div>
@@ -143,7 +143,7 @@ if ($product['date_view'] == $now) {
 								</div>
 							</div>
 
-							<div class="fb-comments" data-href="http://localhost/ecommerce/producto.php?product=<?php echo $slug; ?>" data-numposts="10" width="100%"></div>
+							<div class="fb-comments" data-href="http://localhost/ecommerce/producto.php?product=<?php echo rawurlencode((string) $slug); ?>" data-numposts="10" width="100%"></div>
 
 						</div>
 						<div class="col-sm-3">
@@ -161,7 +161,7 @@ if ($product['date_view'] == $now) {
 	<?php include 'includes/scripts.php'; ?>
 	<script>
 		$(function() {
-			var maxStock = <?php echo $product['stock']; ?>;
+		var maxStock = <?php echo (int) $product['stock']; ?>;
 
 			$('#add').click(function(e) {
 				e.preventDefault();

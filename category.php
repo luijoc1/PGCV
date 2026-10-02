@@ -37,7 +37,7 @@ $pdo->close();
 							<div style="margin: 20px 0 16px; display: flex; align-items: center; gap: 12px;">
 								<div style="width: 4px; height: 28px; background: #1a2e4a; border-radius: 2px;"></div>
 								<h3 style="margin: 0; font-size: 20px; font-weight: bold; color: #1a2e4a;">
-									<?php echo $cat['name']; ?>
+									<?php echo escapeHtml($cat['name']); ?>
 								</h3>
 							</div>
 
@@ -48,19 +48,19 @@ $pdo->close();
 								$stmt = $conn->prepare("SELECT * FROM products WHERE category_id = :catid AND stock > 0");
 								$stmt->execute(['catid' => $catid]);
 								foreach ($stmt as $row) {
-									$image = (!empty($row['photo'])) ? 'images/' . $row['photo'] : 'images/noimage.jpg';
+									$image = safeImageUrl($row['photo'], 'images/', 'noimage.jpg');
 									$inc = ($inc == 3) ? 1 : $inc + 1;
 									if ($inc == 1) echo "<div class='row'>";
 									echo "
 										<div class='col-sm-4' style='margin-bottom: 16px;'>
 											<div style='background:#fff; border:1px solid #e0e0e0; border-radius:12px; overflow:hidden;'>
 												<div style='width:100%; height:180px; overflow:hidden; background:#f5f5f5;'>
-													<img src='" . $image . "' style='width:100%; height:100%; object-fit:cover;'>
+													<img src='" . escapeHtml($image) . "' style='width:100%; height:100%; object-fit:cover;'>
 												</div>
 												<div style='padding:12px 14px;'>
 													<p style='font-size:13px; color:#666; margin:0 0 4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;'
-													   title='" . $row['name'] . "'>
-														" . $row['name'] . "
+													   title='" . escapeHtml($row['name']) . "'>
+														" . escapeHtml($row['name']) . "
 													</p>
 													" . ($row['descuento'] > 0 ? "
 													<p style='font-size:12px; color:#999; margin:0; text-decoration:line-through;'>
@@ -75,7 +75,7 @@ $pdo->close();
 														&#36; " . number_format($row['price'], 2) . "
 													</p>
 													") . "
-													<a href='producto.php?product=" . $row['slug'] . "'
+													<a href='producto.php?product=" . rawurlencode((string) $row['slug']) . "'
 													   style='display:block; text-align:center; background:#1a2e4a; color:#fff;
 													          text-decoration:none; padding:8px; border-radius:6px; font-size:13px;'>
 														<i class='fa fa-eye'></i> Ver producto

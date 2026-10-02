@@ -18,16 +18,16 @@
         <!-- Cuenta de usuario: el estilo se puede encontrar en el menú desplegable. -->
         <li class="dropdown user user-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <img src="<?php echo (!empty($admin['photo'])) ? '../images/'.$admin['photo'] : '../images/profile.jpg'; ?>" class="user-image" alt="User Image">
-            <span class="hidden-xs"><?php echo $admin['firstname'].' '.$admin['lastname']; ?></span>
+            <img src="<?php echo safeImageUrl($admin['photo'], '../images/', 'profile.jpg'); ?>" class="user-image" alt="User Image">
+            <span class="hidden-xs"><?php echo escapeHtml($admin['firstname']).' '.escapeHtml($admin['lastname']); ?></span>
           </a>
           <ul class="dropdown-menu">
             <!-- User image -->
             <li class="user-header">
-              <img src="<?php echo (!empty($admin['photo'])) ? '../images/'.$admin['photo'] : '../images/profile.jpg'; ?>" class="img-circle" alt="User Image">
+              <img src="<?php echo safeImageUrl($admin['photo'], '../images/', 'profile.jpg'); ?>" class="img-circle" alt="User Image">
 
               <p>
-                <?php echo $admin['firstname'].' '.$admin['lastname']; ?>
+                <?php echo escapeHtml($admin['firstname']).' '.escapeHtml($admin['lastname']); ?>
                 <small>Miembro desde <?php echo date('M. Y', strtotime($admin['created_on'])); ?></small>
               </p>
             </li>
@@ -36,7 +36,10 @@
                 <a href="#profile" data-toggle="modal" class="btn btn-default btn-flat" id="admin_profile">Perfil</a>
               </div>
               <div class="pull-right">
-                <a href="../cerrar_sesion.php" class="btn btn-default btn-flat">Cerrar Sesión</a>
+                <form method="POST" action="../cerrar_sesion.php" style="display:inline;">
+                  <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken(), ENT_QUOTES, 'UTF-8'); ?>">
+                  <button type="submit" class="btn btn-default btn-flat">Cerrar Sesión</button>
+                </form>
               </div>
             </li>
           </ul>
