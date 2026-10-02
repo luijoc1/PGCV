@@ -4,6 +4,7 @@ session_start();
 require_once __DIR__ . '/../../includes/csrf.php';
 require_once __DIR__ . '/../../includes/output.php';
 require_once __DIR__ . '/../../includes/authentication.php';
+require_once __DIR__ . '/../../includes/pricing.php';
 
 if (!isset($_SESSION['admin'])) {
 	header('location: ../index.php');
@@ -27,14 +28,6 @@ if (!$admin) {
     header('location: ../login.php');
     exit();
 }
-function precioConDescuento($precio, $descuento)
-{
-	if ($descuento > 0) {
-		return round(round($precio, 2) * (1 - round($descuento, 2) / 100), 2);
-	}
-	return round($precio, 2);
-}
-
 // Registrar log
 function registrarLog($conn, $tabla, $id_referencia, $anterior, $nueva, $tipo, $usuario)
 {

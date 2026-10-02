@@ -4,6 +4,7 @@ session_start();
 require_once __DIR__ . '/csrf.php';
 require_once __DIR__ . '/output.php';
 require_once __DIR__ . '/authentication.php';
+require_once __DIR__ . '/pricing.php';
 
 date_default_timezone_set('America/Bogota');
 
@@ -35,15 +36,6 @@ if (isset($_SESSION['user'])) {
 	}
 
 	$pdo->close();
-}
-
-// Calcular precio con descuento
-function precioConDescuento($precio, $descuento)
-{
-	if ($descuento > 0) {
-		return round(round($precio, 2) * (1 - round($descuento, 2) / 100), 2);
-	}
-	return round($precio, 2);
 }
 
 // Registrar log

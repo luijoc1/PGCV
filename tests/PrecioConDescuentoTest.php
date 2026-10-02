@@ -39,9 +39,28 @@ class PrecioConDescuentoTest extends TestCase
         $resultado = precioConDescuento(99.99, 20);
 
         $this->assertEqualsWithDelta(
-            79.992,
+            79.99,
             $resultado,
             0.001
         );
+    }
+
+    /** @dataProvider roundingCases */
+    public function testCurrencyRounding($price, $discount, float $expected): void
+    {
+        $this->assertEqualsWithDelta($expected, precioConDescuento($price, $discount), 0.000001);
+    }
+
+    public function roundingCases(): array
+    {
+        return [
+            'price rounded without discount' => [19.995, 0, 20.0],
+            'price rounded before discount' => [99.995, 20, 80.0],
+            'discount rounded to two decimals' => [100, 12.345, 87.65],
+            'fractional discount' => [99.99, 12.5, 87.49],
+            'half cent rounded up' => [0.05, 10, 0.05],
+            'zero price' => [0, 25, 0.0],
+            'database numeric strings' => ['230000.00', '10.00', 207000.0],
+        ];
     }
 }
