@@ -25,11 +25,11 @@ class SessionFunctionsTest extends TestCase
 
     public function testGenerateCSRFTokenDevuelveMismoTokenSiYaExiste()
     {
-        $_SESSION['csrf_token'] = 'token123';
+        $_SESSION['csrf_token'] = str_repeat('a', 64);
 
         $token = generateCSRFToken();
 
-        $this->assertEquals('token123', $token);
+        $this->assertEquals(str_repeat('a', 64), $token);
     }
 
     public function testValidaTokenCorrecto()
