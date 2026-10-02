@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS login_attempts (
+    bucket_key CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL PRIMARY KEY,
+    attempts INT UNSIGNED NOT NULL DEFAULT 0,
+    window_started BIGINT UNSIGNED NOT NULL
+) ENGINE=InnoDB;

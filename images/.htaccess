@@ -1,0 +1,5 @@
+# Las fotos se sirven como archivos estáticos; los scripts quedan bloqueados.
+Options -ExecCGI -Indexes
+<FilesMatch "(?i)\.(php[0-9]*|phtml|pht|phar|cgi|pl|py|sh|shtml)(\.|$)">
+    Require all denied
+</FilesMatch>

@@ -1,3 +1,11 @@
 includes/config.php
 tienda.sql
 /vendor/
+/storage/backups/*
+!/storage/backups/.htaccess
+/storage/visual-review/*.png
+/REVISION_PROYECTO.md
+/README.md
+/phpunit.xml
+/junit-report-allTest.xml
+/ResultadoallTest.txt
