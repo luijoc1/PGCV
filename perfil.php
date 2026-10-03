@@ -66,7 +66,7 @@ if (!isset($_SESSION['user'])) {
 													}
 													?></dd>
                                             </dl>
-                                            <a href="#edit" class="btn btn-success btn-flat btn-sm" data-toggle="modal"><i class="fa fa-edit"></i> Editar perfil</a>
+                                            <a href="#edit" class="btn btn-success btn-flat btn-sm" data-bs-toggle="modal"><i class="fa fa-edit"></i> Editar perfil</a>
 									</div>
 								</div>
 							</div>
@@ -148,7 +148,7 @@ if (!isset($_SESSION['user'])) {
 		$(function() {
 			$(document).on('click', '.transact', function(e) {
 				e.preventDefault();
-				$('#transaction').modal('show');
+				bootstrap.Modal.getOrCreateInstance(document.getElementById('transaction')).show();
 				$('.prepend_items').remove();
 				$('#date, #transid').text('');
 				$('#total').empty();
@@ -167,7 +167,7 @@ if (!isset($_SESSION['user'])) {
 						$('#total').html(response.total);
 					},
 					error: function(xhr) {
-						$('#transaction').modal('hide');
+						bootstrap.Modal.getOrCreateInstance(document.getElementById('transaction')).hide();
 						alert((xhr.responseJSON && xhr.responseJSON.message) || 'No se pudo consultar la transacción.');
 					}
 				});

@@ -3,13 +3,13 @@
 $profileUser = $user ?? [];
 ?>
 <!-- Transaction History -->
-<div class="modal fade" id="transaction">
+<div class="modal fade" id="transaction" tabindex="-1" aria-labelledby="transaction-title" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Cerrar">
                   <span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title"><b>Detalles completos de la transacción</b></h4>
+              <h4 class="modal-title" id="transaction-title"><b>Detalles completos de la transacción</b></h4>
             </div>
             <div class="modal-body">
               <p>
@@ -34,20 +34,20 @@ $profileUser = $user ?? [];
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
+              <button type="button" class="btn btn-default btn-flat pull-left" data-bs-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Edit Profile -->
-<div class="modal fade" id="edit">
+<div class="modal fade" id="edit" tabindex="-1" aria-labelledby="profile-edit-title" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Cerrar">
                   <span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title"><b>Actualizar cuenta</b></h4>
+              <h4 class="modal-title" id="profile-edit-title"><b>Actualizar cuenta</b></h4>
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="perfil_editar.php" enctype="multipart/form-data">
@@ -112,7 +112,7 @@ $profileUser = $user ?? [];
                 </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
+              <button type="button" class="btn btn-default btn-flat pull-left" data-bs-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
               <button type="submit" class="btn btn-success btn-flat" name="edit"><i class="fa fa-check-square-o"></i> Actualizar</button>
               </form>
             </div>

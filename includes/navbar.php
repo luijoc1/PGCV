@@ -5,7 +5,7 @@
         <a href="index.php" class="navbar-brand" style="color: #fff; font-size: 18px; font-weight: bold;">
           <i class="fa fa-shopping-bag" style="color: #3a8eff; margin-right: 6px;"></i>Los Almendros
         </a>
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Abrir menú de navegación" style="border-color: #3a8eff;">
+        <button type="button" class="navbar-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Abrir menú de navegación" style="border-color: #3a8eff;">
           <i class="fa fa-bars" style="color: #fff;"></i>
         </button>
       </div>
@@ -14,7 +14,7 @@
         <ul class="nav navbar-nav">
           <li><a href="index.php" style="color: rgba(255,255,255,0.85); font-size: 13px;">INICIO</a></li>
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="color: rgba(255,255,255,0.85); font-size: 13px;">
+            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" style="color: rgba(255,255,255,0.85); font-size: 13px;">
               CATEGORÍAS <span class="caret"></span>
             </a>
             <ul class="dropdown-menu" role="menu" style="background: #1a2e4a; border: 1px solid #3a8eff;">
@@ -25,7 +25,7 @@
                 $stmt->execute();
                 foreach ($stmt as $row) {
                   echo "
-                      <li><a href='category.php?category=" . rawurlencode((string) $row['cat_slug']) . "'
+                      <li><a class='dropdown-item' href='category.php?category=" . rawurlencode((string) $row['cat_slug']) . "'
                              style='color: rgba(255,255,255,0.85); font-size: 13px;'>" . escapeHtml($row['name']) . "</a></li>
                     ";
                 }
@@ -59,7 +59,7 @@
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <li class="dropdown messages-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="color: #fff;">
+            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" style="color: #fff;">
               <i class="fa fa-shopping-cart" style="font-size: 18px;"></i>
               <span class="label label-success cart_count"></span>
             </a>
@@ -68,7 +68,7 @@
               <li>
                 <ul class="menu" id="cart_menu"></ul>
               </li>
-              <li class="footer"><a href="cart_ver.php">Ir al carrito</a></li>
+              <li class="footer"><a class="dropdown-item" href="cart_ver.php">Ir al carrito</a></li>
             </ul>
           </li>
           <?php
@@ -76,7 +76,7 @@
             $image = safeImageUrl($user['photo'], 'images/', 'profile.jpg');
             echo '
                 <li class="dropdown user user-menu">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
                     <img src="' . escapeHtml($image) . '" class="user-image" alt="User Image">
                     <span class="hidden-xs" style="color:#fff;">' . escapeHtml($user['firstname']) . ' ' . escapeHtml($user['lastname']) . '</span>
                   </a>

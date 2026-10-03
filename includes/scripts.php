@@ -7,8 +7,8 @@ $.ajaxPrefilter(function(options, originalOptions, xhr) {
   }
 });
 </script>
-<!-- Bootstrap 3.4.1: PGCV runtime without Button, Tooltip or Popover -->
-<script src="dist/js/bootstrap-pgcv.js"></script>
+<!-- Bootstrap 5 JS; existing visual theme is preserved during CSS migration. -->
+<script src="bower_components/bootstrap5/dist/js/bootstrap.bundle.min.js"></script>
 <!-- DataTables -->
 <script src="bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>

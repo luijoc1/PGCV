@@ -16,20 +16,20 @@
 						<?php } ?>
 
 						<!-- CARRUSEL -->
-						<div id="carousel-nosotros" class="carousel slide" data-ride="carousel"
+						<div id="carousel-nosotros" class="carousel slide" data-bs-ride="carousel"
 							 style="border-radius:12px; overflow:hidden; margin-bottom:24px;">
 							<ol class="carousel-indicators" style="margin-bottom:12px;">
-								<li data-target="#carousel-nosotros" data-slide-to="0" class="active"
+								<li data-bs-target="#carousel-nosotros" data-bs-slide-to="0" class="active"
 									style="width:24px; height:4px; border-radius:2px; background:#3a8eff; border:none;"></li>
-								<li data-target="#carousel-nosotros" data-slide-to="1"
+								<li data-bs-target="#carousel-nosotros" data-bs-slide-to="1"
 									style="width:8px; height:4px; border-radius:2px; border:none;"></li>
-								<li data-target="#carousel-nosotros" data-slide-to="2"
+								<li data-bs-target="#carousel-nosotros" data-bs-slide-to="2"
 									style="width:8px; height:4px; border-radius:2px; border:none;"></li>
-								<li data-target="#carousel-nosotros" data-slide-to="3"
+								<li data-bs-target="#carousel-nosotros" data-bs-slide-to="3"
 									style="width:8px; height:4px; border-radius:2px; border:none;"></li>
 							</ol>
 							<div class="carousel-inner">
-								<div class="item active">
+								<div class="item carousel-item active">
 									<img src="images/piston.jpg" alt="Slide 1" style="width:100%; height:320px; object-fit:cover;">
 									<div style="position:absolute; inset:0; background:linear-gradient(to right, rgba(26,46,74,0.90) 35%, rgba(26,46,74,0.15) 100%);"></div>
 									<div style="position:absolute; left:36px; top:50%; transform:translateY(-50%);">
@@ -38,7 +38,7 @@
 										<p style="color:rgba(255,255,255,0.70); font-size:13px; margin:0; max-width:280px;">Más de años sirviendo a nuestros clientes con honestidad.</p>
 									</div>
 								</div>
-								<div class="item">
+								<div class="item carousel-item">
 									<img src="images/amortiguador.jpg" alt="Slide 2" style="width:100%; height:320px; object-fit:cover;">
 									<div style="position:absolute; inset:0; background:linear-gradient(to right, rgba(26,46,74,0.90) 35%, rgba(26,46,74,0.15) 100%);"></div>
 									<div style="position:absolute; left:36px; top:50%; transform:translateY(-50%);">
@@ -47,7 +47,7 @@
 										<p style="color:rgba(255,255,255,0.70); font-size:13px; margin:0; max-width:280px;">Más de años sirviendo a nuestros clientes con honestidad.</p>
 									</div>
 								</div>
-								<div class="item">
+								<div class="item carousel-item">
 									<img src="images/freno.jpg" alt="Slide 3" style="width:100%; height:320px; object-fit:cover;">
 									<div style="position:absolute; inset:0; background:linear-gradient(to right, rgba(26,46,74,0.90) 35%, rgba(26,46,74,0.15) 100%);"></div>
 									<div style="position:absolute; left:36px; top:50%; transform:translateY(-50%);">
@@ -56,7 +56,7 @@
 										<p style="color:rgba(255,255,255,0.70); font-size:13px; margin:0; max-width:280px;">Más de años sirviendo a nuestros clientes con honestidad.</p>
 									</div>
 								</div>
-								<div class="item">
+								<div class="item carousel-item">
 									<img src="images/filtros-870x471.jpg" alt="Slide 4" style="width:100%; height:320px; object-fit:cover;">
 									<div style="position:absolute; inset:0; background:linear-gradient(to right, rgba(26,46,74,0.90) 35%, rgba(26,46,74,0.15) 100%);"></div>
 									<div style="position:absolute; left:36px; top:50%; transform:translateY(-50%);">
@@ -66,12 +66,12 @@
 									</div>
 								</div>
 							</div>
-							<a class="left carousel-control" href="#carousel-nosotros" data-slide="prev" style="background:none; width:40px;">
+							<a class="left carousel-control" href="#carousel-nosotros" data-bs-slide="prev" style="background:none; width:40px;">
 								<div style="width:36px; height:36px; background:rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; margin-top:-18px; position:absolute; top:50%; left:8px;">
 									<span class="fa fa-angle-left" style="font-size:20px; color:#fff;"></span>
 								</div>
 							</a>
-							<a class="right carousel-control" href="#carousel-nosotros" data-slide="next" style="background:none; width:40px;">
+							<a class="right carousel-control" href="#carousel-nosotros" data-bs-slide="next" style="background:none; width:40px;">
 								<div style="width:36px; height:36px; background:rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; margin-top:-18px; position:absolute; top:50%; right:8px;">
 									<span class="fa fa-angle-right" style="font-size:20px; color:#fff;"></span>
 								</div>
