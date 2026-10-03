@@ -46,7 +46,7 @@ function validCheckoutToken($token)
         && isset($_SESSION['checkout_tokens'][$token]);
 }
 
-function completeCheckout(PDO $conn, $userId, array $input, $token, callable $log = null)
+function completeCheckout(PDO $conn, $userId, array $input, $token, ?callable $log = null)
 {
     $billing = checkoutBilling($input);
     $owner = cartPositiveInteger($userId);

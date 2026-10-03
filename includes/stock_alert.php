@@ -2,7 +2,7 @@
 require_once __DIR__ . '/mailer.php';
 require_once __DIR__ . '/output.php';
 
-function sendDailyStockAlert(PDO $conn, callable $send = null, $day = null)
+function sendDailyStockAlert(PDO $conn, ?callable $send = null, $day = null)
 {
     $now = new DateTimeImmutable('now', new DateTimeZone('America/Bogota'));
     $day = $day ?? $now->format('Y-m-d');

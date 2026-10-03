@@ -35,9 +35,45 @@ y a sus procesos secundarios.
 - No se enviaron correos reales ni se modificaron los datos habituales.
 
 PHP 8.2.12 es un parche antiguo y no se propone como versión de producción.
-Esta comprobación no certifica PHP 8.3, 8.4 o 8.5, ni las reglas Apache, red,
+Esta primera comprobación no certificaba otras versiones ni las reglas Apache, red,
 base de datos o configuración del futuro hosting. Cuando se elija proveedor,
 se deberá verificar su versión actualizada y exacta en un entorno aislado.
+
+## Comprobación con PHP 8.4
+
+El 2 de octubre de 2026 se descargó PHP 8.4.26, NTS x64 para Windows, desde
+la [distribución oficial](https://www.php.net/downloads.php?os=windows&version=8.4).
+Se verificó el SHA256 publicado:
+
+```text
+da68394f9193b7f6b89d0c76861a4034ae10efee7fd55a7255d8118c2acf70d7
+```
+
+El runtime y su configuración están aislados en
+`storage/backups/php84-compat`, fuera de Git y bloqueados por HTTP. Solo se
+utilizó mediante CLI y los servidores temporales de las pruebas; no se
+modificaron los PHP/Apache instalados ni la configuración global de Windows.
+Se activaron las extensiones necesarias y E_ALL en su archivo php.ini.
+
+Se hicieron explícitos los tipos que admiten null en los callbacks opcionales
+de pedidos y alertas. La copia manual de reCAPTCHA, actualmente sin referencias
+en las rutas de la aplicación, recibió el mismo ajuste en tres constructores.
+Estos cambios también pasan sintaxis en PHP 7.4.
+
+Resultados con PHP 8.4.26:
+
+- 184 archivos PHP revisados, sin errores de sintaxis ni avisos.
+- Requisitos de producción de Composer correctos.
+- 278 pruebas PHP y 3666 aserciones correctas.
+- 49 comprobaciones de integración, 29 históricas y 15 del comando de
+  migración/respaldo correctas con datos ficticios y bases aisladas.
+- 13 pruebas de pedidos/correo y 103 aserciones también correctas en PHP 7.4.
+
+No se enviaron correos reales, confirmaron pedidos ni modificaron los datos
+habituales. El resultado verifica esta configuración CLI de Windows y los
+flujos cubiertos; falta comprobar Apache o PHP-FPM, certificados, red y
+versiones de base de datos en el futuro hosting. La edición NTS probada no
+se debe usar como reemplazo directo del módulo PHP de Apache de XAMPP.
 
 ## Requisitos del hosting
 
