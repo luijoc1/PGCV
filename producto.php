@@ -51,7 +51,7 @@ if ($product['date_view'] == $now) {
 						<div class="col-sm-9">
 
 							<div class="callout" id="callout" style="display:none">
-								<button type="button" class="close"><span aria-hidden="true">&times;</span></button>
+								<button type="button" class="close" aria-label="Cerrar aviso"><span aria-hidden="true">&times;</span></button>
 								<span class="message"></span>
 							</div>
 

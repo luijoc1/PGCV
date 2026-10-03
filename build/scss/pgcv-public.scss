@@ -183,6 +183,12 @@ textarea.form-control { height: auto; }
 .navbar-search-group:focus-within #navbar-search-input { padding-right: 44px; }
 .navbar-search-group #searchBtn > .btn { height: 34px; margin-left: 0; }
 
+// Keep the reusable cart notice's close button separate from modal controls.
+#callout { position: relative; padding-right: 50px; }
+#callout .close { position: absolute; top: 50%; right: 10px; transform: translateY(-50%); width: 28px; height: 28px; padding: 0; color: inherit; font-size: 24px; font-weight: 400; line-height: 1; background: transparent; border: 0; border-radius: 3px; opacity: .85; }
+#callout .close:hover { opacity: 1; }
+#callout .close:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; opacity: 1; }
+
 // Bootstrap 5 modal behavior with the existing header/footer arrangement.
 .modal-header, .modal-footer { display: block; }
 .modal-header::after, .modal-footer::after { display: table; clear: both; content: " "; }

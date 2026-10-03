@@ -108,6 +108,20 @@ Se comprobaron el perfil autenticado, filtro, ordenación, selector,
 paginación y modal de edición sin enviar el formulario. En 375 px CSS,
 la tabla conserva el desplazamiento horizontal dentro de su contenedor.
 
+## Corrección del cierre del aviso de carrito
+
+El botón de cierre del aviso del producto recupera un estilo propio:
+X blanca a la derecha, fondo transparente, sin borde y con espacio reservado
+para evitar que se superponga al mensaje. La regla se limita a `#callout`;
+los cierres de modales conservan sus estilos. El botón tiene la etiqueta
+accesible «Cerrar aviso» y un indicador de foco de teclado.
+
+Se conserva el manejador existente que oculta el aviso sin eliminarlo,
+para que pueda mostrar mensajes posteriores. Se comprobó el aspecto y el
+cierre con teclado usando temporalmente el marcado y el manejador reales,
+sin sesión ni conexión a la base. En 375 px CSS no desborda la pantalla.
+La vista temporal se retiró después de la comprobación.
+
 ## Reversión y continuación
 
 Para volver a la fase anterior, restaurar juntos el encabezado público,
