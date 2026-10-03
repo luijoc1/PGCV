@@ -7,8 +7,8 @@
   	<title>Almacén los Almendros</title>
   	<!-- Dile al navegador que responda al ancho de la pantalla -->
   	<meta content="width=device-width, initial-scale=1" name="viewport">
-    <!-- Existing visual theme; Bootstrap JS migrates independently. -->
-  	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Bootstrap 5 customized to preserve the existing public theme. -->
+    <link rel="stylesheet" href="dist/css/pgcv-public.min.css">
   	<!-- DataTables -->
     <link rel="stylesheet" href="bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
   	<!-- Fuente impresionante -->
@@ -18,7 +18,6 @@
   	<!-- AdminLTE Pieles. Elija una máscara de css / Pieles
        Carpeta en lugar de descargarlas todas para reducir la carga. -->
        <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
-    <link rel="stylesheet" href="dist/css/bootstrap5-public-compat.css">
     <!-- Magnify -->
     <link rel="stylesheet" href="magnify/magnify.min.css">
    

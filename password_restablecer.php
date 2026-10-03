@@ -29,12 +29,12 @@
       		<div class="form-group has-feedback">
               <label for="new-password">Nueva contraseña</label>
         		<input type="password" class="form-control" name="password" id="new-password" autocomplete="new-password" minlength="6" placeholder="Mínimo 6 caracteres" required>
-        		<span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            <span class="fa fa-lock form-control-feedback" aria-hidden="true"></span>
       		</div>
           <div class="form-group has-feedback">
             <label for="new-repassword">Repetir contraseña</label>
             <input type="password" class="form-control" name="repassword" id="new-repassword" autocomplete="new-password" minlength="6" placeholder="Vuelva a escribir la contraseña" required>
-            <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
+            <span class="fa fa-sign-in form-control-feedback" aria-hidden="true"></span>
           </div>
       		<div class="row">
     			<div class="col-xs-12">

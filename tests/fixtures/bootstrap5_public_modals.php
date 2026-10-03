@@ -10,6 +10,7 @@ require_once __DIR__ . '/../../includes/csrf.php';
 $_SESSION = [];
 $user = ['firstname' => 'Cliente', 'lastname' => 'de ejemplo', 'email' => 'cliente@example.invalid',
     'contact_info' => '', 'address' => 'Dirección ficticia'];
+$legacyStyles = ($_GET['baseline'] ?? null) === '1';
 ?>
 <!doctype html>
 <html lang="es">
@@ -17,10 +18,14 @@ $user = ['firstname' => 'Cliente', 'lastname' => 'de ejemplo', 'email' => 'clien
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Comprobación local de modales públicos</title>
+  <?php if ($legacyStyles): ?>
   <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <style>.fade.show{opacity:1}.modal.show .modal-dialog{transform:translate(0,0)}.modal-backdrop.show{opacity:.5}</style>
+  <?php else: ?>
+  <link rel="stylesheet" href="../../dist/css/pgcv-public.min.css">
+  <?php endif; ?>
   <link rel="stylesheet" href="../../bower_components/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
-  <link rel="stylesheet" href="../../dist/css/bootstrap5-public-compat.css">
 </head>
 <body>
   <div class="container">
@@ -29,6 +34,20 @@ $user = ['firstname' => 'Cliente', 'lastname' => 'de ejemplo', 'email' => 'clien
     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#edit">Editar cuenta de ejemplo</button>
     <button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#transaction">Ver transacción ficticia</button>
     <p id="fixture-result" role="status"></p>
+    <h2>Controles de compra con datos ficticios</h2>
+    <div class="table-responsive" tabindex="0" aria-label="Carrito ficticio">
+      <table class="table table-bordered" id="fixture-cart">
+        <thead><tr><th>Producto</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th></tr></thead>
+        <tbody><tr><td>Producto de ejemplo</td><td>$ 5,000.00</td>
+          <td class="input-group">
+            <span class="input-group-btn"><button type="button" class="btn btn-default btn-flat" aria-label="Reducir cantidad ficticia"><i class="fa fa-minus"></i></button></span>
+            <input type="text" class="form-control" value="1" aria-label="Cantidad ficticia">
+            <span class="input-group-btn"><button type="button" class="btn btn-default btn-flat" aria-label="Aumentar cantidad ficticia"><i class="fa fa-plus"></i></button></span>
+          </td><td>$ 5,000.00</td></tr></tbody>
+      </table>
+    </div>
+    <div class="radio"><label><input type="radio" name="fixture-delivery" checked> Recoger en tienda</label></div>
+    <div class="radio"><label><input type="radio" name="fixture-delivery"> Envío a domicilio</label></div>
   </div>
   <?php require __DIR__ . '/../../includes/profile_modal.php'; ?>
   <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
