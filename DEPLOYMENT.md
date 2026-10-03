@@ -1,88 +1,111 @@
-# Hosting preparation
+# Preparación para hosting
 
-The owner plans to use hosting but has not selected a provider or domain.
-The deployment destination is pending. No files have been uploaded and no
-production database or scheduled jobs have been created.
+Se prevé publicar el proyecto en un hosting, pero todavía no se ha elegido
+proveedor ni dominio. No se han subido archivos, creado una base de datos
+de producción ni instalado tareas programadas en otro servidor.
 
-## Hosting requirements
+## Uso local mientras se prepara la publicación
 
-- PHP with PDO MySQL, OpenSSL, DOM, Mbstring, Fileinfo, GD and cURL.
-  `composer check-platform-reqs --no-dev` checks dependency requirements;
-  it does not verify all application features. Local verification used
-  PHP 7.4.30; that branch is unsupported. Choose a supported PHP version
-  from <https://www.php.net/supported-versions.php> and verify the project
-  in isolation on the exact destination version before publication.
-- MariaDB with InnoDB, enforced CHECK constraints and foreign keys. The
-  current database was verified with MariaDB 10.4.25. A provider offering
-  MySQL instead needs separate schema/import verification; do not assume
-  compatibility from a similar product name.
-- HTTPS for the public domain, a valid CA bundle for PHP and outbound SMTP
-  access to the configured host/port. Local Gmail TLS and authentication
-  succeeded; the hosting network and delivery are still unverified.
-- Apache 2.4 honoring `.htaccess`, or equivalent rules on the hosting
-  server. The current root `php_flag` directives assume the XAMPP PHP
-  module; some hosting configurations using PHP-FPM reject them. Configure
-  PHP error settings through the provider's supported mechanism instead.
-- PHP write permission on `images` and protected local backup storage.
-  Uploaded images remain limited to 5 MiB and 20 million pixels, subject
-  to the hosting upload limits. Do not make the whole application writable.
-- Composer access through SSH or a reproducible local production install.
-  Migration/backup tools require CLI and the ability to create an isolated
-  restore database; confirm provider permissions before using them there.
+El proyecto puede seguir funcionando en el XAMPP actual. Para usarlo en este
+equipo, iniciar Apache y MariaDB y abrir http://localhost/PGCV. No hace
+falta contratar un hosting para este uso local.
 
-## Release files and configuration
+La carpeta `.git` guarda el historial de cambios, los commits y la
+configuración del repositorio. Es útil durante el desarrollo y debe
+conservarse en el equipo. Su descarga por HTTP está bloqueada para evitar
+que los visitantes obtengan el repositorio; ese bloqueo no impide usar Git.
+La carpeta no se necesita para ejecutar la tienda en el hosting.
 
-1. Deploy from the reviewed Git revision. Exclude `.git`, local development
-   folders, `node_modules`, tests, root README/review report and all local
-   backups. Retain migration instructions privately, outside public access.
-2. Install the locked production dependencies with
-   `composer install --no-dev --prefer-dist --optimize-autoloader` in the
-   release environment. Avoid updating the lockfile during deployment.
-   A clean clone requires this install; tracked Composer metadata alone
-   does not contain all dependency files.
-3. Local frontend distributions are committed in `bower_components` and
-   `dist`; Node is unnecessary on the hosting server. If rebuilding,
-   use `npm ci --ignore-scripts` and `npm run sync:frontend` before packaging.
-4. Create destination-only `includes/config.php` from the example. Use the
-   destination database credentials and HTTPS APP_URL. Set explicit alert
-   and contact recipients, SMTP credentials and CA configuration. Never
-   commit or place credentials in chat or public documentation.
-5. Update the maintenance condition in root `.htaccess` if `/PGCV` is not
-   the application path under DocumentRoot. Verify HTTP 503 before relying
-   on it. Stop external writers and drain in-flight requests separately.
+## Requisitos del hosting
 
-## Database choice
+- PHP con PDO MySQL, OpenSSL, DOM, Mbstring, Fileinfo, GD y cURL.
+  `composer check-platform-reqs --no-dev` comprueba los requisitos de las
+  dependencias, pero no todas las funciones de la aplicación. Las pruebas
+  locales se realizaron con PHP 7.4.30, una versión sin soporte. Elegir una
+  versión con soporte según <https://www.php.net/supported-versions.php>
+  y comprobar el proyecto en una copia aislada con la versión exacta del
+  hosting antes de publicarlo.
+- MariaDB con InnoDB, restricciones CHECK activas y claves foráneas. La base
+  actual se verificó con MariaDB 10.4.25. Si el proveedor ofrece MySQL, hay
+  que comprobar por separado la importación y compatibilidad del esquema.
+- HTTPS para el dominio público, un archivo de certificados CA válido en
+  PHP y conexión SMTP saliente al servidor y puerto configurados. Gmail
+  validó TLS y autenticación localmente; faltan la comprobación desde el
+  hosting y la entrega de un mensaje autorizado.
+- Apache 2.4 que respete .htaccess, o reglas equivalentes en el servidor
+  del proveedor. Las directivas php_flag actuales corresponden al módulo
+  PHP de XAMPP; algunos hostings con PHP-FPM las rechazan. En esos casos,
+  configurar los errores de PHP mediante el mecanismo del proveedor.
+- Permisos de escritura de PHP en images y en el almacenamiento protegido
+  de respaldos. Las fotos admiten hasta 5 MiB y 20 millones de píxeles,
+  sujetos también a los límites del hosting. Evitar permisos de escritura
+  generales sobre toda la aplicación.
+- Composer mediante SSH o una instalación local reproducible de las
+  dependencias de producción. Las herramientas de migración y respaldo
+  necesitan PHP CLI y permiso para crear una base aislada de restauración;
+  confirmar que el proveedor permite estas operaciones.
 
-- For an empty installation, import only `migrations/000_schema.sql` into
-  a new empty database, then create the administrator through the CLI tool.
-  The schema contains no customer/product data or credentials. Do not apply
-  the column-creation scripts again over the clean schema.
-- To retain the existing catalog, accounts and history, transfer a fresh
-  verified protected backup through a private channel. Import it only into
-  an empty destination database, verify contents and point the destination
-  configuration to it. Do not import the clean schema over that backup.
-- The local historical migration is complete: 5 carts are archived, 17
-  sales retain original missing account references and all six additional
-  foreign keys are active. Do not rerun it with the original counts.
-- Keep a verified backup outside the web server. Backup files contain real
-  data and must remain outside Git and public HTTP access.
+## Archivos y configuración de la publicación
 
-## Destination verification before publication
+1. Preparar los archivos desde la revisión de Git comprobada. Excluir .git,
+   carpetas locales de desarrollo, node_modules, pruebas, README raíz,
+   informe de revisión y respaldos locales. Mantener las instrucciones
+   de migración fuera del acceso público.
+2. Instalar las dependencias fijadas con
+   `composer install --no-dev --prefer-dist --optimize-autoloader` en el
+   entorno de publicación. Conservar el archivo de versiones fijadas.
+   Un clon limpio requiere esta instalación: los metadatos de Composer
+   rastreados por Git no contienen todos los archivos de las dependencias.
+3. Los recursos de interfaz están incluidos en bower_components y dist;
+   el servidor no necesita Node para ejecutar la tienda. Para regenerarlos
+   antes de preparar los archivos, usar `npm ci --ignore-scripts` y
+   `npm run sync:frontend`.
+4. Crear includes/config.php específico del hosting a partir del ejemplo.
+   Configurar las credenciales de su base de datos, APP_URL con HTTPS,
+   destinatarios de alertas/contacto, credenciales SMTP y certificados CA.
+   Mantener las credenciales fuera de Git, del chat y de documentos públicos.
+5. Ajustar la condición de mantenimiento en .htaccess si la aplicación no
+   está en /PGCV dentro del directorio público del servidor. Comprobar que
+   devuelve HTTP 503 al activar la pausa. Detener también las escrituras
+   externas y esperar a que terminen las peticiones anteriores.
 
-Check HTTPS and certificate trust, HTTP denial for `.git`, `vendor`, tools,
-tests, migrations, backups and manifests, image script denial, login/roles,
-catalog, cart prices/discounts, billing summary and historical PDF/report
-access. Verify database integrity and application behavior on the hosting
-PHP/database versions. Use an isolated copy for checks that write data.
+## Traslado o instalación de la base de datos
 
-Order confirmation and real email remain separately authorized operations.
-The administrative dashboard can automatically request a stock alert;
-plan that check with a controlled mail transport or explicit send permission.
-The SMTP diagnostic only connects/authenticates and never sends messages.
+- Para empezar sin datos, importar únicamente migrations/000_schema.sql
+  en una base nueva y vacía y crear el administrador con la herramienta CLI.
+  El esquema no contiene clientes, productos ni credenciales. No volver a
+  ejecutar sobre él las migraciones que crean esas mismas columnas.
+- Para conservar el catálogo, cuentas e historial existentes, transferir
+  un respaldo nuevo y verificado por un canal privado. Importarlo únicamente
+  en una base vacía del hosting, comprobar su contenido y configurar la
+  aplicación para utilizarla. No importar el esquema limpio encima del
+  respaldo restaurado.
+- La migración histórica local está aplicada: cinco carritos archivados,
+  17 ventas con la referencia original de la cuenta ausente y las seis
+  claves foráneas adicionales activas. No repetirla con los conteos antiguos.
+- Conservar una copia verificada del respaldo fuera del servidor web.
+  Contiene datos reales y debe quedar fuera de Git y del acceso HTTP público.
 
-Bootstrap/AdminLTE and TCPDF still have the support limitations recorded in
-the review. Frontend runtime mitigation does not remove the npm Bootstrap
-finding. Payment gateway integration is also outside this release.
+## Comprobaciones antes de publicar
 
-Publication requires a selected provider/domain, verified destination,
-reviewed release and explicit upload/publication authorization.
+Comprobar HTTPS y certificados, bloqueo HTTP de .git, vendor, herramientas,
+pruebas, migraciones, respaldos y manifiestos; bloqueo de scripts en imágenes;
+inicio de sesión y roles; catálogo; precios y descuentos del carrito;
+resumen de facturación; acceso a facturas PDF e informes históricos.
+Verificar la integridad de la base y el comportamiento con las versiones de
+PHP y base de datos del hosting. Las comprobaciones que escriben datos deben
+usar una copia aislada.
+
+Confirmar pedidos y enviar correos reales requieren autorización aparte.
+El panel administrativo puede solicitar automáticamente una alerta de
+inventario: comprobarlo con un transporte de correo controlado o permiso
+explícito de envío. El diagnóstico SMTP solo conecta y autentica; no envía
+mensajes.
+
+Bootstrap/AdminLTE y TCPDF conservan las limitaciones de soporte documentadas
+en la revisión. La mitigación de los componentes cargados de Bootstrap no
+elimina el aviso de npm. La integración de una pasarela de pago también sigue
+pendiente.
+
+La publicación requiere proveedor y dominio elegidos, entorno comprobado,
+archivos revisados y autorización explícita para subir y publicar el proyecto.
