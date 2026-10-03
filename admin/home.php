@@ -1,7 +1,7 @@
 <?php
 include 'includes/session.php';
 include 'includes/format.php';
-include '../includes/config.php';
+require_once __DIR__ . '/../includes/config.php';
 ?>
 <?php
 date_default_timezone_set('America/Bogota');

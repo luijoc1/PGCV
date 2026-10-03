@@ -4,7 +4,7 @@ require_once __DIR__ . '/../includes/mailer.php';
 requireValidCSRFRequest(true);
 require_once __DIR__ . '/../includes/sale_status.php';
 header('Content-Type: application/json; charset=utf-8');
-include '../includes/config.php';
+require_once __DIR__ . '/../includes/config.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;

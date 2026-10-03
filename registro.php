@@ -5,7 +5,7 @@ use PHPMailer\PHPMailer\Exception;
 
 include 'includes/session.php';
 require_once __DIR__ . '/includes/mailer.php';
-include 'includes/config.php';
+require_once __DIR__ . '/includes/config.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
 	// Validar token CSRF
 	if (!is_string($_POST['csrf_token'] ?? null) || !validateCSRFToken($_POST['csrf_token'])) {

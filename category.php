@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="wasathpp.css">
 <?php include 'includes/session.php'; ?>
 <?php
 if (!isset($_GET['category'])) {
