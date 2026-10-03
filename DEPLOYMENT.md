@@ -109,6 +109,63 @@ y comprobar las demás aplicaciones servidas, incluido phpMyAdmin.
 Esta prueba valida el módulo y componentes indicados; no cambia el PHP del
 sitio principal ni certifica un hosting o servidor Apache actualizado.
 
+## Cambio local de XAMPP preparado, pendiente de activación
+
+`tools/prepare_php84_xampp.ps1` copia los archivos .conf de Apache y el
+php.ini anterior a un directorio protegido bajo `storage/backups`. Genera
+un candidato de `httpd-xampp.conf` y un php.ini independiente. Comprueba
+la configuración completa en puertos HTTP/HTTPS aleatorios de loopback,
+con PID, sesiones, caché SSL y registros propios; cierra su proceso al acabar.
+El arranque se comprobó desde el directorio bin de Apache, sin anteponer el
+runtime al PATH: se cargan explícitamente también brotlicommon/brotlidec,
+necesarios para cURL. No instala el candidato ni reinicia el Apache habitual.
+
+El phpMyAdmin 5.2.0 instalado respondió, pero produjo 78 avisos de funciones
+deprecadas con PHP 8.4. Se preparó una copia privada de phpMyAdmin 5.2.3,
+con la misma configuración de conexión. El ZIP de todas las traducciones
+se obtuvo de la [descarga oficial](https://www.phpmyadmin.net/downloads/)
+y coincidió con su SHA256 publicado:
+
+```text
+2d2e13c735366d318425c78e4ee2cc8fc648d77faba3ddea2cd516e43885733f
+```
+
+Las [notas de la versión](https://www.phpmyadmin.net/news/2025/10/8/phpmyadmin-523-is-released/)
+incluyen correcciones para PHP 8.4. La comprobación local de su portada
+no certifica todas las funciones de administración de bases de datos.
+La copia y sus credenciales están fuera de Git y bloqueadas por HTTP,
+salvo el alias de prueba restringido a conexiones locales.
+
+Para reproducir la preparación con esa copia, desde la raíz del proyecto:
+
+```powershell
+./tools/prepare_php84_xampp.ps1 -PhpMyAdminRuntime ./storage/backups/phpmyadmin84-compat/phpMyAdmin-5.2.3-all-languages
+```
+
+Pasaron 12 comprobaciones: sintaxis Apache completa, módulo PHP 8.4 TS,
+selección del php.ini, componentes de PGCV, integridad de lectura, portada
+de PGCV, bloqueo de archivos privados, portada de phpMyAdmin, ausencia de
+errores PHP antes y después de phpMyAdmin, y hashes intactos de los archivos
+.conf y del php.ini original. No se entró al panel administrativo de PGCV,
+que puede disparar correos; no se confirmaron pedidos ni enviaron mensajes.
+Los puertos HTTPS se cargaron en la configuración; no se certificó el
+certificado local ni la configuración TLS para publicación.
+
+El candidato cambia el módulo PHP de Apache, su PHPRC/PHPIniDir y el alias
+local de phpMyAdmin. Conserva los límites de memoria y subida anteriores,
+usa la zona horaria de Bogotá y el archivo CA existente. La CLI de XAMPP
+y el alias CGI anterior siguen en PHP 7.4; este cambio solo afecta al
+módulo Apache. Los runtimes preparados deben permanecer en sus rutas
+locales mientras Apache los utilice; no forman parte del paquete del hosting.
+
+Antes de activar: comprobar que el hash de `httpd-xampp.conf` aún coincide
+con el respaldo, autorizar su sustitución fuera del proyecto y el reinicio
+breve de Apache. Después, verificar versión/SAPI, tienda, phpMyAdmin y logs.
+Para volver atrás, detener esa misma instancia de Apache, restaurar solamente
+`original/extra/httpd-xampp.conf` desde el respaldo correspondiente y arrancar
+Apache. El PHP anterior y phpMyAdmin anterior permanecen instalados. No
+restaurar la base de datos: este cambio de configuración no migra datos.
+
 ## Requisitos del hosting
 
 - PHP con PDO MySQL, OpenSSL, DOM, Mbstring, Fileinfo, GD y cURL.
