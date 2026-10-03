@@ -304,5 +304,12 @@ en la revisión. La mitigación de los componentes cargados de Bootstrap no
 elimina el aviso de npm. La integración de una pasarela de pago también sigue
 pendiente.
 
+La primera fase de actualización de interfaz cambia el JavaScript público a
+Bootstrap 5 conservando el diseño actual. Administración y las hojas base
+siguen en la versión anterior; la auditoría aún señala Bootstrap 3.
+El [alcance y la reversión](migrations/010_public_bootstrap_javascript.md)
+explican esta combinación transitoria. Excluir del paquete de hosting la
+comprobación local de modales incluida en `tests`.
+
 La publicación requiere proveedor y dominio elegidos, entorno comprobado,
 archivos revisados y autorización explícita para subir y publicar el proyecto.
