@@ -48,14 +48,6 @@ $(function(){
 <!-- Custom Scripts -->
 <script>
 $(function(){
-  $('#navbar-search-input').focus(function(){
-    $('#searchBtn').show();
-  });
-
-  $('#navbar-search-input').focusout(function(){
-    $('#searchBtn').hide();
-  });
-
   getCart();
 
   $('#productForm').submit(function(e){

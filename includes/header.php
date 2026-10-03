@@ -40,26 +40,6 @@
     
   	<!-- CSS personalizado -->
     <style type="text/css">
-    /* Pequeños dispositivos (tablets, 768px y arriba) */
-    @media (min-width: 768px){ 
-      #navbar-search-input{ 
-        width: 60px; 
-      }
-      #navbar-search-input:focus{ 
-        width: 100px; 
-      }
-    }
-
-    /* Dispositivos medianos (desktops, 992px y arriba) */
-    @media (min-width: 992px){ 
-      #navbar-search-input{ 
-        width: 150px; 
-      }
-      #navbar-search-input:focus{ 
-        width: 250px; 
-      } 
-    }
-
     .word-wrap{
       overflow-wrap: break-word;
     }
@@ -133,12 +113,6 @@
         flex-wrap: wrap;
         float: none;
         margin: 0;
-      }
-      .layout-top-nav .main-header .navbar-form .input-group {
-        width: 100%;
-      }
-      .layout-top-nav .main-header #navbar-search-input {
-        width: 150px;
       }
     }
 

@@ -43,12 +43,12 @@
             </a></li>
         </ul>
         <form method="POST" class="navbar-form navbar-left" action="buscar.php">
-          <div class="input-group">
+          <div class="input-group navbar-search-group">
             <input type="text" class="form-control" id="navbar-search-input" name="keyword"
               placeholder="Buscar producto" aria-label="Buscar producto" required
               style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: #fff;">
-            <span class="input-group-btn" id="searchBtn" style="display:none;">
-              <button type="submit" class="btn btn-flat" style="background: #3a8eff; color: #fff;">
+            <span class="input-group-btn" id="searchBtn">
+              <button type="submit" class="btn btn-flat" aria-label="Buscar" style="background: #3a8eff; color: #fff;">
                 <i class="fa fa-search"></i>
               </button>
             </span>

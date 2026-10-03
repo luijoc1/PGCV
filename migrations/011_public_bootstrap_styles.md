@@ -74,6 +74,21 @@ en `storage/backups/bootstrap-public-css-review/`. No se confirmó ningún
 pedido ni se envió correo. La comprobación con datos ficticios no sustituye
 una revisión posterior del perfil autenticado y la facturación completa.
 
+## Corrección posterior del buscador
+
+La grabación del usuario reveló un caso no cubierto por la primera revisión:
+al enfocar la búsqueda, el campo se ensanchaba y la navegación con elementos
+flotantes desplazaba el formulario. Además, el manejador `focusout` ocultaba
+la lupa antes de que su clic enviara la búsqueda.
+
+El grupo de búsqueda conserva ahora 150 × 34 px y coloca la lupa dentro de
+ese espacio. `:focus-within` la mantiene visible al pasar del campo al botón;
+su superposición queda por encima del campo enfocado. Se retiraron las
+reglas de ensanchamiento y los manejadores que ocultaban el botón.
+Se verificaron el clic, Tab seguido de Enter, resultados para `motor` y
+`amortiguador`, y estabilidad de medidas en escritorio y 375 px.
+El campo sigue siendo obligatorio: el aviso nativo al buscar vacío es normal.
+
 ## Reversión y continuación
 
 Para volver a la fase anterior, restaurar juntos el encabezado público,

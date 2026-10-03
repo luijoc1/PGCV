@@ -173,6 +173,15 @@ textarea.form-control { height: auto; }
 .input-group-btn:first-child > .btn { margin-right: -1px; }
 .input-group-btn:last-child > .btn { margin-left: -1px; }
 
+// Keep the search field anchored while its submit button receives focus.
+// An overlay button avoids widening the floated navigation on focus.
+.main-header .navbar-form .navbar-search-group { display: block; position: relative; width: 150px; height: 34px; }
+.main-header .navbar-search-group #navbar-search-input { float: none; display: block; width: 100%; }
+.navbar-search-group #searchBtn { display: none; position: absolute; top: 0; right: 0; width: auto; z-index: 6; }
+.navbar-search-group:focus-within #searchBtn { display: block; }
+.navbar-search-group:focus-within #navbar-search-input { padding-right: 44px; }
+.navbar-search-group #searchBtn > .btn { height: 34px; margin-left: 0; }
+
 // Bootstrap 5 modal behavior with the existing header/footer arrangement.
 .modal-header, .modal-footer { display: block; }
 .modal-header::after, .modal-footer::after { display: table; clear: both; content: " "; }
