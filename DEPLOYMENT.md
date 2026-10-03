@@ -109,7 +109,41 @@ y comprobar las demás aplicaciones servidas, incluido phpMyAdmin.
 Esta prueba valida el módulo y componentes indicados; no cambia el PHP del
 sitio principal ni certifica un hosting o servidor Apache actualizado.
 
-## Cambio local de XAMPP preparado, pendiente de activación
+## PHP 8.4 activado en el Apache local de XAMPP
+
+El 2 de octubre de 2026, con autorización, se activó PHP 8.4.26 TS en el
+Apache habitual de `C:/xampp2`. PGCV y el alias local de phpMyAdmin 5.2.3
+responden HTTP 200. Solo se sustituyó `apache/conf/extra/httpd-xampp.conf`;
+MariaDB y sus datos permanecieron intactos. El panel de XAMPP puede seguir
+usándose para iniciar Apache. La CLI y el alias CGI anterior siguen en PHP 7.4.
+
+Pasaron 13 comprobaciones de activación: pausa HTTP 503 antes del cierre,
+versión/SAPI TS, php.ini elegido, extensiones/PNG/PDF/configuración SMTP,
+integridad de lectura, portadas PGCV/phpMyAdmin, tres bloqueos de archivos
+privados, ausencia de errores PHP y hashes de configuración coherentes con
+el único archivo sustituido y el php.ini original intacto. El fixture temporal
+de comprobación se eliminó; la pausa quedó desactivada. No se confirmaron
+pedidos ni enviaron correos. Puede ser necesario iniciar sesión otra vez,
+porque PHP utiliza ahora un directorio de sesiones independiente.
+
+El cierre fue ordenado mediante el evento de la instancia identificada de
+Apache, cuyo [mecanismo está en el código oficial](https://github.com/apache/httpd/blob/2.4.x/server/mpm/winnt/mpm_winnt.c).
+El comando `httpd -k shutdown` no corresponde a este arranque sin servicio
+Windows. No se instalaron servicios ni se terminaron procesos de otros XAMPP.
+Se conserva el aviso previo del certificado local de ejemplo; HTTPS para
+publicación sigue pendiente de configurar y verificar en el hosting.
+
+**Conservar las carpetas locales que Apache está utilizando:**
+
+- `storage/backups/php84-apache/runtime`: PHP 8.4 y sus bibliotecas.
+- `storage/backups/phpmyadmin84-compat/phpMyAdmin-5.2.3-all-languages`: phpMyAdmin y su configuración privada.
+- `storage/backups/php84-xampp-9e6f2e2861ed43b8b600140fb2522101`: php.ini activo, sesiones, registros, evidencia y configuración anterior.
+
+Aunque estén bajo la carpeta de respaldos, no borrarlas durante una limpieza:
+el Apache local depende de esas rutas. Su acceso HTTP directo está bloqueado
+y permanecen fuera de Git. No se deben incluir en los archivos del hosting.
+
+### Preparación y respaldo del cambio
 
 `tools/prepare_php84_xampp.ps1` copia los archivos .conf de Apache y el
 php.ini anterior a un directorio protegido bajo `storage/backups`. Genera
@@ -158,13 +192,19 @@ y el alias CGI anterior siguen en PHP 7.4; este cambio solo afecta al
 módulo Apache. Los runtimes preparados deben permanecer en sus rutas
 locales mientras Apache los utilice; no forman parte del paquete del hosting.
 
-Antes de activar: comprobar que el hash de `httpd-xampp.conf` aún coincide
-con el respaldo, autorizar su sustitución fuera del proyecto y el reinicio
-breve de Apache. Después, verificar versión/SAPI, tienda, phpMyAdmin y logs.
-Para volver atrás, detener esa misma instancia de Apache, restaurar solamente
-`original/extra/httpd-xampp.conf` desde el respaldo correspondiente y arrancar
-Apache. El PHP anterior y phpMyAdmin anterior permanecen instalados. No
-restaurar la base de datos: este cambio de configuración no migra datos.
+Para repetir la preparación en otro entorno: comprobar que la configuración
+actual coincide con el respaldo, revisar el candidato antes de sustituirlo y
+verificar versión/SAPI, tienda, phpMyAdmin y logs después del reinicio.
+El script privado de activación registra la operación ya realizada; no se
+debe ejecutar nuevamente como herramienta genérica.
+
+Para volver al PHP 7.4 anterior, detener el Apache de `C:/xampp2` y restaurar
+únicamente `original/extra/httpd-xampp.conf` del respaldo
+`storage/backups/php84-xampp-9e6f2e2861ed43b8b600140fb2522101` en
+`C:/xampp2/apache/conf/extra/httpd-xampp.conf`. Validar la configuración,
+arrancar ese Apache y comprobar PGCV/phpMyAdmin. El PHP anterior y phpMyAdmin
+anterior permanecen instalados. No restaurar la base de datos: este cambio
+de configuración no migra datos.
 
 ## Requisitos del hosting
 
