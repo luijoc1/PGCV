@@ -25,7 +25,7 @@ function configuredMailer()
     $mail->Username = MAIL_USER;
     $mail->Password = MAIL_PASS;
     $mail->Timeout = 8;
-    $mail->Timelimit = 15;
+    $mail->getSMTPInstance()->Timelimit = 15;
     $mail->SMTPDebug = 0;
     $ssl = ['verify_peer' => true, 'verify_peer_name' => true, 'allow_self_signed' => false];
     $ca = defined('MAIL_CA_FILE') ? MAIL_CA_FILE : ini_get('openssl.cafile');

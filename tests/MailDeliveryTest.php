@@ -28,6 +28,7 @@ final class MailDeliveryTest extends TestCase
         $this->assertTrue($mail->SMTPOptions['ssl']['verify_peer_name']);
         $this->assertFalse($mail->SMTPOptions['ssl']['allow_self_signed']);
         $this->assertSame(8, $mail->Timeout);
+        $this->assertSame(15, $mail->getSMTPInstance()->Timelimit);
         $this->assertSame('UTF-8', $mail->CharSet);
         $this->assertSame('sender@example.com', $mail->From);
     }

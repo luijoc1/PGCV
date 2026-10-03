@@ -16,6 +16,29 @@ conservarse en el equipo. Su descarga por HTTP está bloqueada para evitar
 que los visitantes obtengan el repositorio; ese bloqueo no impide usar Git.
 La carpeta no se necesita para ejecutar la tienda en el hosting.
 
+## Comprobación inicial con PHP 8.2
+
+El 2 de octubre de 2026 se comprobó el proyecto con PHP CLI 8.2.12 del otro
+XAMPP instalado, manteniendo el sitio habitual en PHP 7.4.30. No se sustituyó
+PHP ni Apache. Se utilizó una copia local del archivo de configuración,
+fuera de Git y bloqueada por HTTP, con GD activado y todos los niveles de
+errores habilitados. La variable PHPRC se aplicó solo al proceso de prueba
+y a sus procesos secundarios.
+
+- Los 184 archivos PHP propios pasaron sintaxis y las dependencias de
+  producción pasaron la comprobación de plataforma de Composer.
+- Pasaron las 278 pruebas PHP con 3666 aserciones, las 49 comprobaciones de
+  integración y las 29 de integridad histórica, utilizando datos ficticios.
+- Se corrigió el límite de tiempo SMTP: ahora se configura en la instancia
+  SMTP que lo utiliza, evitando una propiedad dinámica deprecada en PHP 8.2.
+  Las siete pruebas de correo también pasan en PHP 7.4.
+- No se enviaron correos reales ni se modificaron los datos habituales.
+
+PHP 8.2.12 es un parche antiguo y no se propone como versión de producción.
+Esta comprobación no certifica PHP 8.3, 8.4 o 8.5, ni las reglas Apache, red,
+base de datos o configuración del futuro hosting. Cuando se elija proveedor,
+se deberá verificar su versión actualizada y exacta en un entorno aislado.
+
 ## Requisitos del hosting
 
 - PHP con PDO MySQL, OpenSSL, DOM, Mbstring, Fileinfo, GD y cURL.
