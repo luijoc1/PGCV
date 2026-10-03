@@ -126,6 +126,13 @@ de comprobación se eliminó; la pausa quedó desactivada. No se confirmaron
 pedidos ni enviaron correos. Puede ser necesario iniciar sesión otra vez,
 porque PHP utiliza ahora un directorio de sesiones independiente.
 
+Se repitió `tools/check_smtp_connection.php` mediante el ejecutable PHP
+8.4.26 TS y el mismo php.ini activo en Apache. Gmail en el puerto 465
+validó el certificado TLS y autenticó correctamente con OpenSSL 3.0.22.
+La herramienta solo conecta y autentica: no define destinatarios ni envía
+mensajes. Esta comprobación mediante CLI no verifica la entrega de correo
+ni reemplaza la prueba desde el futuro hosting.
+
 El cierre fue ordenado mediante el evento de la instancia identificada de
 Apache, cuyo [mecanismo está en el código oficial](https://github.com/apache/httpd/blob/2.4.x/server/mpm/winnt/mpm_winnt.c).
 El comando `httpd -k shutdown` no corresponde a este arranque sin servicio
