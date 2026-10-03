@@ -75,6 +75,40 @@ flujos cubiertos; falta comprobar Apache o PHP-FPM, certificados, red y
 versiones de base de datos en el futuro hosting. La edición NTS probada no
 se debe usar como reemplazo directo del módulo PHP de Apache de XAMPP.
 
+## Prueba de PHP 8.4 como módulo de Apache
+
+Se verificó también PHP 8.4.26 **Thread Safe x64** con el Apache 2.4.54 del
+equipo, mediante un proceso de prueba separado en un puerto aleatorio de
+`127.0.0.1`. La descarga oficial TS coincidió con este SHA256:
+
+```text
+6e56f0e932e92bfdce208d3a7e6068f6e2f7a19fc2922a5f856fb085f61673f3
+```
+
+La herramienta Windows `tools/verify_php84_apache.ps1` genera configuración,
+sesiones, archivos ficticios y evidencia bajo `storage/backups`, sin cambiar
+los archivos de configuración de XAMPP. Usa el runtime TS en
+`storage/backups/php84-apache/runtime`. La consulta a la base habitual se
+realiza en una transacción de solo lectura; imagen y PDF usan contenido
+ficticio y se generan en memoria. El correo solo se configura: no conecta
+a SMTP ni envía mensajes.
+
+Pasaron 14 comprobaciones: configuración Apache válida, respuesta HTTP,
+versión/SAPI Thread Safe, php.ini aislado, extensiones, integridad de lectura,
+PNG/PDF, configuración SMTP, persistencia de sesión, bloqueos de repositorio
+y migraciones, pausa HTTP 503, ausencia de errores PHP y hashes intactos de
+las dos configuraciones principales de Apache. El proceso de prueba se
+cierra en `finally`; el sitio habitual permanece disponible.
+
+El Apache antiguo contiene DLL de dependencias que pueden interferir con
+cURL del PHP nuevo. La configuración de prueba carga explícitamente las
+bibliotecas del runtime TS antes del módulo PHP. No copiar estas DLL sobre
+las de Apache ni sustituir su configuración habitual sin preparar respaldo
+y comprobar las demás aplicaciones servidas, incluido phpMyAdmin.
+
+Esta prueba valida el módulo y componentes indicados; no cambia el PHP del
+sitio principal ni certifica un hosting o servidor Apache actualizado.
+
 ## Requisitos del hosting
 
 - PHP con PDO MySQL, OpenSSL, DOM, Mbstring, Fileinfo, GD y cURL.
