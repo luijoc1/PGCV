@@ -2,6 +2,11 @@
 
 ## Alcance de esta fase
 
+Esta guía describe la primera fase. La fase posterior de
+[estilos públicos](011_public_bootstrap_styles.md) ya reemplaza el CSS base
+por Bootstrap 5 personalizado y retira la hoja de compatibilidad inicial.
+Los detalles siguientes conservan el contexto de la primera fase.
+
 La parte pública carga el bundle JavaScript de Bootstrap 5.3.8 con Popper.
 Se mantienen los colores, tamaños, rejilla, tipografía y hojas de estilo de
 la tienda. `dist/css/bootstrap5-public-compat.css` adapta los estados `show`
@@ -65,7 +70,7 @@ plantillas y el script público anterior; no requiere restaurar la base.
 
 ## Continuación
 
-Revisar los estilos públicos manteniendo la misma apariencia, convertir
+Los estilos públicos se completaron en la fase 011. Queda convertir
 administración y sus plugins en un bloque coherente, y retirar Bootstrap 3
 solo después de comprobar que no quedan consumidores. No presentar la
 auditoría como resuelta mientras el paquete antiguo siga siendo necesario.

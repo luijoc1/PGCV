@@ -304,12 +304,14 @@ en la revisión. La mitigación de los componentes cargados de Bootstrap no
 elimina el aviso de npm. La integración de una pasarela de pago también sigue
 pendiente.
 
-La primera fase de actualización de interfaz cambia el JavaScript público a
-Bootstrap 5 conservando el diseño actual. Administración y las hojas base
-siguen en la versión anterior; la auditoría aún señala Bootstrap 3.
-El [alcance y la reversión](migrations/010_public_bootstrap_javascript.md)
-explican esta combinación transitoria. Excluir del paquete de hosting la
-comprobación local de modales incluida en `tests`.
+La parte pública utiliza JavaScript y CSS de Bootstrap 5, con estilos
+compilados mediante Sass para conservar el diseño actual. El tema AdminLTE 2,
+DataTables y administración siguen pendientes; la auditoría aún señala
+Bootstrap 3. El [alcance de JavaScript](migrations/010_public_bootstrap_javascript.md)
+y la [compilación y reversión de estilos](migrations/011_public_bootstrap_styles.md)
+explican esta transición. Sass es una dependencia de desarrollo: instalar
+también las dependencias de desarrollo al regenerar recursos; el hosting
+recibe el CSS ya compilado. Excluir del paquete la comprobación local de `tests`.
 
 La publicación requiere proveedor y dominio elegidos, entorno comprobado,
 archivos revisados y autorización explícita para subir y publicar el proyecto.
