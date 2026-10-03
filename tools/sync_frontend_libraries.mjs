@@ -1,6 +1,7 @@
 import { copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildPublicStyles } from './build_public_styles.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const manifest = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
@@ -40,6 +41,9 @@ for (const name of Object.keys(libraries)) {
     throw new Error(`Unexpected ${name} version. Run npm ci --ignore-scripts first.`);
   }
 }
+
+// Compile and validate the public theme before replacing other served assets.
+await buildPublicStyles();
 
 for (const [name, assets] of Object.entries(libraries)) {
   const source = path.join(root, 'node_modules', name);

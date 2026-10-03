@@ -12,5 +12,8 @@
     "jodit": "4.17.1",
     "jquery": "3.7.1",
     "moment": "2.31.0"
+  },
+  "devDependencies": {
+    "sass": "1.105.1"
   }
 }
