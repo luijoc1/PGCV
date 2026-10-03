@@ -304,11 +304,5 @@ en la revisión. La mitigación de los componentes cargados de Bootstrap no
 elimina el aviso de npm. La integración de una pasarela de pago también sigue
 pendiente.
 
-La preparación de Bootstrap 5/AdminLTE 4 y su demostración local se describen
-en [el plan de interfaz](migrations/010_frontend_migration_plan.md). La tienda
-todavía utiliza la interfaz anterior; el resultado sin avisos de la auditoría
-de esa demostración no sustituye la auditoría de la aplicación. Excluir las
-pruebas y la vista previa del paquete para hosting.
-
 La publicación requiere proveedor y dominio elegidos, entorno comprobado,
 archivos revisados y autorización explícita para subir y publicar el proyecto.
