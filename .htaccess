@@ -13,6 +13,9 @@ Options -Indexes
 
 # Maintenance gate: update /PGCV if the application directory changes.
 RewriteEngine On
+# Internal files are needed by PHP/CLI, never by a browser.
+RewriteRule ^(?:\.git|\.codex|\.agents|\.aws|node_modules|vendor|tools)(?:/|$) - [F,L,NC]
+RewriteRule ^(?:composer\.(?:json|lock)|package(?:-lock)?\.json|README\.md|DEPLOYMENT\.md|REVISION_PROYECTO\.md|phpunit\.xml(?:\.dist)?|junit-report-allTest\.xml|ResultadoallTest\.txt)$ - [F,L,NC]
 RewriteCond %{DOCUMENT_ROOT}/PGCV/storage/maintenance.lock -f
 RewriteRule \.php(?:/.*)?$ - [R=503,L,NC]
 ErrorDocument 503 "Servicio temporalmente en mantenimiento."
