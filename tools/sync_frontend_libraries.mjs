@@ -9,6 +9,7 @@ const libraries = {
   'chart.js': ['dist/chart.umd.min.js', 'dist/chart.umd.min.js.map'],
   jodit: ['es2021/jodit.min.js', 'es2021/jodit.min.css'],
   bootstrap: ['dist', 'js', 'less'],
+  bootstrap5: ['dist/js/bootstrap.bundle.min.js', 'dist/js/bootstrap.bundle.min.js.map'],
   moment: ['locale', 'moment.js', 'min/locales.js', 'min/locales.min.js', 'min/moment.min.js',
     'min/moment-with-locales.js', 'min/moment-with-locales.min.js',
     'min/moment.min.js.map', 'min/moment-with-locales.min.js.map']
@@ -34,7 +35,8 @@ async function copyTree(source, target) {
 // Check all installed versions before replacing any served assets.
 for (const name of Object.keys(libraries)) {
   const installed = JSON.parse(await readFile(path.join(root, 'node_modules', name, 'package.json'), 'utf8'));
-  if (installed.version !== manifest.dependencies[name]) {
+  const expectedVersion = manifest.dependencies[name].replace(/^npm:[^@]+@/, '');
+  if (installed.version !== expectedVersion) {
     throw new Error(`Unexpected ${name} version. Run npm ci --ignore-scripts first.`);
   }
 }
