@@ -138,6 +138,7 @@ hr { margin: 20px 0; border: 0; border-top: 1px solid #eee; opacity: 1; }
 .form-group { margin-bottom: 15px; }
 .form-control { height: 34px; }
 textarea.form-control { height: auto; }
+.input-sm { height: 30px; padding: 5px 10px; font-size: 12px; line-height: 1.5; border-radius: 3px; }
 .form-horizontal .form-group { display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px; }
 .form-horizontal .form-group > [class*="col-"] { width: 100%; padding-right: 15px; padding-left: 15px; }
 @media (min-width: 768px) {
@@ -205,6 +206,17 @@ textarea.form-control { height: auto; }
 
 // The existing DataTables renderer emits Bootstrap 3 pagination markup.
 // Keep its integration intact until the coordinated table upgrade.
+body.layout-top-nav .dataTables_length select.form-control { appearance: auto; }
+body.layout-top-nav table.dataTable thead .sorting::after,
+body.layout-top-nav table.dataTable thead .sorting_asc::after,
+body.layout-top-nav table.dataTable thead .sorting_desc::after,
+body.layout-top-nav table.dataTable thead .sorting_asc_disabled::after,
+body.layout-top-nav table.dataTable thead .sorting_desc_disabled::after { font-family: FontAwesome; }
+body.layout-top-nav table.dataTable thead .sorting::after { content: "\f0dc"; }
+body.layout-top-nav table.dataTable thead .sorting_asc::after,
+body.layout-top-nav table.dataTable thead .sorting_asc_disabled::after { content: "\f0de"; }
+body.layout-top-nav table.dataTable thead .sorting_desc::after,
+body.layout-top-nav table.dataTable thead .sorting_desc_disabled::after { content: "\f0dd"; }
 .pagination { display: inline-block; padding-left: 0; margin: 20px 0; border-radius: 4px; }
 .pagination > li { display: inline; }
 .pagination > li > a, .pagination > li > span { position: relative; float: left; padding: 6px 12px; margin-left: -1px; line-height: 1.428571429; color: #337ab7; text-decoration: none; background: #fff; border: 1px solid #ddd; }

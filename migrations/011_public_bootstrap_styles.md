@@ -89,6 +89,25 @@ Se verificaron el clic, Tab seguido de Enter, resultados para `motor` y
 `amortiguador`, y estabilidad de medidas en escritorio y 375 px.
 El campo sigue siendo obligatorio: el aviso nativo al buscar vacío es normal.
 
+## Corrección posterior del perfil y el historial
+
+La tarjeta de perfil vuelve a agrupar la foto y los datos dentro de una
+`row`, para colocarlos en columnas en escritorio y apilarlos en móvil.
+La tabla declara ancho completo y configura su columna interna vacía como
+oculta en DataTables. El encabezado utiliza una fila HTML explícita.
+
+Los indicadores de ordenación públicos usan Font Awesome, disponible en el
+tema, en lugar de Glyphicons. Se restauran las medidas de `input-sm` y el
+selector nativo de cantidad de registros. El ancho adaptable sigue el
+[ejemplo oficial de DataTables](https://datatables.net/examples/core/basic_init/flexible_width.html).
+La integración antigua de DataTables permanece pendiente de actualización.
+
+El CSS público incluye en su URL la fecha de modificación del archivo,
+para que una nueva compilación cambie la versión que carga el navegador.
+Se comprobaron el perfil autenticado, filtro, ordenación, selector,
+paginación y modal de edición sin enviar el formulario. En 375 px CSS,
+la tabla conserva el desplazamiento horizontal dentro de su contenedor.
+
 ## Reversión y continuación
 
 Para volver a la fase anterior, restaurar juntos el encabezado público,

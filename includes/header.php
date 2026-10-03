@@ -8,7 +8,7 @@
   	<!-- Dile al navegador que responda al ancho de la pantalla -->
   	<meta content="width=device-width, initial-scale=1" name="viewport">
     <!-- Bootstrap 5 customized to preserve the existing public theme. -->
-    <link rel="stylesheet" href="dist/css/pgcv-public.min.css">
+    <link rel="stylesheet" href="dist/css/pgcv-public.min.css?v=<?php echo filemtime(__DIR__ . '/../dist/css/pgcv-public.min.css'); ?>">
   	<!-- DataTables -->
     <link rel="stylesheet" href="bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
   	<!-- Fuente impresionante -->

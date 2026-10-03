@@ -40,6 +40,7 @@ if (!isset($_SESSION['user'])) {
 							?>
 							<div class="box box-solid">
 								<div class="box-body">
+									<div class="row profile-summary">
 									<div class="col-sm-3">
 										<img src="<?php echo safeImageUrl($user['photo'], 'images/', 'profile.jpg'); ?>" class="profile-avatar" alt="Foto de perfil">
 									</div>
@@ -68,6 +69,7 @@ if (!isset($_SESSION['user'])) {
                                             </dl>
                                             <a href="#edit" class="btn btn-success btn-flat btn-sm" data-bs-toggle="modal"><i class="fa fa-edit"></i> Editar perfil</a>
 									</div>
+									</div>
 								</div>
 							</div>
 							<div class="box box-solid">
@@ -75,8 +77,9 @@ if (!isset($_SESSION['user'])) {
 									<h4 class="box-title"><i class="fa fa-calendar"></i> <b>Historial de transacciones</b></h4>
 								</div>
 								<div class="box-body">
-									<table class="table table-bordered" id="example1">
+									<table class="table table-bordered" id="example1" style="width:100%" data-column-defs='[{"targets":0,"visible":false,"searchable":false}]'>
 										<thead>
+											<tr>
 											<th class="hidden"></th>
 											<th>Fecha</th>
 											<th>Transacción#</th>
@@ -84,6 +87,7 @@ if (!isset($_SESSION['user'])) {
 											<th>Estado</th>
 											<th>Detalles completos</th>
 											<th>Factura</th>
+											</tr>
 										</thead>
 										<tbody>
 											<?php
