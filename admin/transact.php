@@ -33,8 +33,8 @@ foreach ($stmt as $row) {
 	if (!isset($row['historical_unit_price'])) { $output['legacy_details'] = true; }
 
 	$precio_html = ($row['descuento'] > 0)
-		? "<small style='text-decoration:line-through; color:#999;'>&#36; " . number_format($row['price'], 2) . "</small>
-			   <b style='color:#e74c3c;'>&#36; " . number_format($precio_final, 2) . "</b>
+		? "<small class='text-nowrap' style='text-decoration:line-through; color:#999;'>&#36; " . number_format($row['price'], 2) . "</small>
+			   <b class='text-nowrap' style='color:#e74c3c;'>&#36; " . number_format($precio_final, 2) . "</b>
 			   <span style='background:#e74c3c; color:#fff; font-size:10px; padding:1px 6px; border-radius:20px;'>-" . $row['descuento'] . "%</span>"
 		: "&#36; " . number_format($row['price'], 2);
 
@@ -49,7 +49,7 @@ foreach ($stmt as $row) {
 }
 
 if (!empty($output['legacy_details'])) {
-    $output['list'] .= '<tr><td colspan="4">Venta antigua: precios de detalle estimados con el catálogo actual.</td></tr>';
+    $output['list'] .= '<tr class="prepend_items"><td colspan="4">Venta antigua: precios de detalle estimados con el catálogo actual.</td></tr>';
 }
 $total = (float) ($sale['total'] ?? 0);
 $output['total'] = '<b>&#36; ' . number_format($total, 2) . '</b>';
