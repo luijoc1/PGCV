@@ -1,0 +1,182 @@
+PGCV - Requisitos e instalación local para nuevos programadores
+Actualizado: 4 de octubre de 2026
+Entorno de referencia: Windows, PowerShell y XAMPP.
+
+1. HERRAMIENTAS NECESARIAS
+
+- Git y acceso a una revisión actualizada del repositorio.
+- Apache 2.4 con soporte de .htaccess y mod_rewrite.
+- PHP 8.4 para Apache y para la línea de comandos (CLI).
+  La configuración local se comprobó con PHP 8.4.26 TS x64.
+  En Windows, el módulo PHP de Apache requiere la edición Thread Safe (TS).
+- Extensiones PHP: PDO MySQL, OpenSSL, DOM, Mbstring, Fileinfo, GD y cURL.
+  Para las dependencias de desarrollo, activar también XML y XMLWriter.
+- MariaDB con InnoDB, claves foráneas y restricciones CHECK activas.
+  La base local se comprobó con MariaDB 10.4.25. La compatibilidad con
+  otra versión o con MySQL debe comprobarse por separado.
+- Composer para instalar las dependencias PHP.
+- Node.js y npm si se van a modificar estilos, recursos o scripts de pruebas.
+  Los paquetes Sass actuales requieren Node.js 20.19.0 o superior.
+  El entorno local utiliza Node.js 24.14.1 y npm 11.11.0.
+
+Los recursos compilados de la interfaz están incluidos en bower_components
+y dist. Node.js no es necesario para servir la tienda con esos recursos.
+
+2. OBTENER EL CÓDIGO
+
+Clonar la revisión acordada dentro de la carpeta htdocs del XAMPP propio,
+con el nombre PGCV. Obtener la URL real del repositorio del responsable.
+No ejecutar la instalación sobre una copia de producción o con datos reales.
+
+Ejemplo de ubicación: C:\xampp\htdocs\PGCV.
+En el equipo actual se utiliza C:\xampp2\htdocs\PGCV.
+
+Abrir PowerShell en la raíz del proyecto. Todos los comandos siguientes
+se ejecutan desde esa carpeta y corresponden a la instalación nueva.
+
+Un commit local debe compartirse mediante el repositorio u otro canal
+acordado para que un nuevo programador reciba esa revisión. Crear commits
+no actualiza GitHub por sí solo.
+
+3. COMPROBAR PHP E INSTALAR LAS DEPENDENCIAS
+
+    php -v
+    php --ini
+    composer install
+    composer check-platform-reqs
+
+Comprobar que la CLI utiliza PHP 8.4 y que Composer utiliza el mismo runtime.
+En el equipo actual Apache utiliza PHP 8.4, pero la CLI antigua de XAMPP
+sigue en PHP 7.4. Cada programador debe configurar su propio entorno.
+
+composer install utiliza composer.lock e instala las dependencias de
+desarrollo y producción. La comprobación de plataforma verifica los
+requisitos de esas dependencias; comprobar además las extensiones de la
+aplicación indicadas arriba. Resolver los errores antes de continuar.
+
+Los cuatro archivos composer.json, composer.lock, package.json y
+package-lock.json deben conservarse en el repositorio. La carpeta vendor
+se reconstruye con Composer; un clon necesita esta instalación aunque
+contenga algunos metadatos de vendor rastreados.
+
+4. PREPARAR UNA BASE DE DATOS NUEVA
+
+Iniciar MariaDB. Crear una base vacía, por ejemplo tienda, y un usuario
+local con permisos para trabajar exclusivamente en esa base de desarrollo.
+
+Importar migrations/000_schema.sql en esa base, mediante phpMyAdmin o
+el cliente MariaDB. El archivo contiene el esquema actualizado y los datos
+técnicos mínimos, sin cuentas, productos, clientes ni credenciales.
+
+Las migraciones 001-007 y la política de integridad histórica ya están
+incorporadas en ese esquema. No ejecutar después las migraciones que
+vuelven a crear las mismas columnas o restricciones.
+
+Para disponer de un catálogo de prueba, preparar datos ficticios.
+Si se acuerda trabajar con una copia de una base existente, usar el
+procedimiento de restauración descrito en DEPLOYMENT.md; no importar
+el esquema limpio encima de esa copia.
+
+5. CREAR LA CONFIGURACIÓN PRIVADA
+
+    Copy-Item includes/config.example.php includes/config.php
+
+Ejecutar esta copia solo si config.php todavía no existe. Después editar
+includes/config.php con la configuración de la instalación nueva:
+
+- DB_SERVER: servidor y nombre de la base local. Ejemplo:
+  mysql:host=127.0.0.1;dbname=tienda;charset=utf8mb4
+- DB_USER y DB_PASS: credenciales del usuario local de la base.
+- APP_URL: http://localhost/PGCV si Apache utiliza el puerto habitual.
+  Si utiliza otro puerto o ruta, configurar la URL correspondiente.
+- MAIL_HOST, MAIL_PORT, MAIL_ENCRYPTION, MAIL_USER y MAIL_PASS:
+  configuración de correo del entorno de pruebas.
+- MAIL_CA_FILE: archivo de certificados CA, si se necesita configurarlo.
+- MAIL_ALERT_TO y MAIL_CONTACT_TO: destinatarios de pruebas, cuando proceda.
+
+config.php está ignorado y debe permanecer fuera de Git.
+No copiar credenciales de base de datos o SMTP de producción.
+
+Antes de probar operaciones que envían correo, preparar un transporte de
+pruebas que capture los mensajes y no los entregue a destinatarios reales.
+El mailer actual exige autenticación SMTP y cifrado ssl/tls con validación
+del certificado; el transporte de pruebas debe admitir esa configuración.
+
+No iniciar sesión administrativa ni abrir o recargar admin/home.php antes
+de controlar el correo: esa ruta puede disparar alertas de stock. El acceso
+administrativo puede redirigir automáticamente a esa página.
+Confirmar pedidos o enviar correos reales requiere autorización aparte.
+
+6. CREAR UN ADMINISTRADOR EN LA BASE DE DESARROLLO
+
+La base vacía no incluye cuentas. La herramienta CLI tools/create_admin.php
+crea un administrador sin enviar correo. Requiere una contraseña de al
+menos 12 caracteres, recibida en la variable PGCV_ADMIN_PASSWORD.
+
+Ejemplo en PowerShell, con una contraseña introducida de forma interactiva:
+
+    $pgcvAdminSecret = Read-Host 'Contraseña del administrador (mínimo 12 caracteres)' -AsSecureString
+    try {
+        $env:PGCV_ADMIN_PASSWORD = [System.Net.NetworkCredential]::new('', $pgcvAdminSecret).Password
+        php tools/create_admin.php admin@example.com
+    } finally {
+        Remove-Item Env:PGCV_ADMIN_PASSWORD -ErrorAction SilentlyContinue
+        $pgcvAdminSecret.Dispose()
+    }
+
+Elegir un correo de prueba propio. Este comando escribe una cuenta nueva
+en la base configurada: comprobar que DB_SERVER apunta a desarrollo.
+No ejecutarlo sobre la base habitual del equipo actual.
+
+7. ARRANCAR LA APLICACIÓN
+
+Iniciar Apache y MariaDB y abrir:
+
+    http://localhost/PGCV
+
+Comprobar que PHP puede escribir en images y en su directorio de sesiones.
+Las herramientas de respaldo necesitan escritura en el almacenamiento
+protegido correspondiente. Conservar las reglas .htaccess del proyecto.
+Si se cambia el nombre de la carpeta PGCV, revisar también la ruta de
+mantenimiento definida en el .htaccess raíz.
+
+8. PREPARAR LAS HERRAMIENTAS DE INTERFAZ (CUANDO SE NECESITEN)
+
+    npm ci --ignore-scripts
+
+Para regenerar los recursos y las cinco hojas de estilos propias:
+
+    npm run sync:frontend
+
+Para compilar únicamente los estilos públicos:
+
+    node tools/build_public_styles.mjs
+
+Editar build/scss/pgcv-public.scss y las demás fuentes correspondientes.
+No editar directamente el CSS generado de dist/css ni las copias de
+bibliotecas distribuidas. Conservar el diseño habitual del proyecto.
+Los avisos conocidos de Sass por @import no impiden la compilación.
+Revisar los cambios generados antes de incluirlos en un commit.
+
+9. ARCHIVOS PRIVADOS Y DOCUMENTACIÓN
+
+- Mantener fuera de Git includes/config.php, credenciales, bases exportadas,
+  node_modules, respaldos y evidencias privadas de revisión.
+- README.md raíz y REVISION_PROYECTO.md permanecen ignorados por decisión
+  del proyecto. La guía versionada es DEPLOYMENT.md, junto con migrations.
+- Conservar storage/backups en el equipo actual: contiene recursos de PHP
+  y phpMyAdmin que utiliza Apache, además de respaldos privados.
+  Esos recursos no forman parte del clon ni deben copiarse al hosting.
+  El programador nuevo debe instalar sus propios runtimes.
+- No ejecutar suites completas o pruebas sobre datos reales como parte
+  automática del arranque. Elegir verificaciones para el caso que se cambie.
+- Mensajes de commits en inglés; documentación y explicaciones en español.
+  No hacer push ni publicar sin la instrucción correspondiente.
+
+Referencias:
+  DEPLOYMENT.md
+  migrations/033_predeployment_status.md
+  includes/config.example.php
+  migrations/000_schema.sql
+  https://getcomposer.org/doc/01-basic-usage.md#installing-from-composer-lock
+  https://docs.npmjs.com/cli/v11/commands/npm-ci/
