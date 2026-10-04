@@ -4,6 +4,15 @@ Se prevé publicar el proyecto en un hosting, pero todavía no se ha elegido
 proveedor ni dominio. No se han subido archivos, creado una base de datos
 de producción ni instalado tareas programadas en otro servidor.
 
+Estado consolidado, actualizado en el paso 99: [completado y pendientes actuales](migrations/033_predeployment_status.md).
+Bootstrap 3 ya está retirado del runtime y de npm. Las revisiones visuales
+por casos concretos terminaron en las pantallas documentadas; quedan la
+preparación del paquete, la comprobación del destino y las decisiones de
+correo/cobro antes de publicar. Los cambios desde el paso 73 quedaron
+organizados en commits locales, con mensajes en inglés y documentación
+en español. Todavía no hay una revisión de despliegue seleccionada ni un
+paquete de producción preparado; no se hizo push ni se publicó el proyecto.
+
 ## Uso local mientras se prepara la publicación
 
 El proyecto puede seguir funcionando en el XAMPP actual. Para usarlo en este
@@ -217,8 +226,9 @@ de configuración no migra datos.
 
 - PHP con PDO MySQL, OpenSSL, DOM, Mbstring, Fileinfo, GD y cURL.
   `composer check-platform-reqs --no-dev` comprueba los requisitos de las
-  dependencias, pero no todas las funciones de la aplicación. Las pruebas
-  locales se realizaron con PHP 7.4.30, una versión sin soporte. Elegir una
+  dependencias, pero no todas las funciones de la aplicación. La compatibilidad
+  local se comprobó también con PHP 8.4.26; Apache utiliza esa versión TS.
+  La CLI anterior sigue en PHP 7.4.30. Elegir una
   versión con soporte según <https://www.php.net/supported-versions.php>
   y comprobar el proyecto en una copia aislada con la versión exacta del
   hosting antes de publicarlo.
@@ -257,6 +267,34 @@ de configuración no migra datos.
    el servidor no necesita Node para ejecutar la tienda. Para regenerarlos
    antes de preparar los archivos, usar `npm ci --ignore-scripts` y
    `npm run sync:frontend`.
+   Excluir también `build/`, `bower_components/bootstrap/` y
+   `dist/js/bootstrap-pgcv.js`: son fuentes de desarrollo o copias históricas
+   retiradas del runtime. Las copias Bootstrap 3 permanecen bloqueadas por
+   HTTP localmente; no forman parte del paquete del hosting.
+   Excluir también `bower_components/select2/`, copia histórica bloqueada.
+   El selector administrativo actual utiliza `bower_components/select2-v4/`,
+   reproducible desde Select2 4.1.0 fijado en npm.
+   Excluir también `bower_components/bootstrap-daterangepicker/`, copia
+   histórica bloqueada. El calendario de ventas usa Daterangepicker 3.1.0
+   desde `bower_components/daterangepicker/`, con estilos propios compilados
+   y adaptación `dist/js/pgcv-sales-dates.js` para conservar su diseño.
+   Incluir `bower_components/sweetalert2/dist/sweetalert2.all.min.js`,
+   fijado en npm 11.26.25: los avisos administrativos usan ahora este
+   recurso local, con estilos incluidos, en lugar de la URL CDN variable.
+   Incluir `bower_components/magnify/`, fijado en npm 2.3.3, para la lupa
+   de producto. Excluir `magnify/` de la raíz: es la copia histórica
+   conservada y bloqueada por HTTP. La ampliación utiliza la foto original
+   cuando no existe una variante `large-`; no requiere generar imágenes.
+   Incluir CSS y cinco fuentes web de `bower_components/font-awesome/`,
+   con sus avisos de licencia y procedencia: se conserva 4.7.0 fijado en
+   npm, idéntico a los iconos anteriores. Excluir `bower_components/Ionicons/`,
+   sin consumidores propios encontrados. No se eliminaron esas copias locales.
+   Excluir también `tcpdf/` de la raíz: es la copia histórica bloqueada;
+   facturas y reporte utilizan TCPDF 6.11.4 desde Composer. Preparar los
+   recursos de `dist` por sus consumidores actuales: las hojas/JavaScript
+   antiguos de AdminLTE, SlimScroll y los ejemplos de dashboard conservados
+   no son recursos necesarios de producción. La ausencia de una carga activa
+   no exige borrar sus copias locales para preparar el paquete.
 4. Crear includes/config.php específico del hosting a partir del ejemplo.
    Configurar las credenciales de su base de datos, APP_URL con HTTPS,
    destinatarios de alertas/contacto, credenciales SMTP y certificados CA.
@@ -299,15 +337,49 @@ inventario: comprobarlo con un transporte de correo controlado o permiso
 explícito de envío. El diagnóstico SMTP solo conecta y autentica; no envía
 mensajes.
 
-Bootstrap/AdminLTE y TCPDF conservan las limitaciones de soporte documentadas
-en la revisión. La mitigación de los componentes cargados de Bootstrap no
-elimina el aviso de npm. La integración de una pasarela de pago también sigue
-pendiente.
+TCPDF 6.11.4 se utiliza desde Composer y conserva las limitaciones de soporte
+documentadas en el paso 26. Bootstrap 3 se retiró de npm y del runtime;
+la última auditoría npm documentada, paso 89, informa cero vulnerabilidades
+en 37 dependencias, incluidas las de desarrollo. No cubre los recursos fuera
+del manifiesto ni equivale a una auditoría nueva del entorno de destino.
+La integración de una pasarela de pago también sigue pendiente.
+Los SDK externos públicos de pago, CAPTCHA y Facebook requieren una revisión
+de necesidad y funcionamiento aparte: las vistas visuales aisladas recientes
+los omitieron. La referencia PHP antigua de reCAPTCHA en registro está
+comentada; no se debe presentar como validación activa.
 
 La parte pública utiliza JavaScript y CSS de Bootstrap 5, con estilos
-compilados mediante Sass para conservar el diseño actual. El tema AdminLTE 2,
-DataTables y administración siguen pendientes; la auditoría aún señala
-Bootstrap 3. El [alcance de JavaScript](migrations/010_public_bootstrap_javascript.md)
+compilados mediante Sass para conservar el diseño actual. Administración
+también utiliza JavaScript y CSS Bootstrap 5 compilado para conservar el
+diseño habitual. DataTables utiliza ahora el núcleo 3.1.3 y su integración
+Bootstrap 5 en ambas áreas. La distribución y navegación usan ahora un script
+propio; el JavaScript antiguo de AdminLTE y SlimScroll ya no se cargan.
+El tema azul y el principal se compilan desde fuentes Sass propias,
+conservando reglas y diseño derivados de AdminLTE 2. La retirada de
+las copias históricas permanece pendiente; esas fuentes están inactivas.
+Bootstrap 3 ya no está en npm y sus recursos históricos están bloqueados
+por HTTP. Las fases administrativas de
+[JavaScript](migrations/013_admin_bootstrap_javascript.md) y
+[estilos](migrations/014_admin_bootstrap_styles.md) y
+[DataTables](migrations/015_datatables_bootstrap5.md) y
+[distribución/navegación](migrations/016_pgcv_layout_navigation.md) y
+[tema azul](migrations/017_pgcv_blue_skin.md) y
+[tema principal](migrations/018_pgcv_theme_styles.md) y
+[retirada de Bootstrap 3](migrations/019_bootstrap3_retirement.md),
+[actualización de Select2](migrations/020_select2_update.md),
+[actualización del calendario de ventas](migrations/021_daterangepicker_update.md),
+[avisos de ventas locales](migrations/022_sweetalert2_local_assets.md),
+[lupa de producto](migrations/023_magnify_product_zoom.md),
+[recursos de iconos](migrations/024_font_awesome_resources.md),
+[revisión de carrito y facturación](migrations/025_cart_checkout_visual_review.md),
+[revisión visual administrativa](migrations/026_admin_visual_review.md),
+[revisión de descuentos y actividad](migrations/027_discounts_logs_visual_review.md),
+[revisión de ventas y transacciones](migrations/028_sales_transaction_visual_review.md),
+[revisión del carrito administrativo](migrations/029_admin_cart_visual_review.md),
+[revisión de formularios públicos](migrations/030_public_auth_visual_review.md),
+[revisión de contacto y páginas informativas](migrations/031_public_information_visual_review.md),
+[revisión del catálogo público](migrations/032_public_catalog_visual_review.md),
+el [alcance de JavaScript público](migrations/010_public_bootstrap_javascript.md)
 y la [compilación y reversión de estilos](migrations/011_public_bootstrap_styles.md)
 explican esta transición. Sass es una dependencia de desarrollo: instalar
 también las dependencias de desarrollo al regenerar recursos; el hosting
