@@ -6,12 +6,18 @@
     "sync:frontend": "node tools/sync_frontend_libraries.mjs"
   },
   "dependencies": {
-    "bootstrap": "3.4.1",
     "bootstrap5": "npm:bootstrap@5.3.8",
     "chart.js": "4.5.1",
+    "datatables.net": "3.1.3",
+    "datatables.net-bs5": "3.1.3",
+    "daterangepicker": "3.1.0",
+    "font-awesome": "4.7.0",
     "jodit": "4.17.1",
     "jquery": "3.7.1",
-    "moment": "2.31.0"
+    "magnify": "2.3.3",
+    "moment": "2.31.0",
+    "select2": "4.1.0",
+    "sweetalert2": "11.26.25"
   },
   "devDependencies": {
     "sass": "1.105.1"

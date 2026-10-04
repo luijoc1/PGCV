@@ -15,6 +15,9 @@ Options -Indexes
 RewriteEngine On
 # Internal files are needed by PHP/CLI, never by a browser.
 RewriteRule ^(?:\.git|\.codex|\.agents|\.aws|node_modules|vendor|tools)(?:/|$) - [F,L,NC]
+# Recursos históricos de Bootstrap 3, sin consumidores activos.
+RewriteRule ^(?:dist/js/bootstrap-pgcv\.js|tests/fixtures/bootstrap_runtime\.html)$ - [F,L,NC]
+RewriteRule ^build/(?:less|bootstrap-less)(?:/|$) - [F,L,NC]
 RewriteRule ^(?:composer\.(?:json|lock)|package(?:-lock)?\.json|README\.md|DEPLOYMENT\.md|REVISION_PROYECTO\.md|phpunit\.xml(?:\.dist)?|junit-report-allTest\.xml|ResultadoallTest\.txt)$ - [F,L,NC]
 RewriteCond %{DOCUMENT_ROOT}/PGCV/storage/maintenance.lock -f
 RewriteRule \.php(?:/.*)?$ - [R=503,L,NC]

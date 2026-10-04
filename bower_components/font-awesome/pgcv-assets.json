@@ -1,0 +1,13 @@
+{
+  "name": "font-awesome",
+  "version": "4.7.0",
+  "source": "npm:font-awesome@4.7.0",
+  "assets": [
+    "css/font-awesome.min.css",
+    "fonts/fontawesome-webfont.eot",
+    "fonts/fontawesome-webfont.svg",
+    "fonts/fontawesome-webfont.ttf",
+    "fonts/fontawesome-webfont.woff",
+    "fonts/fontawesome-webfont.woff2"
+  ]
+}

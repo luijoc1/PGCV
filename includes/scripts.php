@@ -10,39 +10,27 @@ $.ajaxPrefilter(function(options, originalOptions, xhr) {
 <!-- Bootstrap 5 JS; existing visual theme is preserved during CSS migration. -->
 <script src="bower_components/bootstrap5/dist/js/bootstrap.bundle.min.js"></script>
 <!-- DataTables -->
-<script src="bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="dist/js/adminlte.min.js"></script>
+<script src="bower_components/datatables.net/js/dataTables.min.js"></script>
+<script src="bower_components/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+<script src="dist/js/pgcv-tables.js?v=<?php echo filemtime(__DIR__ . '/../dist/js/pgcv-tables.js'); ?>"></script>
+<!-- Distribución propia, conservando el tema habitual. -->
+<script src="dist/js/pgcv-layout.js?v=<?php echo filemtime(__DIR__ . '/../dist/js/pgcv-layout.js'); ?>"></script>
 <script>
   $(function () {
     // Datatable
     document.documentElement.classList.remove('pgcv-tables-pending');
     $('#example1').DataTable({
       scrollX: true,
-      language: {
-        search: 'Buscar:',
-        lengthMenu: 'Mostrar _MENU_ registros',
-        info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-        infoEmpty: 'Sin registros',
-        infoFiltered: '(de _MAX_ registros en total)',
-        zeroRecords: 'No se encontraron registros',
-        emptyTable: 'Todavía no hay transacciones',
-        paginate: {first: 'Primera', last: 'Última', next: 'Siguiente', previous: 'Anterior'},
-        aria: {sortAscending: ': ordenar de menor a mayor', sortDescending: ': ordenar de mayor a menor'}
-      }
+      language: {emptyTable: 'Todavía no hay transacciones'}
     });
+    $('.dt-scroll-body').attr({tabindex: '0', role: 'region', 'aria-label': 'Historial de transacciones, desplazamiento horizontal'});
   });
 </script>
 <!--Magnify -->
-<script src="magnify/magnify.min.js"></script>
+<script src="bower_components/magnify/dist/js/jquery.magnify.js?v=<?php echo filemtime(__DIR__ . '/../bower_components/magnify/dist/js/jquery.magnify.js'); ?>"></script>
 <script>
 $(function(){
-	$('.zoom').magnify();
+	$('.zoom').magnify({timeout: 0});
 });
 </script>
 <!-- Custom Scripts -->

@@ -1,0 +1,8 @@
+{
+  "name": "sweetalert2",
+  "version": "11.26.25",
+  "source": "npm:sweetalert2@11.26.25",
+  "assets": [
+    "dist/sweetalert2.all.min.js"
+  ]
+}

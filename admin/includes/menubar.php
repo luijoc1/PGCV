@@ -1,4 +1,4 @@
-<aside class="main-sidebar">
+<aside class="main-sidebar" id="pgcv-sidebar">
   <!-- sidebar: style can be found in sidebar.less -->
   <section class="sidebar">
     <!-- Sidebar user panel -->
@@ -13,7 +13,7 @@
       </div>
     </div>
     <!-- sidebar menu: : style can be found in sidebar.less -->
-    <ul class="sidebar-menu" data-widget="tree">
+    <ul class="sidebar-menu" data-pgcv-menu>
       <!-- MENU PRINCIPAL -->
       <li class="header">PRINCIPAL</li>
       <li><a href="home.php"><i class="fa fa-dashboard"></i> <span>PANEL</span></a></li>

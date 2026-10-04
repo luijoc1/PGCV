@@ -7,62 +7,29 @@ $.ajaxPrefilter(function(options, originalOptions, xhr) {
   }
 });
 </script>
-<!-- Bootstrap 3.4.1: PGCV runtime without Button, Tooltip or Popover -->
-<script src="../dist/js/bootstrap-pgcv.js"></script>
+<!-- Bootstrap 5: conservar el diseño administrativo durante la transición CSS. -->
+<script src="../bower_components/bootstrap5/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Select2 -->
-<script src="../bower_components/select2/dist/js/select2.full.min.js"></script>
+<script src="../bower_components/select2-v4/dist/js/select2.full.min.js?v=<?php echo filemtime(__DIR__ . '/../../bower_components/select2-v4/dist/js/select2.full.min.js'); ?>"></script>
+<script src="../bower_components/select2-v4/dist/js/i18n/es.js?v=<?php echo filemtime(__DIR__ . '/../../bower_components/select2-v4/dist/js/i18n/es.js'); ?>"></script>
 <!-- DataTables -->
-<script src="../bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="../bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="../bower_components/datatables.net/js/dataTables.min.js"></script>
+<script src="../bower_components/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+<script src="../dist/js/pgcv-tables.js?v=<?php echo filemtime(__DIR__ . '/../../dist/js/pgcv-tables.js'); ?>"></script>
 <!-- daterangepicker -->
 <script src="../bower_components/moment/min/moment.min.js"></script>
-<script src="../bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
-<!-- datepicker -->
-<script src="../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-<!-- bootstrap time picker -->
-<script src="../plugins/timepicker/bootstrap-timepicker.min.js"></script>
-<!-- Slimscroll -->
-<script src="../bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="../bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="../dist/js/adminlte.min.js"></script>
+<script src="../bower_components/daterangepicker/daterangepicker.js?v=<?php echo filemtime(__DIR__ . '/../../bower_components/daterangepicker/daterangepicker.js'); ?>"></script>
+<!-- Distribución y navegación propias, conservando el tema habitual. -->
+<script src="../dist/js/pgcv-layout.js?v=<?php echo filemtime(__DIR__ . '/../../dist/js/pgcv-layout.js'); ?>"></script>
 <!-- Product description editor -->
 <script src="../bower_components/jodit/es2021/jodit.min.js"></script>
 <script src="../dist/js/product-editor.js"></script>
-<!-- Active Script -->
-<script>
-  $(function() {
-    /** agregar una clase activa y permanecer abierto cuando se selecciona */
-    var url = window.location;
-
-    // for sidebar menu entirely but not cover treeview
-    $('ul.sidebar-menu a').filter(function() {
-      return this.href == url;
-    }).parent().addClass('active');
-
-    // for treeview
-    $('ul.treeview-menu a').filter(function() {
-      return this.href == url;
-    }).parentsUntil(".sidebar-menu > .treeview-menu").addClass('active');
-
-  });
-</script>
 <!-- Data Table Initialize -->
 <script>
   $(function() {
-    var tableLanguage = {
-      search: 'Buscar:', lengthMenu: 'Mostrar _MENU_ registros',
-      info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-      infoEmpty: 'Sin registros', infoFiltered: '(de _MAX_ registros en total)',
-      zeroRecords: 'No se encontraron registros', emptyTable: 'No hay registros',
-      paginate: {first: 'Primera', last: 'Última', next: 'Siguiente', previous: 'Anterior'},
-      aria: {sortAscending: ': ordenar de menor a mayor', sortDescending: ': ordenar de mayor a menor'}
-    };
     document.documentElement.classList.remove('pgcv-tables-pending');
     $('#example1').DataTable({
-      scrollX: true,
-      language: tableLanguage
+      scrollX: true
     })
     $('#example2').DataTable({
       'paging': true,
@@ -71,10 +38,9 @@ $.ajaxPrefilter(function(options, originalOptions, xhr) {
       'ordering': true,
       'info': true,
       'autoWidth': false,
-      'scrollX': true,
-      'language': tableLanguage
+      'scrollX': true
     })
-    $('.dataTables_scrollBody').attr({tabindex: '0', role: 'region', 'aria-label': 'Tabla de registros, desplazamiento horizontal'});
+    $('.dt-scroll-body').attr({tabindex: '0', role: 'region', 'aria-label': 'Tabla de registros, desplazamiento horizontal'});
     $('body').on('shown.bs.modal', '.modal', function() {
       $.fn.dataTable.tables({visible: true, api: true}).columns.adjust();
     });
@@ -83,9 +49,25 @@ $.ajaxPrefilter(function(options, originalOptions, xhr) {
 <script>
   $(function() {
     //Initialize Select2 Elements
-    $('.select2').select2()
+    $('.select2').each(function() {
+      var modal = $(this).closest('.modal');
+      var options = {language: 'es'};
+      if (modal.length) options.dropdownParent = modal;
+      $(this).select2(options);
+      if (modal.length) {
+        // Escape cierra primero la lista; no debe llegar también al modal Bootstrap.
+        $(this).on('select2:open', function() {
+          modal.find('.select2-dropdown')
+            .off('keydown.pgcvSelect2Escape')
+            .on('keydown.pgcvSelect2Escape', function(e) {
+              if (e.key === 'Escape' || e.which === 27) e.stopPropagation();
+            });
+        });
+      }
+    });
 
     PGCVProductEditors.init();
   });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Avisos de ventas: versión exacta local, con los estilos incluidos en el mismo bundle. -->
+<script src="../bower_components/sweetalert2/dist/sweetalert2.all.min.js?v=<?php echo filemtime(__DIR__ . '/../../bower_components/sweetalert2/dist/sweetalert2.all.min.js'); ?>"></script>

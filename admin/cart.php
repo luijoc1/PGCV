@@ -42,7 +42,7 @@
         if(isset($_SESSION['error'])){
           echo "
             <div class='alert alert-danger alert-dismissible'>
-              <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+              <button type='button' class='close' data-bs-dismiss='alert' aria-hidden='true'>&times;</button>
               <h4><i class='icon fa fa-warning'></i> Error!</h4>
               ".escapeHtml($_SESSION['error'])."
             </div>
@@ -52,7 +52,7 @@
         if(isset($_SESSION['success'])){
           echo "
             <div class='alert alert-success alert-dismissible'>
-              <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+              <button type='button' class='close' data-bs-dismiss='alert' aria-hidden='true'>&times;</button>
               <h4><i class='icon fa fa-check'></i> ¡Éxito!</h4>
               ".escapeHtml($_SESSION['success'])."
             </div>
@@ -64,7 +64,7 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header with-border">
-              <a href="#addnew" data-toggle="modal" id="add" data-id="<?php echo $user['id']; ?>" class="btn btn-primary btn-sm btn-flat"><i class="fa fa-plus"></i> Nuevo</a>
+              <a href="#addnew" data-bs-toggle="modal" id="add" data-id="<?php echo $user['id']; ?>" class="btn btn-primary btn-sm btn-flat"><i class="fa fa-plus"></i> Nuevo</a>
               <a href="users.php" class="btn btn-sm btn-primary btn-flat"><i class="fa fa-arrow-left"></i> Los usuarios</a>
             </div>
             <div class="box-body">
@@ -120,14 +120,14 @@
 $(function(){
   $(document).on('click', '.edit', function(e){
     e.preventDefault();
-    $('#edit').modal('show');
+    bootstrap.Modal.getOrCreateInstance(document.querySelector('#edit')).show();
     var id = $(this).data('id');
     getRow(id);
   });
 
   $(document).on('click', '.delete', function(e){
     e.preventDefault();
-    $('#delete').modal('show');
+    bootstrap.Modal.getOrCreateInstance(document.querySelector('#delete')).show();
     var id = $(this).data('id');
     getRow(id);
   });

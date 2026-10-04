@@ -1,0 +1,224 @@
+@use "pgcv-tables";
+@use "sass:math";
+// Bootstrap 5 administrativo con las medidas y colores habituales de PGCV.
+// Compilar con tools/build_admin_styles.mjs; no editar el CSS generado.
+$enable-rfs: false;
+$enable-dark-mode: false;
+$grid-breakpoints: (xs: 0, sm: 768px, md: 992px, lg: 1200px);
+$container-max-widths: (sm: 750px, md: 970px, lg: 1170px);
+$grid-gutter-width: 30px;
+$font-family-sans-serif: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-size-base: .875rem;
+$font-size-sm: .75rem;
+$font-size-lg: 1.125rem;
+$line-height-base: 1.428571429;
+$body-color: #333;
+$link-color: #337ab7;
+$link-decoration: none;
+$link-hover-color: #23527c;
+$link-hover-decoration: underline;
+$paragraph-margin-bottom: 10px;
+$headings-margin-bottom: 10px;
+$headings-font-weight: 500;
+$headings-line-height: 1.1;
+$h1-font-size: 2.25rem;
+$h2-font-size: 1.875rem;
+$h3-font-size: 1.5rem;
+$h4-font-size: 1.125rem;
+$h5-font-size: .875rem;
+$h6-font-size: .75rem;
+$primary: #337ab7;
+$success: #5cb85c;
+$info: #5bc0de;
+$warning: #f0ad4e;
+$danger: #d9534f;
+$border-radius: 4px;
+$border-radius-sm: 3px;
+$border-radius-lg: 6px;
+$input-btn-padding-y: 6px;
+$input-btn-padding-x: 12px;
+$input-btn-padding-y-sm: 5px;
+$input-btn-padding-x-sm: 10px;
+$input-btn-padding-y-lg: 10px;
+$input-btn-padding-x-lg: 16px;
+$input-btn-line-height: 1.428571429;
+$input-color: #555;
+$input-border-color: #ccc;
+$input-placeholder-color: #999;
+$input-focus-border-color: #66afe9;
+$input-focus-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+$table-cell-padding-y: 8px;
+$table-cell-padding-x: 8px;
+$table-border-color: #ddd;
+$table-color: #333;
+$table-striped-bg: #f9f9f9;
+$table-hover-bg: #f5f5f5;
+$dropdown-font-size: .875rem;
+$dropdown-padding-y: 5px;
+$dropdown-item-padding-y: 3px;
+$dropdown-item-padding-x: 20px;
+$dropdown-link-color: #333;
+$modal-md: 600px;
+$modal-dialog-margin: 10px;
+$modal-dialog-margin-y-sm-up: 30px;
+$modal-inner-padding: 15px;
+$modal-header-padding-y: 15px;
+$modal-header-padding-x: 15px;
+$modal-title-line-height: 1.428571429;
+$modal-fade-transform: translate(0, -25%);
+$modal-footer-margin-between: 0;
+@import "bootstrap5/scss/bootstrap";
+
+// Mantener el flujo y espaciado del marcado administrativo existente.
+h1, h2, h3, .h1, .h2, .h3 { margin-top: 20px; }
+h4, h5, h6, .h4, .h5, .h6 { margin-top: 10px; }
+ul, ol { margin-bottom: 10px; }
+label { display: inline-block; max-width: 100%; margin-bottom: 5px; font-weight: 700; }
+b, strong { font-weight: 700; }
+hr { margin: 20px 0; border: 0; border-top: 1px solid #eee; opacity: 1; }
+.text-right { text-align: right; }
+.pull-left { float: left !important; }
+.pull-right { float: right !important; }
+.img-circle { border-radius: 50%; }
+.img-responsive { display: block; max-width: 100%; height: auto; }
+.hidden { display: none !important; }
+.sr-only { @include visually-hidden(); }
+@media (max-width: 767px) { .hidden-xs { display: none !important; } }
+.row { display: block; }
+.row::before, .row::after, .form-group::before, .form-group::after,
+.nav::before, .nav::after, .navbar::before, .navbar::after {
+  display: table; content: " ";
+}
+.row::after, .form-group::after, .nav::after, .navbar::after { clear: both; }
+.row > * { float: left; margin-top: 0; }
+@for $column from 1 through 12 {
+  .col-xs-#{$column} { width: math.percentage(math.div($column, 12)); padding: 0 15px; }
+}
+@each $breakpoint in (sm, md, lg) {
+  @include media-breakpoint-up($breakpoint) {
+    @for $column from 1 through 12 {
+      .col-#{$breakpoint}-#{$column} { width: math.percentage(math.div($column, 12)); }
+    }
+  }
+}
+
+// Cabecera y navegación: AdminLTE conserva los colores, logo y barra lateral.
+.navbar { display: block; padding: 0; min-height: 50px; border: 1px solid transparent; }
+.navbar-static-top { border-width: 0 0 1px; border-radius: 0; }
+.nav { display: block; padding-left: 0; margin-bottom: 0; list-style: none; }
+.nav > li { position: relative; display: block; }
+.nav > li > a { position: relative; display: block; padding: 10px 15px; }
+.nav > li > a:hover, .nav > li > a:focus { text-decoration: none; background-color: #eee; }
+.navbar-nav { margin: 7.5px -15px; }
+.navbar-nav > li > a { padding: 10px 15px; line-height: 20px; }
+.navbar-nav .dropdown-menu { position: absolute; margin-top: 0; }
+.dropdown-toggle::after { display: none; }
+.navbar-nav > li > a.dropdown-toggle.show { background: rgba(0,0,0,.1); color: #f6f6f6; }
+@media (min-width: 768px) {
+  .navbar-nav { float: left; margin: 0; }
+  .navbar-nav > li { float: left; }
+  .navbar-nav > li > a { padding-top: 15px; padding-bottom: 15px; }
+}
+.breadcrumb { display: block; padding: 8px 15px; margin-bottom: 20px; border-radius: 4px; }
+.breadcrumb > li { display: inline-block; }
+.breadcrumb > li + li::before { padding: 0 5px; color: #ccc; content: "/\00a0"; }
+.breadcrumb > .active { color: #777; }
+.nav-tabs { border-bottom: 1px solid #ddd; }
+.nav-tabs > li { float: left; margin-bottom: -1px; }
+.nav-tabs > li > a { margin-right: 2px; line-height: 1.428571429; border: 1px solid transparent; border-radius: 4px 4px 0 0; }
+.nav-tabs > li > a:hover { border-color: #eee #eee #ddd; }
+.nav-tabs > li > a.active, .nav-tabs > li > a.active:hover, .nav-tabs > li > a.active:focus {
+  color: #555; cursor: default; background: #fff; border: 1px solid #ddd; border-bottom-color: transparent;
+}
+
+// Formularios e inputs con los tamaños anteriores, incluidos los modales largos.
+.form-group { margin-bottom: 15px; }
+.form-control { height: 34px; }
+select.form-control { appearance: auto; }
+textarea.form-control { height: auto; }
+.input-sm { height: 30px; padding: 5px 10px; font-size: 12px; line-height: 1.5; border-radius: 3px; }
+.form-horizontal .form-group { margin-right: -15px; margin-left: -15px; }
+.form-horizontal .form-group > [class*="col-"] { position: relative; float: left; min-height: 1px; padding-right: 15px; padding-left: 15px; }
+@media (max-width: 767px) { .form-horizontal .form-group > [class*="col-"] { width: 100%; } }
+@media (min-width: 768px) {
+  .form-horizontal .control-label { padding-top: 7px; margin-bottom: 0; text-align: right; }
+  .form-inline .form-group { display: inline-block; margin-bottom: 0; vertical-align: middle; }
+  .form-inline .form-control { display: inline-block; width: auto; vertical-align: middle; }
+  .form-inline .input-group { display: inline-table; vertical-align: middle; }
+  .form-inline .input-group .input-group-addon { width: auto; }
+  .form-inline .input-group > .form-control { width: 100%; }
+}
+.input-group { display: table; width: auto; border-collapse: separate; }
+.input-group > .form-control { position: relative; display: table-cell; float: left; width: 100%; margin-bottom: 0; margin-left: 0 !important; }
+.input-group-addon { display: table-cell; width: 1%; padding: 6px 12px; font-size: 14px; font-weight: 400; line-height: 1; color: #555; text-align: center; background: #eee; border: 1px solid #ccc; border-radius: 4px; vertical-align: middle; white-space: nowrap; }
+.input-group > :first-child { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.input-group > :last-child { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.input-group-addon:first-child { border-right: 0; }
+.input-group-addon:last-child { border-left: 0; }
+.btn { white-space: nowrap; }
+.btn-primary, .btn-success, .btn-info, .btn-warning, .btn-danger { color: #fff; }
+.btn-default { @include button-variant(#fff, #ccc, #333, #e6e6e6, #adadad, #333); }
+.btn-xs { padding: 1px 5px; font-size: 12px; line-height: 1.5; border-radius: 3px; }
+.btn-sm { line-height: 1.5; }
+
+// Mantener las insignias y avisos de AdminLTE sobre la base actualizada.
+.label { display: inline; padding: .2em .6em .3em; font-size: 75%; font-weight: 700; line-height: 1; color: #fff; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: .25em; }
+.label-success { background: #5cb85c; }
+.label-danger { background: #d9534f; }
+.label-warning { background: #f0ad4e; }
+.label-info { background: #5bc0de; }
+.label-default { background: #777; }
+.close { float: right; padding: 0; color: #000; font-size: 21px; font-weight: 700; line-height: 1; text-shadow: 0 1px 0 #fff; background: transparent; border: 0; opacity: .2; }
+.close:hover, .close:focus { opacity: .5; }
+.alert { padding: 15px; margin-bottom: 20px; }
+.alert h4 { margin-top: 0; color: inherit; }
+.alert-dismissible { padding-right: 35px; }
+.alert-dismissible .close { position: relative; top: -2px; right: -21px; color: inherit; }
+
+// Bootstrap 5 controla foco/estados; el encabezado y pie conservan su distribución.
+.modal-header, .modal-footer { display: block; }
+.modal-header::after, .modal-footer::after { display: table; clear: both; content: " "; }
+.modal-header .close { margin-top: -2px; }
+.modal-title { margin: 0; }
+.modal-footer { text-align: right; padding: 15px; }
+.modal-footer > * { margin: 0; }
+.modal-footer .btn + .btn { margin-left: 5px; }
+.modal-dialog { max-width: none; }
+// El selector nativo de archivo debe caber en su columna, incluso a 320 px.
+.modal input[type="file"] { max-width: 100%; }
+@media (min-width: 768px) {
+  .modal-dialog { width: 600px; margin: 30px auto; }
+  .modal-sm { width: 300px; }
+}
+@media (min-width: 992px) { .modal-lg { width: 900px; } }
+
+// Tablas con las medidas habituales.
+table { border-collapse: collapse; border-spacing: 0; }
+.table { margin-bottom: 20px; }
+.table > :not(caption) > * > * { box-shadow: none; background: transparent; }
+.table > :not(caption) > tr { border-width: 0; }
+.table > :not(caption) { border-width: 0; }
+.table > thead > tr > th { vertical-align: bottom; border-bottom: 2px solid #ddd; }
+.table > tbody > tr > td, .table > tbody > tr > th { border-top: 1px solid #ddd; }
+.table-bordered { border: 1px solid #ddd; }
+.table-bordered > :not(caption) > * > * { border: 1px solid #ddd; }
+.table > thead > tr:first-child > th, .table > thead > tr:first-child > td { border-top: 0; }
+.table-striped > tbody > tr:nth-of-type(odd) > * { background: #f9f9f9; }
+.table-hover > tbody > tr:hover > * { background: #f5f5f5; }
+.pagination { display: inline-block; padding-left: 0; margin: 20px 0; border-radius: 4px; }
+.pagination > li { display: inline; }
+.pagination > li > a, .pagination > li > span { position: relative; float: left; padding: 6px 12px; margin-left: -1px; line-height: 1.428571429; color: #337ab7; text-decoration: none; background: #fff; border: 1px solid #ddd; }
+.pagination > .active > a { z-index: 3; color: #fff; background: #337ab7; border-color: #337ab7; }
+.pagination > .disabled > a { color: #777; cursor: not-allowed; background: #fff; border-color: #ddd; }
+.pagination > li:first-child > a { margin-left: 0; border-radius: 4px 0 0 4px; }
+.pagination > li:last-child > a { border-radius: 0 4px 4px 0; }
+@media (max-width: 767px) {
+  // La copia usada para medir columnas debe conservar el flujo de la cabecera visible.
+  table.dataTable thead th { white-space: nowrap; }
+  .table-responsive { width: 100%; margin-bottom: 15px; overflow-y: hidden; border: 1px solid #ddd; }
+  .table-responsive > .table { margin-bottom: 0; }
+  .table-responsive > .table > :not(caption) > * > * { white-space: nowrap; }
+  .table-responsive > .table-bordered { border: 0; }
+}
+
+@include pgcv-tables.styles();

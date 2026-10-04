@@ -21,19 +21,19 @@
                     <div class="col-xs-12">
                         <div class="box">
                             <div class="box-header with-border">
-                                <ul class="nav nav-tabs">
-                                    <li class="active"><a href="#tab-login" data-toggle="tab"><i class="fa fa-sign-in"></i> Login</a></li>
-                                    <li><a href="#tab-productos" data-toggle="tab"><i class="fa fa-barcode"></i> Productos</a></li>
-                                    <li><a href="#tab-ventas" data-toggle="tab"><i class="fa fa-shopping-cart"></i> Ventas</a></li>
-                                    <li><a href="#tab-usuarios" data-toggle="tab"><i class="fa fa-users"></i> Usuarios</a></li>
+                                <ul class="nav nav-tabs" role="tablist" aria-label="Tipos de actividad">
+                                    <li role="presentation"><a class="active" id="logs-login-tab" href="#tab-login" data-bs-toggle="tab" role="tab" aria-controls="tab-login" aria-selected="true"><i class="fa fa-sign-in"></i> Login</a></li>
+                                    <li role="presentation"><a id="logs-productos-tab" href="#tab-productos" data-bs-toggle="tab" role="tab" aria-controls="tab-productos" aria-selected="false" tabindex="-1"><i class="fa fa-barcode"></i> Productos</a></li>
+                                    <li role="presentation"><a id="logs-ventas-tab" href="#tab-ventas" data-bs-toggle="tab" role="tab" aria-controls="tab-ventas" aria-selected="false" tabindex="-1"><i class="fa fa-shopping-cart"></i> Ventas</a></li>
+                                    <li role="presentation"><a id="logs-usuarios-tab" href="#tab-usuarios" data-bs-toggle="tab" role="tab" aria-controls="tab-usuarios" aria-selected="false" tabindex="-1"><i class="fa fa-users"></i> Usuarios</a></li>
                                 </ul>
                             </div>
                             <div class="box-body">
                                 <div class="tab-content">
 
                                     <!-- LOGS LOGIN -->
-                                    <div class="tab-pane active" id="tab-login">
-                                        <table class="table table-bordered" id="table-login">
+                                    <div class="tab-pane active" id="tab-login" role="tabpanel" aria-labelledby="logs-login-tab" tabindex="0">
+                                        <table class="table table-bordered" id="table-login" style="width:100%">
                                             <thead>
                                                 <th>ID</th>
                                                 <th>Email</th>
@@ -65,8 +65,8 @@
                                     </div>
 
                                     <!-- LOGS PRODUCTOS -->
-                                    <div class="tab-pane" id="tab-productos">
-                                        <table class="table table-bordered" id="table-productos">
+                                    <div class="tab-pane" id="tab-productos" role="tabpanel" aria-labelledby="logs-productos-tab" tabindex="0">
+                                        <table class="table table-bordered" id="table-productos" style="width:100%">
                                             <thead>
                                                 <th>ID</th>
                                                 <th>Producto ID</th>
@@ -113,8 +113,8 @@
                                     </div>
 
                                     <!-- LOGS VENTAS -->
-                                    <div class="tab-pane" id="tab-ventas">
-                                        <table class="table table-bordered" id="table-ventas">
+                                    <div class="tab-pane" id="tab-ventas" role="tabpanel" aria-labelledby="logs-ventas-tab" tabindex="0">
+                                        <table class="table table-bordered" id="table-ventas" style="width:100%">
                                             <thead>
                                                 <th>ID</th>
                                                 <th>Venta ID</th>
@@ -161,8 +161,8 @@
                                     </div>
 
                                     <!-- LOGS USUARIOS -->
-                                    <div class="tab-pane" id="tab-usuarios">
-                                        <table class="table table-bordered" id="table-usuarios">
+                                    <div class="tab-pane" id="tab-usuarios" role="tabpanel" aria-labelledby="logs-usuarios-tab" tabindex="0">
+                                        <table class="table table-bordered" id="table-usuarios" style="width:100%">
                                             <thead>
                                                 <th>ID</th>
                                                 <th>Usuario ID</th>
@@ -227,25 +227,29 @@
                 order: [
                     [4, 'desc']
                 ],
-                responsive: true
+                scrollX: true
             });
             $('#table-productos').DataTable({
                 order: [
                     [7, 'desc']
                 ],
-                responsive: true
+                scrollX: true
             });
             $('#table-ventas').DataTable({
                 order: [
                     [7, 'desc']
                 ],
-                responsive: true
+                scrollX: true
             });
             $('#table-usuarios').DataTable({
                 order: [
                     [7, 'desc']
                 ],
-                responsive: true
+                scrollX: true
+            });
+            $('.dt-scroll-body').attr({tabindex: '0', role: 'region', 'aria-label': 'Tabla de registros, desplazamiento horizontal'});
+            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function() {
+                $.fn.dataTable.tables({visible: true, api: true}).columns.adjust();
             });
         });
     </script>

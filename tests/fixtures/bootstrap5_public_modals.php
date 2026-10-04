@@ -10,7 +10,6 @@ require_once __DIR__ . '/../../includes/csrf.php';
 $_SESSION = [];
 $user = ['firstname' => 'Cliente', 'lastname' => 'de ejemplo', 'email' => 'cliente@example.invalid',
     'contact_info' => '', 'address' => 'Dirección ficticia'];
-$legacyStyles = ($_GET['baseline'] ?? null) === '1';
 ?>
 <!doctype html>
 <html lang="es">
@@ -18,14 +17,9 @@ $legacyStyles = ($_GET['baseline'] ?? null) === '1';
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Comprobación local de modales públicos</title>
-  <?php if ($legacyStyles): ?>
-  <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
-  <style>.fade.show{opacity:1}.modal.show .modal-dialog{transform:translate(0,0)}.modal-backdrop.show{opacity:.5}</style>
-  <?php else: ?>
-  <link rel="stylesheet" href="../../dist/css/pgcv-public.min.css">
-  <?php endif; ?>
+  <link rel="stylesheet" href="../../dist/css/pgcv-public.min.css?v=<?php echo filemtime(__DIR__ . '/../../dist/css/pgcv-public.min.css'); ?>">
   <link rel="stylesheet" href="../../bower_components/font-awesome/css/font-awesome.min.css">
-  <link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="../../dist/css/pgcv-theme.min.css?v=<?php echo filemtime(__DIR__ . '/../../dist/css/pgcv-theme.min.css'); ?>">
 </head>
 <body>
   <div class="container">

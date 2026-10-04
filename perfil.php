@@ -77,7 +77,7 @@ if (!isset($_SESSION['user'])) {
 									<h4 class="box-title"><i class="fa fa-calendar"></i> <b>Historial de transacciones</b></h4>
 								</div>
 								<div class="box-body">
-									<table class="table table-bordered" id="example1" style="width:100%" data-column-defs='[{"targets":0,"visible":false,"searchable":false}]'>
+									<table class="table table-bordered" id="example1" style="width:100%" data-column-defs='[{"targets":0,"visible":false,"searchable":false},{"targets":"_all","orderSequence":["asc","desc"]}]'>
 										<thead>
 											<tr>
 											<th class="hidden"></th>

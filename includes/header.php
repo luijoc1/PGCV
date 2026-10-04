@@ -10,16 +10,15 @@
     <!-- Bootstrap 5 customized to preserve the existing public theme. -->
     <link rel="stylesheet" href="dist/css/pgcv-public.min.css?v=<?php echo filemtime(__DIR__ . '/../dist/css/pgcv-public.min.css'); ?>">
   	<!-- DataTables -->
-    <link rel="stylesheet" href="bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
-  	<!-- Fuente impresionante -->
-  	<link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
-  	<!--Estilo del tema-->
-  	<link rel="stylesheet" href="dist/css/AdminLTE.min.css">
-  	<!-- AdminLTE Pieles. Elija una máscara de css / Pieles
-       Carpeta en lugar de descargarlas todas para reducir la carga. -->
-       <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="bower_components/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+    <!-- Iconos habituales fijados en npm, sin cambiar símbolos ni medidas. -->
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css?v=<?php echo filemtime(__DIR__ . '/../bower_components/font-awesome/css/font-awesome.min.css'); ?>">
+    <!-- Tema habitual conservado desde fuentes Sass propias. -->
+    <link rel="stylesheet" href="dist/css/pgcv-theme.min.css?v=<?php echo filemtime(__DIR__ . '/../dist/css/pgcv-theme.min.css'); ?>">
+    <!-- Tema azul habitual, compilado desde su fuente Sass. -->
+    <link rel="stylesheet" href="dist/css/pgcv-skin-blue.min.css?v=<?php echo filemtime(__DIR__ . '/../dist/css/pgcv-skin-blue.min.css'); ?>">
     <!-- Magnify -->
-    <link rel="stylesheet" href="magnify/magnify.min.css">
+    <link rel="stylesheet" href="bower_components/magnify/dist/css/magnify.css?v=<?php echo filemtime(__DIR__ . '/../bower_components/magnify/dist/css/magnify.css'); ?>">
    
 
   	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -72,7 +71,7 @@
       margin: 0;
       overflow-wrap: anywhere;
     }
-    #example1 th, #example1 td, .dataTables_scrollHead th {
+    #example1 th, #example1 td, .dt-scroll-head th {
       white-space: nowrap;
     }
     #resumen-total, #resumen-tbody td:last-child {
@@ -132,6 +131,13 @@
     }
 
     /*Aumentar*/
+    .pgcv-product-image > .magnify {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
     .magnify > .magnify-lens {
       width: 100px;
       height: 100px;

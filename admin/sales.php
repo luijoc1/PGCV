@@ -67,7 +67,7 @@
                                                 name="date_range" aria-label="Rango de fechas del reporte">
                                         </div>
                                         <button type="submit" class="btn btn-success btn-sm btn-flat"
-                                            name="print"><span class="glyphicon glyphicon-print"></span>
+                                            name="print"><span class="fa fa-print" aria-hidden="true"></span>
                                             Impresión</button>
                                     </form>
                                 </div>
@@ -162,65 +162,25 @@
 
         </div>
         <?php include 'includes/footer.php'; ?>
-        <?php include '../includes/profile_modal.php'; ?>
+        <?php include 'includes/transaction_modal.php'; ?>
 
     </div>
     <!-- ./envoltura -->
 
     <?php include 'includes/scripts.php'; ?>
     <!-- Selector de fechas -->
+    <script src="../dist/js/pgcv-sales-dates.js?v=<?php echo filemtime(__DIR__ . '/../dist/js/pgcv-sales-dates.js'); ?>"></script>
     <script>
         $(function() {
-            //Selector de fechas
-            $('#datepicker_add').datepicker({
-                autoclose: true,
-                format: 'yyyy-mm-dd'
-            })
-            $('#datepicker_edit').datepicker({
-                autoclose: true,
-                format: 'yyyy-mm-dd'
-            })
-
-            //Timepicker
-            $('.timepicker').timepicker({
-                showInputs: false
-            })
-
-            //Date range picker
-            $('#reservation').daterangepicker()
-            //Date range picker with time picker
-            $('#reservationtime').daterangepicker({
-                timePicker: true,
-                timePickerIncrement: 30,
-                format: 'MM/DD/YYYY h:mm A'
-            })
-            //Date range as a button
-            $('#daterange-btn').daterangepicker({
-                    ranges: {
-                        'Today': [moment(), moment()],
-                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
-                            'month').endOf('month')]
-                    },
-                    startDate: moment().subtract(29, 'days'),
-                    endDate: moment()
-                },
-                function(start, end) {
-                    $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format(
-                        'MMMM D, YYYY'))
-                }
-            )
-
+            // Rango de fechas utilizado por el formulario de reporte.
+            PGCVSalesDates.init('#reservation');
         });
     </script>
     <script>
         $(function() {
             $(document).on('click', '.transact', function(e) {
                 e.preventDefault();
-                $('#transaction').modal('show');
+                bootstrap.Modal.getOrCreateInstance(document.querySelector('#transaction')).show();
                 var id = $(this).data('id');
                 $.ajax({
                     type: 'POST',

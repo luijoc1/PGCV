@@ -2,6 +2,11 @@
 
 ## Alcance
 
+La fase [019](019_bootstrap3_retirement.md) retira posteriormente Bootstrap 3
+del manifiesto/sincronizador. Las menciones al adaptador antiguo y a
+`?baseline=1` conservan el contexto de esta fase; la vista de modales usa
+ahora únicamente los temas actuales.
+
 La tienda carga `dist/css/pgcv-public.min.css`, generado desde Bootstrap
 5.3.8 mediante `build/scss/pgcv-public.scss`. El encabezado público ya no
 carga el CSS base de Bootstrap 3 ni la hoja transitoria

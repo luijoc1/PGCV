@@ -62,7 +62,7 @@ if (isset($_SESSION['user'])) {
         <td><img src='" . escapeHtml($image) . "' width='30px' height='30px'></td>
         <td>" . escapeHtml($row['name']) . $stock_warning . "</td>
         <td>" . $precio_html . "</td>
-						<td class='input-group'>
+						<td><div class='input-group'>
 							<span class='input-group-btn'>
             					<button type='button' id='minus' class='btn btn-default btn-flat minus' data-id='" . $row['cartid'] . "'><i class='fa fa-minus'></i></button>
             				</span>
@@ -71,7 +71,7 @@ if (isset($_SESSION['user'])) {
 				                <button type='button' id='add' class='btn btn-default btn-flat add' data-id='" . $row['cartid'] . "'><i class='fa fa-plus'></i>
 				                </button>
 				            </span>
-						</td>
+						</div></td>
 						<td>&#36; " . number_format($subtotal, 2) . "</td>
 					</tr>
 				";
@@ -121,7 +121,7 @@ if (isset($_SESSION['user'])) {
         <td><img src='" . escapeHtml($image) . "' width='30px' height='30px'></td>
         <td>" . escapeHtml($product['prodname']) . $stock_warning . "</td>
         <td>" . $precio_html . "</td>
-						<td class='input-group'>
+						<td><div class='input-group'>
 							<span class='input-group-btn'>
             					<button type='button' id='minus' class='btn btn-default btn-flat minus' data-id='" . $row['productid'] . "'><i class='fa fa-minus'></i></button>
             				</span>
@@ -130,7 +130,7 @@ if (isset($_SESSION['user'])) {
 				                <button type='button' id='add' class='btn btn-default btn-flat add' data-id='" . $row['productid'] . "'><i class='fa fa-plus'></i>
 				                </button>
 				            </span>
-						</td>
+						</div></td>
 						<td>&#36; " . number_format($subtotal, 2) . "</td>
 					</tr>
 				";

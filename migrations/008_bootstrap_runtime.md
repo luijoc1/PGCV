@@ -1,5 +1,10 @@
 # Bootstrap runtime mitigation
 
+> Antecedente histórico: la fase [019](019_bootstrap3_retirement.md) retira
+> Bootstrap 3 del manifiesto/sincronizador y bloquea por HTTP sus copias,
+> runtime reducido y fixture anterior. Las cargas y comprobaciones siguientes
+> describen la mitigación aplicada en el paso 50, no el runtime actual.
+
 PGCV retains Bootstrap 3.4.1 CSS for AdminLTE 2 compatibility and loads
 `dist/js/bootstrap-pgcv.js` from both shared script templates. Run
 `npm ci --ignore-scripts` and `npm run sync:frontend` to reproduce this file.

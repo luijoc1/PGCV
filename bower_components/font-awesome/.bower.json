@@ -24,14 +24,9 @@
     "*.md"
   ],
   "version": "4.7.0",
-  "_release": "4.7.0",
-  "_resolution": {
-    "type": "version",
-    "tag": "v4.7.0",
-    "commit": "a3fe90fa5f6fac55d197f9cbd18e3f57dafb716c"
-  },
   "_source": "https://github.com/FortAwesome/Font-Awesome.git",
   "_target": "^4.7.0",
   "_originalSource": "font-awesome",
-  "_direct": true
+  "_direct": true,
+  "pgcvAssetSource": "npm:font-awesome@4.7.0"
 }

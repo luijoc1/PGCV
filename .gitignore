@@ -5,9 +5,13 @@ tienda.sql
 /storage/maintenance.lock
 !/storage/backups/.htaccess
 /storage/visual-review/*.png
+/storage/visual-review/*.json
 /REVISION_PROYECTO.md
 /README.md
 /phpunit.xml
 /junit-report-allTest.xml
 /ResultadoallTest.txt
 /node_modules/
+/DEPLOYMENT.md
+/junit-report-allTest.xml
+/phpunit.xml

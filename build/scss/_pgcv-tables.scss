@@ -1,0 +1,58 @@
+@mixin styles() {
+// DataTables 3 + Bootstrap 5, con geometría y colores de las tablas habituales.
+body.layout-top-nav, body.sidebar-mini {
+  div.dt-container {
+    .pgcv-dt-row { margin-top: 0; }
+    .dt-length, .dt-search { min-height: 35px; }
+    .dt-length select {
+      width: 75px; height: 30px; padding: 5px 10px; margin: 0;
+      font-size: 12px; line-height: 1.5; border-radius: 3px;
+      color: #555; border-color: #d2d6de; appearance: auto; background-image: none;
+    }
+    .dt-search input { height: 30px; padding: 5px 10px; font-size: 12px; line-height: 1.5; }
+    .dt-info { padding-top: 8px; white-space: nowrap; }
+    .dt-paging { text-align: right; }
+    .dt-scroll-head table { margin-top: 6px !important; }
+    .dt-scroll-body { border-bottom: 0; -webkit-overflow-scrolling: touch; }
+    .dt-scroll-body thead .dt-column-order { display: none; }
+    .dt-scroll-body tbody tr:first-child > * { border-top: 0; }
+    table.dataTable {
+      border-collapse: separate; border-spacing: 0;
+      th, td { box-sizing: content-box; }
+      &.table-bordered th, &.table-bordered td { border-left-width: 0; }
+      &.table-bordered th:last-child, &.table-bordered td:last-child { border-right-width: 0; }
+      &.table-bordered tbody th, &.table-bordered tbody td { border-bottom-width: 0; }
+      thead th { position: relative; white-space: nowrap; }
+      thead th.dt-orderable-asc, thead th.dt-orderable-desc { padding-right: 30px; }
+      .dt-column-header { display: block; }
+      .dt-column-order { position: absolute; right: 8px; bottom: 8px; width: auto; height: 20px; }
+      .dt-column-order::before { display: none; }
+      .dt-column-order::after {
+        position: static; display: block; width: auto; height: auto; border: 0;
+        font-family: FontAwesome; content: "\f0dc"; opacity: .2;
+      }
+      .dt-ordering-asc .dt-column-order::after { content: "\f0de"; opacity: .5; }
+      .dt-ordering-desc .dt-column-order::after { content: "\f0dd"; opacity: .5; }
+      .dt-type-numeric, .dt-type-date { text-align: left; }
+    }
+    .pagination {
+      display: inline-flex;
+      .page-link {
+        padding: 6px 12px; margin-left: -1px; font-size: 14px; line-height: 1.428571429;
+        color: #337ab7; background: #fff; border: 1px solid #ddd;
+      }
+      .active > .page-link { color: #fff; background: #337ab7; border-color: #337ab7; }
+      .disabled > .page-link { color: #777; background: #fff; border-color: #ddd; }
+      li:first-child > .page-link { margin-left: 0; border-radius: 4px 0 0 4px; }
+      li:last-child > .page-link { border-radius: 0 4px 4px 0; }
+    }
+  }
+  @media (max-width: 767px) {
+    div.dt-container {
+      .dt-length, .dt-search, .dt-info, .dt-paging { text-align: center; }
+      .pagination { display: flex; flex-wrap: wrap; justify-content: center; }
+    }
+  }
+}
+
+}

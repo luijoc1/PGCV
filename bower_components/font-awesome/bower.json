@@ -5,7 +5,11 @@
   "homepage": "http://fontawesome.io",
   "dependencies": {},
   "devDependencies": {},
-  "license": ["OFL-1.1", "MIT", "CC-BY-3.0"],
+  "license": [
+    "OFL-1.1",
+    "MIT",
+    "CC-BY-3.0"
+  ],
   "main": [
     "less/font-awesome.less",
     "scss/font-awesome.scss"
@@ -18,5 +22,7 @@
     "Gemfile",
     "Gemfile.lock",
     "*.md"
-  ]
+  ],
+  "version": "4.7.0",
+  "pgcvAssetSource": "npm:font-awesome@4.7.0"
 }

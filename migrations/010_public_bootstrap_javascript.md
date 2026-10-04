@@ -2,6 +2,10 @@
 
 ## Alcance de esta fase
 
+La fase [019](019_bootstrap3_retirement.md) ya retira el paquete Bootstrap 3
+y las referencias activas restantes. La vista de modales utiliza los temas
+actuales; su opción de comparación con Bootstrap 3 se retiró en esa fase.
+
 Esta guía describe la primera fase. La fase posterior de
 [estilos públicos](011_public_bootstrap_styles.md) ya reemplaza el CSS base
 por Bootstrap 5 personalizado y retira la hoja de compatibilidad inicial.

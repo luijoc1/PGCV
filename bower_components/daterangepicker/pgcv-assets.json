@@ -1,0 +1,9 @@
+{
+  "name": "daterangepicker",
+  "version": "3.1.0",
+  "source": "npm:daterangepicker@3.1.0",
+  "assets": [
+    "daterangepicker.js",
+    "daterangepicker.css"
+  ]
+}

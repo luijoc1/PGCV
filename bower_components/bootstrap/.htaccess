@@ -1,5 +1,3 @@
-# PGCV serves dist/js/bootstrap-pgcv.js instead of the complete upstream bundle.
-# Prevent accidentally loading components excluded for known XSS advisories.
-<FilesMatch "^(bootstrap(\.min)?|button|tooltip|popover)\.js$">
-    Require all denied
-</FilesMatch>
+# Copia histórica de Bootstrap 3 retirada del runtime y del manifiesto npm.
+# Conservar para revisión/reversión local; excluir del paquete de hosting.
+Require all denied

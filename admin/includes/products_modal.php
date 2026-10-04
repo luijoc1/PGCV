@@ -1,30 +1,30 @@
 <!-- Description -->
-<div class="modal fade" id="description">
+<div class="modal fade" id="description" tabindex="-1" aria-labelledby="description-title" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Cerrar">
                   <span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title"><b><span class="name"></span></b></h4>
+              <h4 class="modal-title" id="description-title"><b><span class="name"></span></b></h4>
             </div>
             <div class="modal-body">
                 <p id="desc"></p>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
+              <button type="button" class="btn btn-default btn-flat pull-left" data-bs-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Añadir -->
-<div class="modal fade" id="addnew">
+<div class="modal fade" id="addnew" tabindex="-1" aria-labelledby="addnew-title" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Cerrar">
                   <span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title"><b>Agregar nuevo producto</b></h4>
+              <h4 class="modal-title" id="addnew-title"><b>Agregar nuevo producto</b></h4>
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="products_add.php" enctype="multipart/form-data">
@@ -86,7 +86,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
+              <button type="button" class="btn btn-default btn-flat pull-left" data-bs-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
               <button type="submit" class="btn btn-primary btn-flat" name="add"><i class="fa fa-save"></i> Guardar</button>
               </form>
             </div>
@@ -95,13 +95,13 @@
 </div>
 
 <!-- Actualizar foto -->
-<div class="modal fade" id="edit_photo">
+<div class="modal fade" id="edit_photo" tabindex="-1" aria-labelledby="edit_photo-title" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Cerrar">
                   <span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title"><b><span class="name"></span></b></h4>
+              <h4 class="modal-title" id="edit_photo-title"><b><span class="name"></span></b></h4>
             </div>
             <div class="modal-body">
               <form class="form-horizontal" method="POST" action="products_photo.php" enctype="multipart/form-data">
@@ -116,7 +116,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
+              <button type="button" class="btn btn-default btn-flat pull-left" data-bs-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
               <button type="submit" class="btn btn-success btn-flat" name="upload"><i class="fa fa-check-square-o"></i> Actualizar</button>
               </form>
             </div>

@@ -7,27 +7,22 @@
   	<title>Panel administrativo</title>
   	<!-- Tell the browser to be responsive to screen width -->
   	<meta content="width=device-width, initial-scale=1" name="viewport">
-  	<!-- Bootstrap 3.3.7 -->
-  	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Bootstrap 5 compilado con las medidas y colores habituales. -->
+    <link rel="stylesheet" href="../dist/css/pgcv-admin.min.css?v=<?php echo filemtime(__DIR__ . '/../../dist/css/pgcv-admin.min.css'); ?>">
     <link rel="stylesheet" href="../bower_components/jodit/es2021/jodit.min.css">
     <link rel="stylesheet" href="../dist/css/product-editor.css">
-  	<!-- Font Awesome -->
-  	<link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
+    <!-- Iconos habituales fijados en npm, sin cambiar símbolos ni medidas. -->
+    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css?v=<?php echo filemtime(__DIR__ . '/../../bower_components/font-awesome/css/font-awesome.min.css'); ?>">
     <!-- Select2 -->
-    <link rel="stylesheet" href="../bower_components/select2/dist/css/select2.min.css">
-  	<!-- Theme style -->
-  	<link rel="stylesheet" href="../dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="../bower_components/select2-v4/dist/css/select2.min.css?v=<?php echo filemtime(__DIR__ . '/../../bower_components/select2-v4/dist/css/select2.min.css'); ?>">
+    <!-- Tema habitual conservado desde fuentes Sass propias. -->
+    <link rel="stylesheet" href="../dist/css/pgcv-theme.min.css?v=<?php echo filemtime(__DIR__ . '/../../dist/css/pgcv-theme.min.css'); ?>">
   	<!-- DataTables -->
-    <link rel="stylesheet" href="../bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
     <!-- daterange picker -->
-    <link rel="stylesheet" href="../bower_components/bootstrap-daterangepicker/daterangepicker.css">
-    <!-- Bootstrap time Picker -->
-    <link rel="stylesheet" href="../plugins/timepicker/bootstrap-timepicker.min.css">
-    <!-- bootstrap datepicker -->
-    <link rel="stylesheet" href="../bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
-    <!-- AdminLTE Skins. Choose a skin from the css/skins
-         folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" href="../dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../dist/css/pgcv-daterangepicker.min.css?v=<?php echo filemtime(__DIR__ . '/../../dist/css/pgcv-daterangepicker.min.css'); ?>">
+    <!-- Tema azul habitual, compilado desde su fuente Sass. -->
+    <link rel="stylesheet" href="../dist/css/pgcv-skin-blue.min.css?v=<?php echo filemtime(__DIR__ . '/../../dist/css/pgcv-skin-blue.min.css'); ?>">
   	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   	<!--[if lt IE 9]>
@@ -45,14 +40,14 @@
       .bold{
         font-weight:bold;
       }
-      .dataTables_scrollHead th, .dataTables_scrollBody td {
+      .dt-scroll-head th, .dt-scroll-body td {
         white-space: nowrap;
       }
-      .dataTables_scrollBody {
+      .dt-scroll-body {
         -webkit-overflow-scrolling: touch;
       }
       @media (max-width: 767px) {
-        .dataTables_wrapper .dataTables_paginate .pagination {
+        .dt-container .dt-paging .pagination {
           display: flex;
           flex-wrap: wrap;
           justify-content: center;

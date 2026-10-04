@@ -9,7 +9,7 @@
   <!-- Barra de navegación de encabezado: el estilo se puede encontrar en header.less -->
   <nav class="navbar navbar-static-top bg-green">
     <!-- Botón de alternancia de la barra lateral-->
-    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+    <a href="#" class="sidebar-toggle" data-pgcv-sidebar role="button" aria-controls="pgcv-sidebar" aria-expanded="false">
       <span class="sr-only">Navegación de palanca</span>
     </a>
 
@@ -17,7 +17,7 @@
       <ul class="nav navbar-nav">
         <!-- Cuenta de usuario: el estilo se puede encontrar en el menú desplegable. -->
         <li class="dropdown user user-menu">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             <img src="<?php echo safeImageUrl($admin['photo'], '../images/', 'profile.jpg'); ?>" class="user-image" alt="User Image">
             <span class="hidden-xs"><?php echo escapeHtml($admin['firstname']).' '.escapeHtml($admin['lastname']); ?></span>
           </a>
@@ -33,7 +33,7 @@
             </li>
             <li class="user-footer">
               <div class="pull-left">
-                <a href="#profile" data-toggle="modal" class="btn btn-default btn-flat" id="admin_profile">Perfil</a>
+                <a href="#profile" data-bs-toggle="modal" class="btn btn-default btn-flat" id="admin_profile">Perfil</a>
               </div>
               <div class="pull-right">
                 <form method="POST" action="../cerrar_sesion.php" style="display:inline;">

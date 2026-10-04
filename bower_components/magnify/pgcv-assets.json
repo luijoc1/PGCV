@@ -1,0 +1,9 @@
+{
+  "name": "magnify",
+  "version": "2.3.3",
+  "source": "npm:magnify@2.3.3",
+  "assets": [
+    "dist/js/jquery.magnify.js",
+    "dist/css/magnify.css"
+  ]
+}

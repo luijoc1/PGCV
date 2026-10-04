@@ -20,14 +20,14 @@
                 <?php
                 if (isset($_SESSION['error'])) {
                     echo "<div class='alert alert-danger alert-dismissible'>
-                            <button type='button' class='close' data-dismiss='alert'>&times;</button>
+                            <button type='button' class='close' data-bs-dismiss='alert'>&times;</button>
                             " . escapeHtml($_SESSION['error']) . "
                           </div>";
                     unset($_SESSION['error']);
                 }
                 if (isset($_SESSION['success'])) {
                     echo "<div class='alert alert-success alert-dismissible'>
-                            <button type='button' class='close' data-dismiss='alert'>&times;</button>
+                            <button type='button' class='close' data-bs-dismiss='alert'>&times;</button>
                             " . escapeHtml($_SESSION['success']) . "
                           </div>";
                     unset($_SESSION['success']);
@@ -93,12 +93,12 @@
         <?php include 'includes/footer.php'; ?>
     </div>
     <!-- Modal confirmación -->
-    <div class="modal fade" id="modalQuitar">
+    <div class="modal fade" id="modalQuitar" tabindex="-1" aria-labelledby="modalQuitar-title" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" style="background:#1a2e4a;">
-                    <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
-                    <h4 class="modal-title" style="color:#fff;"><i class="fa fa-tag"></i> Quitar descuento</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Cerrar" style="color:#fff;">&times;</button>
+                    <h4 class="modal-title" id="modalQuitar-title" style="color:#fff;"><i class="fa fa-tag"></i> Quitar descuento</h4>
                 </div>
                 <div class="modal-body text-center" style="padding:24px;">
                     <i class="fa fa-exclamation-triangle" style="font-size:40px; color:#f39c12; margin-bottom:12px;"></i>
@@ -106,7 +106,7 @@
                     <p style="color:#888;" id="nombre-producto"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">
+                    <button type="button" class="btn btn-default btn-flat" data-bs-dismiss="modal">
                         <i class="fa fa-times"></i> Cancelar
                     </button>
                     <form method="POST" action="quitar_descuento.php" style="display:inline;">
@@ -129,7 +129,7 @@
                 var nombre = $(this).data('nombre');
                 $('#nombre-producto').text(nombre);
                 $('#producto-quitar-id').val(id);
-                $('#modalQuitar').modal('show');
+                bootstrap.Modal.getOrCreateInstance(document.querySelector('#modalQuitar')).show();
             });
         });
     </script>

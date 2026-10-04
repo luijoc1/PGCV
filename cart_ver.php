@@ -16,7 +16,7 @@
 	        		<div class="box box-solid">
 	        			<div class="box-body">
 		        		<div class="table-responsive" role="region" aria-label="Productos del carrito" tabindex="0">
-		        		<table class="table table-bordered">
+                            <table class="table table-bordered pgcv-cart-table">
 		        			<thead>
                                 <tr>
 		        				<th scope="col"><span class="sr-only">Acciones</span></th>

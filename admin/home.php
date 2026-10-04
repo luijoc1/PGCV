@@ -49,7 +49,7 @@ $conn = $pdo->open();
         if ($stock_critico['total'] > 0 || $sin_stock['total'] > 0) {
           echo "
         <div class='alert alert-warning alert-dismissible'>
-            <button type='button' class='close' data-dismiss='alert'>&times;</button>
+            <button type='button' class='close' data-bs-dismiss='alert'>&times;</button>
             <h4><i class='fa fa-exclamation-triangle'></i> Alerta de inventario</h4>
             <p>
                 " . ($sin_stock['total'] > 0 ? "<strong style='color:#e74c3c;'>" . $sin_stock['total'] . " producto(s) sin stock.</strong> " : "") . "
@@ -67,7 +67,7 @@ $conn = $pdo->open();
         if (isset($_SESSION['error'])) {
           echo "
             <div class='alert alert-danger alert-dismissible'>
-              <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+              <button type='button' class='close' data-bs-dismiss='alert' aria-hidden='true'>&times;</button>
               <h4><i class='icon fa fa-warning'></i> Error!</h4>
               " . $_SESSION['error'] . "
             </div>
@@ -77,7 +77,7 @@ $conn = $pdo->open();
         if (isset($_SESSION['success'])) {
           echo "
             <div class='alert alert-success alert-dismissible'>
-              <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+              <button type='button' class='close' data-bs-dismiss='alert' aria-hidden='true'>&times;</button>
               <h4><i class='icon fa fa-check'></i> Success!</h4>
               " . $_SESSION['success'] . "
             </div>

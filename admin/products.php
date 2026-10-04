@@ -38,7 +38,7 @@ try {
         if (isset($_SESSION['error'])) {
           echo "
             <div class='alert alert-danger alert-dismissible'>
-              <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+              <button type='button' class='close' data-bs-dismiss='alert' aria-hidden='true'>&times;</button>
               <h4><i class='icon fa fa-warning'></i> Error!</h4>
               " . escapeHtml($_SESSION['error']) . "
             </div>
@@ -48,7 +48,7 @@ try {
         if (isset($_SESSION['success'])) {
           echo "
             <div class='alert alert-success alert-dismissible'>
-              <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+              <button type='button' class='close' data-bs-dismiss='alert' aria-hidden='true'>&times;</button>
               <h4><i class='icon fa fa-check'></i> ¡Éxito!</h4>
               " . escapeHtml($_SESSION['success']) . "
             </div>
@@ -60,7 +60,7 @@ try {
           <div class="col-xs-12">
             <div class="box">
               <div class="box-header with-border">
-                <a href="#addnew" data-toggle="modal" class="btn btn-primary btn-sm btn-flat" id="addproduct"><i class="fa fa-plus"></i> Nuevo</a>
+                <a href="#addnew" data-bs-toggle="modal" class="btn btn-primary btn-sm btn-flat" id="addproduct"><i class="fa fa-plus"></i> Nuevo</a>
                 <div class="pull-right">
                   <form class="form-inline">
                     <div class="form-group">
@@ -114,9 +114,9 @@ try {
                             <td>" . escapeHtml($row['name']) . "</td>
                             <td>
                               <img src='" . escapeHtml($image) . "' height='30px' width='30px'>
-                              <span class='pull-right'><a href='#edit_photo' class='photo' data-toggle='modal' data-id='" . $row['id'] . "'><i class='fa fa-edit'></i></a></span>
+                              <span class='pull-right'><a href='#edit_photo' class='photo' data-bs-toggle='modal' data-id='" . $row['id'] . "'><i class='fa fa-edit'></i></a></span>
                             </td>
-                            <td><a href='#description' data-toggle='modal' class='btn btn-info btn-sm btn-flat desc' data-id='" . $row['id'] . "'><i class='fa fa-search'></i> Ver</a></td>
+                            <td><a href='#description' data-bs-toggle='modal' class='btn btn-info btn-sm btn-flat desc' data-id='" . $row['id'] . "'><i class='fa fa-search'></i> Ver</a></td>
                             <td>&#36; " . number_format($row['price'], 2) . "</td>
                             <td>" . $stock_label . "</td>
                             <td>" . $counter . "</td>
@@ -154,14 +154,14 @@ try {
     $(function() {
       $(document).on('click', '.edit', function(e) {
         e.preventDefault();
-        $('#edit').modal('show');
+        bootstrap.Modal.getOrCreateInstance(document.querySelector('#edit')).show();
         var id = $(this).data('id');
         getRow(id);
       });
 
       $(document).on('click', '.delete', function(e) {
         e.preventDefault();
-        $('#delete').modal('show');
+        bootstrap.Modal.getOrCreateInstance(document.querySelector('#delete')).show();
         var id = $(this).data('id');
         getRow(id);
       });
@@ -244,7 +244,7 @@ try {
       var urlParams = new URLSearchParams(window.location.search);
       var editId = urlParams.get('edit');
       if (editId) {
-        $('#edit').modal('show');
+        bootstrap.Modal.getOrCreateInstance(document.querySelector('#edit')).show();
         getRow(editId);
       }
     });
