@@ -14,6 +14,16 @@ function safeImageUrl($filename, $prefix = 'images/', $fallback = 'noimage.jpg')
     return $prefix . rawurlencode($filename);
 }
 
+function safeProductZoomUrl($filename)
+{
+    $original = safeImageUrl($filename);
+    if (!is_string($filename) || $filename === '' || strpos($filename, '/') !== false || strpos($filename, '\\') !== false) {
+        return $original;
+    }
+    $large = 'large-' . $filename;
+    return is_file(__DIR__ . '/../images/' . $large) ? safeImageUrl($large) : $original;
+}
+
 function highlightProductName($name, $keyword)
 {
     $name = is_string($name) ? $name : '';

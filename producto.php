@@ -60,10 +60,10 @@ if ($product['date_view'] == $now) {
 
 									<!-- IMAGEN -->
 									<div class="col-sm-5">
-										<div style="border:1px solid #e0e0e0; border-radius:8px; background:#f5f7fa; display:flex; align-items:center; justify-content:center; height:280px; overflow:hidden;">
+										<div class="pgcv-product-image" style="border:1px solid #e0e0e0; border-radius:8px; background:#f5f7fa; display:flex; align-items:center; justify-content:center; height:280px; overflow:hidden;">
 											<img src="<?php echo safeImageUrl($product['photo'], 'images/', 'noimage.jpg'); ?>"
 												style="max-width:100%; max-height:100%; object-fit:contain;"
-												class="zoom" data-magnify-src="<?php echo safeImageUrl('large-' . $product['photo']); ?>">
+												class="zoom" data-magnify-src="<?php echo safeProductZoomUrl($product['photo']); ?>">
 										</div>
 									</div>
 
