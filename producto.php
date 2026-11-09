@@ -30,16 +30,6 @@ if ($product['date_view'] == $now) {
 <?php include 'includes/header.php'; ?>
 
 <body class="hold-transition skin-blue layout-top-nav">
-	<script>
-		(function(d, s, id) {
-			var js, fjs = d.getElementsByTagName(s)[0];
-			if (d.getElementById(id)) return;
-			js = d.createElement(s);
-			js.id = id;
-			js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.12';
-			fjs.parentNode.insertBefore(js, fjs);
-		}(document, 'script', 'facebook-jssdk'));
-	</script>
 	<div class="wrapper">
 
 		<?php include 'includes/navbar.php'; ?>
@@ -142,8 +132,6 @@ if ($product['date_view'] == $now) {
 
 								</div>
 							</div>
-
-							<div class="fb-comments" data-href="http://localhost/ecommerce/producto.php?product=<?php echo rawurlencode((string) $slug); ?>" data-numposts="10" width="100%"></div>
 
 						</div>
 						<div class="col-sm-3">

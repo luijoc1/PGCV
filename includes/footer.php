@@ -80,29 +80,6 @@
   </div>
 </footer>
 
-<!-- Facebook chat -->
-<div id="fb-root"></div>
-<script>
-  window.fbAsyncInit = function() {
-    FB.init({ xfbml: true, version: 'v8.0' });
-  };
-  (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = 'https://connect.facebook.net/es_LA/sdk/xfbml.customerchat.js';
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
-</script>
-<div class="fb-customerchat"
-  attribution=setup_tool
-  page_id="112976387041659"
-  theme_color="#0084ff"
-  greeting_dialog_display="fade"
-  logged_in_greeting="Hola Mucho Gusto ¿Cuál es su consulta?"
-  logged_out_greeting="Hola Mucho Gusto ¿Cuál es su consulta?">
-</div>
-
 <!-- WhatsApp flotante -->
 <a href="https://api.whatsapp.com/send?phone=+573045800522&text=Hola%21%20necesito%20m%C3%A1s%20informaci%C3%B3n%20sobre%20Los%20Productos."
    class="float" target="_blank">

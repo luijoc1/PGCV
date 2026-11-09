@@ -21,13 +21,3 @@
 .my-float{
 	margin-top:16px;
 }
-
-.fb_dialog{
-	left: 18pt !important;
-	right: initial !important;
-}
-
-#fb-root iframe{
-	left: 9pt !important;
-	right: initial !important;
-}
