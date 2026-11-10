@@ -24,7 +24,7 @@
                                 unset($_SESSION['error']);
                             }
                             ?>
-                            <div id="carousel-example-generic" class="carousel slide" data-bs-ride="carousel"
+                            <div id="carousel-example-generic" class="carousel slide pgcv-home-carousel" data-bs-ride="carousel"
                                 style="border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
 
                                 <!-- Indicadores -->
@@ -42,7 +42,7 @@
                                 <div class="carousel-inner">
 
                                     <div class="item carousel-item active">
-                                        <img src="images/filtross.jpg" alt="Slide 1" style="width:100%; height:320px; object-fit:cover;">
+                                        <img src="images/filtross.jpg" alt="Slide 1">
                                         <div style="position:absolute; inset:0; background:linear-gradient(to right, rgba(26,46,74,0.90) 35%, rgba(26,46,74,0.15) 100%);"></div>
                                         <div class="pgcv-home-carousel-copy" style="position:absolute; left:36px; top:50%; transform:translateY(-50%);">
                                             <span style="background:#3a8eff; color:#fff; font-size:11px; font-weight:bold; padding:3px 10px; border-radius:20px; letter-spacing:1px;">DESTACADO</span>
@@ -53,7 +53,7 @@
                                     </div>
 
                                     <div class="item carousel-item">
-                                        <img src="images/motores.jpg" alt="Slide 2" style="width:100%; height:320px; object-fit:cover;">
+                                        <img src="images/motores.jpg" alt="Slide 2">
                                         <div style="position:absolute; inset:0; background:linear-gradient(to right, rgba(26,46,74,0.90) 35%, rgba(26,46,74,0.15) 100%);"></div>
                                         <div class="pgcv-home-carousel-copy" style="position:absolute; left:36px; top:50%; transform:translateY(-50%);">
                                             <span style="background:#3a8eff; color:#fff; font-size:11px; font-weight:bold; padding:3px 10px; border-radius:20px; letter-spacing:1px;">DESTACADO</span>
@@ -64,7 +64,7 @@
                                     </div>
 
                                     <div class="item carousel-item">
-                                        <img src="images/v.jpg" alt="Slide 3" style="width:100%; height:320px; object-fit:cover;">
+                                        <img src="images/v.jpg" alt="Slide 3">
                                         <div style="position:absolute; inset:0; background:linear-gradient(to right, rgba(26,46,74,0.90) 35%, rgba(26,46,74,0.15) 100%);"></div>
                                         <div class="pgcv-home-carousel-copy" style="position:absolute; left:36px; top:50%; transform:translateY(-50%);">
                                             <span style="background:#3a8eff; color:#fff; font-size:11px; font-weight:bold; padding:3px 10px; border-radius:20px; letter-spacing:1px;">DESTACADO</span>
@@ -75,7 +75,7 @@
                                     </div>
 
                                     <div class="item carousel-item">
-                                        <img src="images/d.jpg" alt="Slide 4" style="width:100%; height:320px; object-fit:cover;">
+                                        <img src="images/d.jpg" alt="Slide 4">
                                         <div style="position:absolute; inset:0; background:linear-gradient(to right, rgba(26,46,74,0.90) 35%, rgba(26,46,74,0.15) 100%);"></div>
                                         <div class="pgcv-home-carousel-copy" style="position:absolute; left:36px; top:50%; transform:translateY(-50%);">
                                             <span style="background:#3a8eff; color:#fff; font-size:11px; font-weight:bold; padding:3px 10px; border-radius:20px; letter-spacing:1px;">DESTACADO</span>
@@ -129,8 +129,8 @@
                                     echo "
                 <div class='col-sm-4' style='margin-bottom: 16px;'>
                     <div style='background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden;'>
-                        <div style='width: 100%; height: 180px; overflow: hidden; background: #f5f5f5;'>
-                            <img src='" . escapeHtml($image) . "' style='width: 100%; height: 100%; object-fit: cover;'>
+                        <div class='pgcv-home-product-image' style='width: 100%; height: 180px; overflow: hidden; background: #f5f5f5;'>
+                            <img src='" . escapeHtml($image) . "' style='width: 100%; height: 100%;'>
                         </div>
                         <div style='padding: 12px 14px;'>
                             <p style='font-size: 13px; color: #666; margin: 0 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'
@@ -186,18 +186,6 @@
         <?php include 'includes/footer.php'; ?>
     </div>
 
-    <style>
-        .carousel .item {
-            height: 350px;
-            overflow: hidden;
-        }
-
-        .carousel .item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-    </style>
     <?php include 'includes/scripts.php'; ?>
 
 </body>

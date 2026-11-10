@@ -1,14 +1,14 @@
 <header class="main-header">
-  <nav class="navbar navbar-static-top" style="background: #1a2e4a; border-bottom: 3px solid #3a8eff;">
+  <nav class="navbar navbar-static-top pgcv-public-navbar" style="background: #1a2e4a; border-bottom: 3px solid #3a8eff;">
     <div class="container">
       <div class="navbar-header">
         <a href="index.php" class="navbar-brand" style="color: #fff; font-size: 18px; font-weight: bold;">
           <i class="fa fa-shopping-bag" style="color: #3a8eff; margin-right: 6px;"></i>Los Almendros
         </a>
-        <button type="button" class="navbar-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Abrir menú de navegación" style="border-color: #3a8eff;">
-          <i class="fa fa-bars" style="color: #fff;"></i>
-        </button>
       </div>
+      <button type="button" class="navbar-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Abrir menú de navegación" style="border-color: #3a8eff;">
+        <i class="fa fa-bars" style="color: #fff;"></i>
+      </button>
 
       <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
         <ul class="nav navbar-nav">
@@ -41,6 +41,10 @@
           <li><a href="ofertas.php" style="color: #fff; background: #e74c3c; border-radius: 6px; margin: 8px 4px; padding: 6px 14px; font-size: 13px; display: inline-block;">
               <i class="fa fa-tag"></i> OFERTAS
             </a></li>
+          <?php if (!isset($_SESSION['user'])) { ?>
+            <li class="pgcv-mobile-auth"><a href="login.php" style="color: rgba(255,255,255,0.85); font-size: 13px;">INICIAR SESIÓN</a></li>
+            <li class="pgcv-mobile-auth"><a href="registrarse.php" style="color: #fff; background: #3a8eff; border-radius: 6px; margin: 8px 0; padding: 8px 14px; font-size: 13px; display: inline-block;">REGÍSTRATE</a></li>
+          <?php } ?>
         </ul>
         <form method="POST" class="navbar-form navbar-left" action="buscar.php">
           <div class="input-group navbar-search-group">
@@ -59,7 +63,7 @@
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <li class="dropdown messages-menu">
-            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" style="color: #fff;">
+            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-label="Ver carrito" style="color: #fff;">
               <i class="fa fa-shopping-cart" style="font-size: 18px;"></i>
               <span class="label label-success cart_count"></span>
             </a>
@@ -76,7 +80,7 @@
             $image = safeImageUrl($user['photo'], 'images/', 'profile.jpg');
             echo '
                 <li class="dropdown user user-menu">
-                  <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
+                  <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-label="Menú de usuario">
                     <img src="' . escapeHtml($image) . '" class="user-image" alt="User Image">
                     <span class="hidden-xs" style="color:#fff;">' . escapeHtml($user['firstname']) . ' ' . escapeHtml($user['lastname']) . '</span>
                   </a>
@@ -104,8 +108,8 @@
               ';
           } else {
             echo "
-                <li><a href='login.php' style='color: rgba(255,255,255,0.85); font-size: 13px;'>INICIAR SESIÓN</a></li>
-                <li>
+                <li class='pgcv-desktop-auth'><a href='login.php' style='color: rgba(255,255,255,0.85); font-size: 13px;'>INICIAR SESIÓN</a></li>
+                <li class='pgcv-desktop-auth'>
                   <a href='registrarse.php'
                      style='color: #fff; background: #3a8eff; border-radius: 6px; margin: 8px 4px; padding: 6px 14px; font-size: 13px; display: inline-block;'>
                     REGÍSTRATE

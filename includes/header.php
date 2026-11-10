@@ -88,6 +88,8 @@
       .layout-top-nav .main-header {
         max-height: none;
       }
+    }
+    @media (min-width: 768px) and (max-width: 991px) {
       .layout-top-nav .main-header .navbar-header {
         float: none;
         width: 100%;
